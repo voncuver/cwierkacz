@@ -1,0 +1,53 @@
+<cwierkacz-configuration>
+	<jobs-configuration>
+		<job>
+			<name>CREATE-SYSTEM-ACCOUNT</name>
+			<lifecycle>
+				<stage>ACCOUNT-CREATION</stage>
+				<stage>SAVE-OPERATION-HISTORY</stage>
+				<stage>SAVE-ARTIFACTS</stage>
+				<stage>EMAIL-NOTIFICATION</stage>
+			</lifecycle>
+		</job>
+
+		<job>
+			<name>MODIFY-SYSTEM-ACCOUNT</name>
+			<lifecycle>
+				<stage>CREDENTIALS-VALIDATION</stage>
+				<stage>ACCOUNT-MODIFICATION</stage>
+				<stage>SAVE-OPERATION-HISTORY</stage>
+				<stage>SAVE-ARTIFACTS</stage>
+			</lifecycle>
+		</job>
+
+		<job>
+			<name>DELETE-SYSTEM-ACCOUNT</name>
+			<lifecycle>
+				<stage>CREDENTIALS-VALIDATION</stage>
+				<stage>ACCOUNT-DELETION</stage>
+				<stage>SAVE-OPERATION-HISTORY</stage>
+				<stage>SAVE-ARTIFACTS</stage>
+			</lifecycle>
+		</job>
+
+		<job>
+			<name>POST-TWEET</name>
+			<lifecycle>
+				<stage>CREDENTIALS-VALIDATION</stage>
+				<stage>TWEET-POSTER</stage>
+				<stage>SAVE-OPERATION-HISTORY</stage>
+				<stage>SAVE-ARTIFACTS</stage>
+			</lifecycle>
+		</job>
+
+		<job>
+			<name>FETCH-TWEETS</name>
+			<lifecycle>
+				<stage>CREDENTIALS-VALIDATION</stage>
+				<stage>TWEET-FETCHER</stage>
+				<stage>SAVE-OPERATION-HISTORY</stage>
+				<stage>SAVE-ARTIFACTS</stage>
+			</lifecycle>
+		</job>
+	</jobs-configuration>
+</cwierkacz-configuration>

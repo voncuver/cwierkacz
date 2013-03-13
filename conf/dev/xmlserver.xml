@@ -1,0 +1,7 @@
+<cwierkacz-configuration>
+	<xml-server-configuration>
+		<portNumber>3030</portNumber>
+		<xmlValidation>true</xmlValidation>
+		<schemaLocation>conf/schema/XmlRequestSchema.xsl</schemaLocation>
+	</xml-server-configuration>
+</cwierkacz-configuration>
