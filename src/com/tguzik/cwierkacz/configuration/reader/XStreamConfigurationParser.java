@@ -17,7 +17,6 @@ import com.thoughtworks.xstream.converters.basic.ShortConverter;
 import com.thoughtworks.xstream.converters.basic.StringConverter;
 import com.thoughtworks.xstream.converters.collections.MapConverter;
 import com.thoughtworks.xstream.converters.extended.JavaClassConverter;
-import com.thoughtworks.xstream.mapper.DefaultMapper;
 
 @Threadsafe
 class XStreamConfigurationParser
@@ -81,24 +80,29 @@ class XStreamConfigurationParser
         xstream.alias("job", sjc);
         xstream.aliasField("lifecycle", sjc, "lifecycleStageNames");
         xstream.aliasType("stage", String.class);
+
+        xstream.registerLocalConverter(sjc, "properties", new MapConverter(xstream.getMapper()));
     }
 
     private void bindProcessorsConfiguration( XStream xstream ) {
         final Class<SingleProcessorConfiguration> spc = SingleProcessorConfiguration.class;
         final Class<ProcessorsConfiguration> pc = ProcessorsConfiguration.class;
-        ClassLoader cl = ClassLoader.getSystemClassLoader();
 
         xstream.alias("processors-configration", pc);
         xstream.addImplicitCollection(pc, "processors", "processor", spc);
         xstream.alias("processor", spc);
         xstream.aliasField("class", spc, "clazz");
-        xstream.registerLocalConverter(spc, "clazz", new JavaClassConverter(cl));
-        xstream.registerLocalConverter(spc, "properties", new MapConverter(new DefaultMapper(cl)));
+        xstream.registerLocalConverter(spc, "clazz", new JavaClassConverter(getClassLoader()));
+        xstream.registerLocalConverter(spc, "properties", new MapConverter(xstream.getMapper()));
     }
 
     private void bindXmlServerConfiguration( XStream xstream ) {
         xstream.alias("xml-server-configuration", XmlServerConfiguration.class);
         xstream.registerLocalConverter(XmlServerConfiguration.class, "portNumber", new ShortConverter());
         xstream.registerLocalConverter(XmlServerConfiguration.class, "xmlValidation", new BooleanConverter());
+    }
+
+    private static ClassLoader getClassLoader( ) {
+        return ClassLoader.getSystemClassLoader();
     }
 }

@@ -1,11 +1,13 @@
 package com.tguzik.cwierkacz.configuration;
 
+import static com.tguzik.cwierkacz.utils.CollectionUtil.copyToImmutableList;
+import static com.tguzik.cwierkacz.utils.CollectionUtil.safe;
+
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 
@@ -13,18 +15,17 @@ import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 @ReflectionInstanitation
 public final class JobsConfiguration extends StandardElement
 {
-    private final List<SingleJobConfiguration> jobs;
+    private List<SingleJobConfiguration> jobs;
 
     private JobsConfiguration() {
-        this.jobs = Lists.newArrayList();
     }
 
     public ImmutableList<SingleJobConfiguration> getJobs( ) {
-        return ImmutableList.copyOf(jobs);
+        return copyToImmutableList(jobs);
     }
 
     public SingleJobConfiguration getJob( String name ) {
-        for ( SingleJobConfiguration job : jobs ) {
+        for ( SingleJobConfiguration job : safe(jobs) ) {
             if ( StringUtils.equalsIgnoreCase(name, job.getName()) ) {
                 return job;
             }

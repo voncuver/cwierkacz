@@ -1,11 +1,11 @@
 package com.tguzik.cwierkacz.configuration;
 
+import static com.tguzik.cwierkacz.utils.CollectionUtil.copyToImmutableMap;
+
 import java.util.Map;
 
 import javax.annotation.processing.Processor;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 
@@ -15,10 +15,9 @@ public final class SingleProcessorConfiguration extends StandardElement
 {
     private String name;
     private Class<? extends Processor> clazz;
-    private final Map<String, String> properties;
+    private Map<String, String> properties;
 
     private SingleProcessorConfiguration() {
-        this.properties = Maps.newHashMap();
     }
 
     public String getName( ) {
@@ -30,6 +29,6 @@ public final class SingleProcessorConfiguration extends StandardElement
     }
 
     public Map<String, String> getProperties( ) {
-        return ImmutableMap.copyOf(properties);
+        return copyToImmutableMap(properties);
     }
 }

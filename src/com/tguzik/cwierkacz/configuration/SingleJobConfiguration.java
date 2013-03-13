@@ -1,12 +1,11 @@
 package com.tguzik.cwierkacz.configuration;
 
+import static com.tguzik.cwierkacz.utils.CollectionUtil.copyToImmutableList;
+import static com.tguzik.cwierkacz.utils.CollectionUtil.copyToImmutableMap;
+
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 
@@ -15,12 +14,10 @@ import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 public final class SingleJobConfiguration extends StandardElement
 {
     private String name;
-    private final List<String> lifecycleStageNames;
-    private final Map<String, String> properties;
+    private List<String> lifecycleStageNames;
+    private Map<String, String> properties;
 
     private SingleJobConfiguration() {
-        this.lifecycleStageNames = Lists.newArrayList();
-        this.properties = Maps.newHashMap();
     }
 
     public String getName( ) {
@@ -28,10 +25,10 @@ public final class SingleJobConfiguration extends StandardElement
     }
 
     public List<String> getLifecycleStageNames( ) {
-        return ImmutableList.copyOf(lifecycleStageNames);
+        return copyToImmutableList(lifecycleStageNames);
     }
 
     public Map<String, String> getProperties( ) {
-        return ImmutableMap.copyOf(properties);
+        return copyToImmutableMap(properties);
     }
 }

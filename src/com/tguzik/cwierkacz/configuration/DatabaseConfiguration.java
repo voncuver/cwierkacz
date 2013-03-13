@@ -1,10 +1,11 @@
 package com.tguzik.cwierkacz.configuration;
 
+import static com.tguzik.cwierkacz.utils.CollectionUtil.copyToImmutableList;
+
 import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 
@@ -12,7 +13,7 @@ import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 @ReflectionInstanitation
 public final class DatabaseConfiguration extends StandardElement
 {
-    private final List<TableCacheConfiguration> cacheConfig;
+    private List<TableCacheConfiguration> cacheConfig;
 
     private String url;
     private String username;
@@ -20,11 +21,10 @@ public final class DatabaseConfiguration extends StandardElement
     private char[] password; // TODO: Move this data to more secure location
 
     private DatabaseConfiguration() {
-        this.cacheConfig = Lists.newArrayList();
     }
 
     public ImmutableList<TableCacheConfiguration> getCacheConfig( ) {
-        return ImmutableList.copyOf(cacheConfig);
+        return copyToImmutableList(cacheConfig);
     }
 
     public String getUrl( ) {

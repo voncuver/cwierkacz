@@ -1,18 +1,33 @@
 package com.tguzik.cwierkacz.configuration.reader;
 
+import static com.google.common.collect.ImmutableList.of;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.configuration.CwierkaczConfiguration;
 import com.tguzik.cwierkacz.configuration.DatabaseConfiguration;
 import com.tguzik.cwierkacz.configuration.JobsConfiguration;
 import com.tguzik.cwierkacz.configuration.ProcessorsConfiguration;
+import com.tguzik.cwierkacz.configuration.SingleJobConfiguration;
+import com.tguzik.cwierkacz.configuration.SingleProcessorConfiguration;
 import com.tguzik.cwierkacz.configuration.TableCacheConfiguration;
 import com.tguzik.cwierkacz.configuration.XmlServerConfiguration;
+import com.tguzik.cwierkacz.processing.postprocessor.artifacts.ArtifactsProcessor;
+import com.tguzik.cwierkacz.processing.postprocessor.email.EmailNotificationProcessor;
+import com.tguzik.cwierkacz.processing.postprocessor.history.HistoryProcessor;
+import com.tguzik.cwierkacz.processing.preprocessor.credentials.CredentialsValidationProcessor;
+import com.tguzik.cwierkacz.processing.processor.account.AccountCreatorProcessor;
+import com.tguzik.cwierkacz.processing.processor.account.AccountDeletionProcessor;
+import com.tguzik.cwierkacz.processing.processor.account.AccountModificationProcessor;
+import com.tguzik.cwierkacz.processing.processor.twitter.FetcherProcessor;
+import com.tguzik.cwierkacz.processing.processor.twitter.PosterProcessor;
 
 public class ApplicationDevConfigurationReaderTest
 {
@@ -48,11 +63,23 @@ public class ApplicationDevConfigurationReaderTest
 
     @Test
     public void testJobsConfiguration( ) {
+
         JobsConfiguration conf = read("jobs.xml").getJobsConfiguration();
         assertNotNull(conf);
 
         assertEquals(5, conf.getJobs().size());
-        // verifySingleJob...
+        verifySingleJob(conf.getJobs().get(0), "CREATE-SYSTEM-ACCOUNT", of(AC, SOH, SA, EN), EMPTYMAP);
+        verifySingleJob(conf.getJobs().get(1), "MODIFY-SYSTEM-ACCOUNT", of(CV, AM, SOH, SA), EMPTYMAP);
+        verifySingleJob(conf.getJobs().get(2), "DELETE-SYSTEM-ACCOUNT", of(CV, AD, SOH, SA), EMPTYMAP);
+        verifySingleJob(conf.getJobs().get(3), "POST-TWEET", of(CV, TP, SOH, SA), EMPTYMAP);
+        verifySingleJob(conf.getJobs().get(4), "FETCH-TWEETS", of(CV, TF, SOH, SA), EMPTYMAP);
+    }
+
+    private void verifySingleJob( SingleJobConfiguration job, String name, List<String> lifecycle,
+                                  Map<String, String> properties ) {
+        assertEquals(name, job.getName());
+        assertEquals(lifecycle, job.getLifecycleStageNames());
+        assertEquals(properties, job.getProperties());
     }
 
     @Test
@@ -61,7 +88,28 @@ public class ApplicationDevConfigurationReaderTest
         assertNotNull(conf);
 
         assertEquals(9, conf.getProcessors().size());
-        // verifySingleProcessor...
+        verifySingleProcessor(conf.getProcessors().get(0), CV, CredentialsValidationProcessor.class, EMPTYMAP);
+        verifySingleProcessor(conf.getProcessors().get(1),
+                              EN,
+                              EmailNotificationProcessor.class,
+                              ImmutableMap.<String, String> builder().put("smtpserver", "localhost")
+                                          .put("smtpport", "12345").put("smtplogin", "automation")
+                                          .put("smtppassword", "password").build());
+        verifySingleProcessor(conf.getProcessors().get(2), SA, ArtifactsProcessor.class, EMPTYMAP);
+        verifySingleProcessor(conf.getProcessors().get(3), SOH, HistoryProcessor.class, EMPTYMAP);
+        verifySingleProcessor(conf.getProcessors().get(4), AC, AccountCreatorProcessor.class, EMPTYMAP);
+        verifySingleProcessor(conf.getProcessors().get(5), AM, AccountModificationProcessor.class, EMPTYMAP);
+        verifySingleProcessor(conf.getProcessors().get(6), AD, AccountDeletionProcessor.class, EMPTYMAP);
+        verifySingleProcessor(conf.getProcessors().get(7), TP, PosterProcessor.class, EMPTYMAP);
+        verifySingleProcessor(conf.getProcessors().get(8), TF, FetcherProcessor.class, EMPTYMAP);
+
+    }
+
+    private void verifySingleProcessor( SingleProcessorConfiguration conf, String name, Class<?> clazz,
+                                        Map<String, String> properties ) {
+        assertEquals(name, conf.getName());
+        assertEquals(clazz, conf.getClazz());
+        assertEquals(properties, conf.getProperties());
     }
 
     @Test
@@ -79,4 +127,15 @@ public class ApplicationDevConfigurationReaderTest
         return (CwierkaczConfiguration) ( new XStreamConfigurationParser().parse(file) );
     }
 
+    static final String AC = "ACCOUNT-CREATION";
+    static final String AM = "ACCOUNT-MODIFICATION";
+    static final String AD = "ACCOUNT-DELETION";
+    static final String CV = "CREDENTIALS-VALIDATION";
+    static final String EN = "EMAIL-NOTIFICATION";
+    static final String SA = "SAVE-ARTIFACTS";
+    static final String SOH = "SAVE-OPERATION-HISTORY";
+    static final String TP = "TWEET-POSTER";
+    static final String TF = "TWEET-FETCHER";
+
+    static final Map<String, String> EMPTYMAP = ImmutableMap.of();
 }
