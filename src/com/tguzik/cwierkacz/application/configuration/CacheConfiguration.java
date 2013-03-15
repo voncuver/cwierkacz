@@ -12,12 +12,12 @@ import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 @ReflectionInstanitation
 public class CacheConfiguration extends StandardElement
 {
-    private List<TableCacheConfiguration> cacheConfig;
+    private List<CacheRegionConfiguration> regions;
 
     private CacheConfiguration() {
     }
 
-    public ImmutableList<TableCacheConfiguration> getCacheConfig( ) {
-        return copyToImmutableList(cacheConfig);
+    public ImmutableList<CacheRegionConfiguration> getRegionConfigs( ) {
+        return copyToImmutableList(regions);
     }
 }

@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.tguzik.cwierkacz.application.initialization.tasks.InitializationTask;
+
 public class ParallelLoader
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParallelLoader.class);

@@ -14,6 +14,13 @@ import com.tguzik.cwierkacz.application.ApplicationContext;
 import com.tguzik.cwierkacz.application.ApplicationContextBuilder;
 import com.tguzik.cwierkacz.application.configuration.CwierkaczConfiguration;
 import com.tguzik.cwierkacz.application.configuration.reader.ConfigurationReader;
+import com.tguzik.cwierkacz.application.initialization.tasks.InitDataAccessor;
+import com.tguzik.cwierkacz.application.initialization.tasks.InitJobRepository;
+import com.tguzik.cwierkacz.application.initialization.tasks.InitMainThreadPool;
+import com.tguzik.cwierkacz.application.initialization.tasks.InitProcessorRepository;
+import com.tguzik.cwierkacz.application.initialization.tasks.InitProtobufServerInterface;
+import com.tguzik.cwierkacz.application.initialization.tasks.InitXmlServerInterface;
+import com.tguzik.cwierkacz.application.initialization.tasks.InitializationTask;
 import com.tguzik.cwierkacz.cache.DataAccessor;
 import com.tguzik.cwierkacz.common.Processor;
 
@@ -38,13 +45,13 @@ public class ApplicationInitializator
         CwierkaczConfiguration config = initializeConfiguration(builder, getConfigurationDirectory(cmd));
 
         // Load components in parallel
-        dataAccessor = parallel(new InitDataAccessor(config, builder));
-        threadPool = parallel(new InitMainThreadPool(config, builder));
-        processors = parallel(new InitProcessorRepository(config, builder, dataAccessor));
+        dataAccessor = parallel(new InitDataAccessor(config.getCache(), config.getDatabase(), builder));
+        threadPool = parallel(new InitMainThreadPool(config.getThreadPool(), builder));
+        processors = parallel(new InitProcessorRepository(config.getProcessors(), builder, dataAccessor));
 
-        parallel(new InitJobRepository(config, builder, processors));
-        parallel(new InitXmlServerInterface(config, builder, threadPool));
-        parallel(new InitProtobufServerInterface(config, builder, threadPool));
+        parallel(new InitProtobufServerInterface(config.getInterfaces(), builder, threadPool));
+        parallel(new InitXmlServerInterface(config.getInterfaces(), builder, threadPool));
+        parallel(new InitJobRepository(config.getJobs(), builder, processors));
 
         // Wait for all components to initialize
         parallelLoader.shutdown();

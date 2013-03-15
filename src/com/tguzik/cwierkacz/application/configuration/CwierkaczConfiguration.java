@@ -7,34 +7,34 @@ import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 @ReflectionInstanitation
 public final class CwierkaczConfiguration extends StandardElement
 {
-    private CacheConfiguration cacheConfiguration;
-    private DatabaseConfiguration databaseConfiguration;
-    private JobsConfiguration jobsConfiguration;
-    private ProcessorsConfiguration processorsConfiguration;
-    private ThreadPoolConfiguration threadPoolConfiguration;
-    private XmlServerConfiguration xmlServerConfiguration;
+    private ProcessorsConfiguration processors;
+    private ThreadPoolConfiguration threadPool;
+    private InterfaceConfiguration interfaces;
+    private DatabaseConfiguration database;
+    private CacheConfiguration cache;
+    private JobsConfiguration jobs;
 
-    public CacheConfiguration getCacheConfiguration( ) {
-        return cacheConfiguration;
+    public ProcessorsConfiguration getProcessors( ) {
+        return processors;
     }
 
-    public DatabaseConfiguration getDatabaseConfiguration( ) {
-        return databaseConfiguration;
+    public ThreadPoolConfiguration getThreadPool( ) {
+        return threadPool;
     }
 
-    public JobsConfiguration getJobsConfiguration( ) {
-        return jobsConfiguration;
+    public InterfaceConfiguration getInterfaces( ) {
+        return interfaces;
     }
 
-    public ProcessorsConfiguration getProcessorsConfiguration( ) {
-        return processorsConfiguration;
+    public DatabaseConfiguration getDatabase( ) {
+        return database;
     }
 
-    public ThreadPoolConfiguration getThreadPoolConfiguration( ) {
-        return threadPoolConfiguration;
+    public CacheConfiguration getCache( ) {
+        return cache;
     }
 
-    public XmlServerConfiguration getXmlServerConfiguration( ) {
-        return xmlServerConfiguration;
+    public JobsConfiguration getJobs( ) {
+        return jobs;
     }
 }

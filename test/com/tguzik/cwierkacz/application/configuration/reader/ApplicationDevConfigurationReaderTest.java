@@ -12,15 +12,16 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.application.configuration.CacheConfiguration;
+import com.tguzik.cwierkacz.application.configuration.CacheRegionConfiguration;
 import com.tguzik.cwierkacz.application.configuration.CwierkaczConfiguration;
 import com.tguzik.cwierkacz.application.configuration.DatabaseConfiguration;
+import com.tguzik.cwierkacz.application.configuration.InterfaceConfiguration;
 import com.tguzik.cwierkacz.application.configuration.JobsConfiguration;
 import com.tguzik.cwierkacz.application.configuration.ProcessorsConfiguration;
+import com.tguzik.cwierkacz.application.configuration.SingleInterfaceConfiguration;
 import com.tguzik.cwierkacz.application.configuration.SingleJobConfiguration;
 import com.tguzik.cwierkacz.application.configuration.SingleProcessorConfiguration;
-import com.tguzik.cwierkacz.application.configuration.TableCacheConfiguration;
 import com.tguzik.cwierkacz.application.configuration.ThreadPoolConfiguration;
-import com.tguzik.cwierkacz.application.configuration.XmlServerConfiguration;
 import com.tguzik.cwierkacz.processing.postprocessor.artifacts.ArtifactsProcessor;
 import com.tguzik.cwierkacz.processing.postprocessor.email.EmailNotificationProcessor;
 import com.tguzik.cwierkacz.processing.postprocessor.history.HistoryProcessor;
@@ -43,15 +44,15 @@ public class ApplicationDevConfigurationReaderTest
 
     @Test
     public void testCacheConfiguration( ) {
-        CacheConfiguration conf = read("cache.xml").getCacheConfiguration();
+        CacheConfiguration conf = read("cwierkacz.xml").getCache();
         assertNotNull(conf);
 
-        assertEquals(2, conf.getCacheConfig().size());
-        verifyCacheConfiguration(conf.getCacheConfig().get(0), "DEFAULT", 5000, true);
-        verifyCacheConfiguration(conf.getCacheConfig().get(1), "TWEETS", 20000, false);
+        assertEquals(2, conf.getRegionConfigs().size());
+        verifyCacheConfiguration(conf.getRegionConfigs().get(0), "DEFAULT", 5000, true);
+        verifyCacheConfiguration(conf.getRegionConfigs().get(1), "TWEETS", 20000, false);
     }
 
-    private void verifyCacheConfiguration( TableCacheConfiguration conf, String name, int maxObjects, boolean cacheable ) {
+    private void verifyCacheConfiguration( CacheRegionConfiguration conf, String name, int maxObjects, boolean cacheable ) {
         assertNotNull(conf);
         assertEquals(name, conf.getName());
         assertEquals(maxObjects, conf.getMaxObjects());
@@ -60,7 +61,7 @@ public class ApplicationDevConfigurationReaderTest
 
     @Test
     public void testDatabaseConfiguration( ) {
-        DatabaseConfiguration conf = read("database.xml").getDatabaseConfiguration();
+        DatabaseConfiguration conf = read("database.xml").getDatabase();
         assertNotNull(conf);
 
         assertEquals("localhost", conf.getUrl());
@@ -73,7 +74,7 @@ public class ApplicationDevConfigurationReaderTest
     @Test
     public void testJobsConfiguration( ) {
 
-        JobsConfiguration conf = read("jobs.xml").getJobsConfiguration();
+        JobsConfiguration conf = read("jobs.xml").getJobs();
         assertNotNull(conf);
 
         assertEquals(5, conf.getJobs().size());
@@ -93,7 +94,7 @@ public class ApplicationDevConfigurationReaderTest
 
     @Test
     public void testProcessorsConfiguration( ) {
-        ProcessorsConfiguration conf = read("processors.xml").getProcessorsConfiguration();
+        ProcessorsConfiguration conf = read("processors.xml").getProcessors();
         assertNotNull(conf);
 
         assertEquals(9, conf.getProcessors().size());
@@ -123,7 +124,7 @@ public class ApplicationDevConfigurationReaderTest
 
     @Test
     public void testThreadPoolConfiguration( ) {
-        ThreadPoolConfiguration conf = read("cwierkacz.xml").getThreadPoolConfiguration();
+        ThreadPoolConfiguration conf = read("cwierkacz.xml").getThreadPool();
         assertNotNull(conf);
 
         assertEquals(10, conf.getMinPoolSize());
@@ -132,13 +133,27 @@ public class ApplicationDevConfigurationReaderTest
     }
 
     @Test
-    public void testXmlServerConfiguration( ) {
-        XmlServerConfiguration conf = read("xmlserver.xml").getXmlServerConfiguration();
+    public void testInterfaceConfiguration( ) {
+        InterfaceConfiguration conf = read("cwierkacz.xml").getInterfaces();
         assertNotNull(conf);
 
-        assertEquals(3030, conf.getPortNumber());
-        assertEquals(true, conf.isXmlValidation());
-        assertEquals("conf/schema/XmlRequestSchema.xsl", conf.getSchemaLocation());
+        assertEquals(2, conf.getInterfaces().size());
+        verifyInterfaceConfig(conf.getInterfaces().get(0),
+                              "XMLSRV",
+                              (short) 3030,
+                              true,
+                              ImmutableMap.<String, String> builder().put("schema", "conf/schema/XmlRequestSchema.xsl")
+                                          .build());
+        verifyInterfaceConfig(conf.getInterfaces().get(1), "PROTOBUFSRV", (short) 6060, true, EMPTYMAP);
+    }
+
+    private void verifyInterfaceConfig( SingleInterfaceConfiguration sic, String name, short portNumber,
+                                        boolean enabled, Map<String, String> properties ) {
+        assertNotNull(sic);
+        assertEquals(name, sic.getName());
+        assertEquals(portNumber, sic.getPortNumber());
+        assertEquals(enabled, sic.isEnabled());
+        assertEquals(properties, sic.getProperties());
     }
 
     private CwierkaczConfiguration read( String filename ) {

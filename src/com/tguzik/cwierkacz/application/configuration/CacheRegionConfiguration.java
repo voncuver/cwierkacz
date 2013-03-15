@@ -5,7 +5,7 @@ import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 
 @Immutable
 @ReflectionInstanitation
-public final class TableCacheConfiguration extends StandardElement
+public final class CacheRegionConfiguration extends StandardElement
 {
     private String name;
     private int maxObjects;

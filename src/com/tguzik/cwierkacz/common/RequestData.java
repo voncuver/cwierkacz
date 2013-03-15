@@ -3,9 +3,7 @@ package com.tguzik.cwierkacz.common;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 
 @Immutable
-public final class ApplicationProcessingData
+public final class RequestData
 {
-
-    private RequestData requestData;
 
 }

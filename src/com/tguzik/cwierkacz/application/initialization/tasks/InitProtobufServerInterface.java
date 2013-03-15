@@ -1,19 +1,19 @@
-package com.tguzik.cwierkacz.application.initialization;
+package com.tguzik.cwierkacz.application.initialization.tasks;
 
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import com.tguzik.cwierkacz.application.ApplicationContextBuilder;
-import com.tguzik.cwierkacz.application.configuration.CwierkaczConfiguration;
+import com.tguzik.cwierkacz.application.configuration.InterfaceConfiguration;
 
 public class InitProtobufServerInterface implements InitializationTask<Void>
 {
     private final Future<ThreadPoolExecutor> threadPoolFuture;
-    private final CwierkaczConfiguration configuration;
+    private final InterfaceConfiguration configuration;
     private final ApplicationContextBuilder builder;
 
-    InitProtobufServerInterface( CwierkaczConfiguration configuration, ApplicationContextBuilder builder,
-                                 Future<ThreadPoolExecutor> threadPool ) {
+    public InitProtobufServerInterface( InterfaceConfiguration configuration, ApplicationContextBuilder builder,
+                                        Future<ThreadPoolExecutor> threadPool ) {
         this.configuration = configuration;
         this.threadPoolFuture = threadPool;
         this.builder = builder;
@@ -23,12 +23,12 @@ public class InitProtobufServerInterface implements InitializationTask<Void>
     public Void call( ) throws Exception {
         Object protobuf = null;
 
-        builder.withProtobufServerInterface(protobuf);
+        builder.withInterface(getName(), null);
         return null;
     }
 
     @Override
     public String getName( ) {
-        return "Protobuf Server interface initialization";
+        return "PROTOBUFSRV";
     }
 }

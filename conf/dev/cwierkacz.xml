@@ -4,4 +4,37 @@
 		<maxPoolSize>100</maxPoolSize>
 		<keepAliveSeconds>30</keepAliveSeconds>
 	</thread-pool-configuration>
+
+	<interface-configuration>
+		<interface>
+			<name>XMLSRV</name>
+			<enabled>true</enabled>
+			<portNumber>3030</portNumber>
+			<properties>
+				<entry>
+					<string>schema</string>
+					<string>conf/schema/XmlRequestSchema.xsl</string>
+				</entry>
+			</properties>
+		</interface>
+
+		<interface>
+			<name>PROTOBUFSRV</name>
+			<enabled>true</enabled>
+			<portNumber>6060</portNumber>
+		</interface>
+	</interface-configuration>
+
+	<cache-configuration>
+		<region>
+			<name>DEFAULT</name>
+			<maxObjects>5000</maxObjects>
+			<cacheable>true</cacheable>
+		</region>
+
+		<region>
+			<name>TWEETS</name>
+			<maxObjects>20000</maxObjects>
+		</region>
+	</cache-configuration>
 </cwierkacz-configuration>

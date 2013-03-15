@@ -9,7 +9,6 @@ import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 @ReflectionInstanitation
 public final class DatabaseConfiguration extends StandardElement
 {
-
     private String url;
     private String username;
     private String serviceName;

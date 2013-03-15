@@ -1,33 +1,31 @@
-package com.tguzik.cwierkacz.application.initialization;
+package com.tguzik.cwierkacz.application.initialization.tasks;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import com.tguzik.cwierkacz.application.ApplicationContextBuilder;
-import com.tguzik.cwierkacz.application.configuration.CwierkaczConfiguration;
 import com.tguzik.cwierkacz.application.configuration.ThreadPoolConfiguration;
 
 public class InitMainThreadPool implements InitializationTask<ThreadPoolExecutor>
 {
-    private final CwierkaczConfiguration configuration;
+    private final ThreadPoolConfiguration configuration;
     private final ApplicationContextBuilder builder;
 
-    InitMainThreadPool( CwierkaczConfiguration configuration, ApplicationContextBuilder builder ) {
+    public InitMainThreadPool( ThreadPoolConfiguration configuration, ApplicationContextBuilder builder ) {
         this.configuration = configuration;
         this.builder = builder;
     }
 
     @Override
     public ThreadPoolExecutor call( ) throws Exception {
-        ThreadPoolConfiguration tpc = configuration.getThreadPoolConfiguration();
-
-        ThreadPoolExecutor threadPool = new ThreadPoolExecutor(tpc.getMinPoolSize(),
-                                                               tpc.getMaxPoolSize(),
-                                                               tpc.getKeepAliveSeconds(),
+        ThreadPoolExecutor threadPool = new ThreadPoolExecutor(configuration.getMinPoolSize(),
+                                                               configuration.getMaxPoolSize(),
+                                                               configuration.getKeepAliveSeconds(),
                                                                TimeUnit.SECONDS,
                                                                new LinkedBlockingQueue<Runnable>(),
                                                                new ThreadPoolExecutor.DiscardPolicy());
+        threadPool.prestartAllCoreThreads();
 
         builder.withMainThreadPool(threadPool);
         return threadPool;
