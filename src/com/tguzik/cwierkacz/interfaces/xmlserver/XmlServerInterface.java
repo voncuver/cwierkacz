@@ -4,18 +4,22 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import com.tguzik.cwierkacz.application.configuration.SingleInterfaceConfiguration;
 import com.tguzik.cwierkacz.interfaces.AbstractSocketInterface;
 
 public class XmlServerInterface extends AbstractSocketInterface
 {
-    protected XmlServerInterface( ThreadPoolExecutor threadPool, short portNumber ) throws IOException {
-        super("XML Server", threadPool, portNumber);
+    public XmlServerInterface( ThreadPoolExecutor threadPool, SingleInterfaceConfiguration configuration )
+                                                                                                          throws IOException {
+        super(getCanonicalName(), threadPool, configuration.getPortNumber());
     }
 
     @Override
     protected Runnable createWorker( Socket clientSocket ) {
-        // TODO Auto-generated method stub
-        return null;
+        return new XmlServerWorker(clientSocket);
     }
 
+    public static String getCanonicalName( ) {
+        return "XmlServer";
+    }
 }

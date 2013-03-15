@@ -16,4 +16,16 @@ public class CredentialsValidationProcessor implements Processor
     public void process( ApplicationProcessingData data ) {
 
     }
+
+    @Override
+    public void initialize( ) throws Exception {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void shutdown( ) {
+        // TODO Auto-generated method stub
+
+    }
 }

@@ -7,7 +7,7 @@
 
 	<interface-configuration>
 		<interface>
-			<name>XMLSRV</name>
+			<name>XmlServer</name>
 			<enabled>true</enabled>
 			<portNumber>3030</portNumber>
 			<properties>
@@ -19,7 +19,7 @@
 		</interface>
 
 		<interface>
-			<name>PROTOBUFSRV</name>
+			<name>ProtobufServer</name>
 			<enabled>true</enabled>
 			<portNumber>6060</portNumber>
 		</interface>

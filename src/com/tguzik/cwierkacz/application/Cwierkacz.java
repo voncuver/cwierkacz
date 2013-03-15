@@ -9,27 +9,31 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tguzik.cwierkacz.application.initialization.ApplicationInitializator;
 
 public class Cwierkacz
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Cwierkacz.class);
 
     public static void main( String[] args ) {
+        ApplicationContextLoader initializator = new ApplicationContextLoader();
+        ApplicationContext context = null;
+
         try {
             LOGGER.info("Starting up...");
-            ApplicationContext context = new ApplicationInitializator().initializeContext(parseCommandLine(args));
+            context = initializator.initialize(parseCommandLine(args));
             LOGGER.info("Initialization complete.");
 
             System.out.println(ReflectionToStringBuilder.toString(context, ToStringStyle.MULTI_LINE_STYLE));
 
-            new Application(context).run();
+            Application.createAndRun(context);
         }
         catch ( Exception e ) {
             LOGGER.error("Unexpected exception: " + e.getMessage(), e);
         }
         finally {
-            LOGGER.info("Shutting down.");
+            ApplicationContextDeactivator.deactivate(context);
+            LOGGER.info("Shutting down...");
+            System.exit(0);
         }
     }
 

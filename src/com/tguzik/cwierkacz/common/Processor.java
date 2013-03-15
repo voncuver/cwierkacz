@@ -1,6 +1,8 @@
 package com.tguzik.cwierkacz.common;
 
-public interface Processor
+import com.tguzik.cwierkacz.utils.annotation.Initializable;
+
+public interface Processor extends Initializable
 {
     void process( ApplicationProcessingData data );
 }

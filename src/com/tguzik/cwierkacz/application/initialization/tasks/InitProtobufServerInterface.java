@@ -3,32 +3,51 @@ package com.tguzik.cwierkacz.application.initialization.tasks;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.collect.ImmutableList;
 import com.tguzik.cwierkacz.application.ApplicationContextBuilder;
 import com.tguzik.cwierkacz.application.configuration.InterfaceConfiguration;
+import com.tguzik.cwierkacz.application.configuration.SingleInterfaceConfiguration;
+import com.tguzik.cwierkacz.interfaces.protobuf.ProtobufServerInterface;
 
-public class InitProtobufServerInterface implements InitializationTask<Void>
+public class InitProtobufServerInterface implements InitializationTask<ProtobufServerInterface>
 {
     private final Future<ThreadPoolExecutor> threadPoolFuture;
-    private final InterfaceConfiguration configuration;
+    private final SingleInterfaceConfiguration configuration;
     private final ApplicationContextBuilder builder;
 
     public InitProtobufServerInterface( InterfaceConfiguration configuration, ApplicationContextBuilder builder,
                                         Future<ThreadPoolExecutor> threadPool ) {
-        this.configuration = configuration;
+        this.configuration = findWithName(configuration.getInterfaces(), getName());
         this.threadPoolFuture = threadPool;
         this.builder = builder;
     }
 
     @Override
-    public Void call( ) throws Exception {
-        Object protobuf = null;
+    public ProtobufServerInterface call( ) throws Exception {
+        ThreadPoolExecutor threadPool = threadPoolFuture.get();
+        ProtobufServerInterface psi;
 
-        builder.withInterface(getName(), null);
-        return null;
+        psi = new ProtobufServerInterface(threadPool, configuration);
+
+        builder.withInterface(getName(), psi);
+        return psi;
     }
 
     @Override
     public String getName( ) {
-        return "PROTOBUFSRV";
+        return ProtobufServerInterface.getCanonicalName();
+    }
+
+    private static SingleInterfaceConfiguration findWithName( ImmutableList<SingleInterfaceConfiguration> interfaces,
+                                                              String name ) {
+        for ( SingleInterfaceConfiguration sic : interfaces ) {
+            if ( StringUtils.equalsIgnoreCase(name, sic.getName()) ) {
+                return sic;
+            }
+        }
+
+        return null;
     }
 }

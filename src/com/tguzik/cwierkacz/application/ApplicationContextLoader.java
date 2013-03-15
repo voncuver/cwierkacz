@@ -1,6 +1,7 @@
-package com.tguzik.cwierkacz.application.initialization;
+package com.tguzik.cwierkacz.application;
 
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -10,10 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
-import com.tguzik.cwierkacz.application.ApplicationContext;
-import com.tguzik.cwierkacz.application.ApplicationContextBuilder;
 import com.tguzik.cwierkacz.application.configuration.CwierkaczConfiguration;
 import com.tguzik.cwierkacz.application.configuration.reader.ConfigurationReader;
+import com.tguzik.cwierkacz.application.initialization.ParallelLoader;
 import com.tguzik.cwierkacz.application.initialization.tasks.InitDataAccessor;
 import com.tguzik.cwierkacz.application.initialization.tasks.InitJobRepository;
 import com.tguzik.cwierkacz.application.initialization.tasks.InitMainThreadPool;
@@ -24,17 +24,18 @@ import com.tguzik.cwierkacz.application.initialization.tasks.InitializationTask;
 import com.tguzik.cwierkacz.cache.DataAccessor;
 import com.tguzik.cwierkacz.common.Processor;
 
-public class ApplicationInitializator
+public class ApplicationContextLoader
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationInitializator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationContextLoader.class);
 
     private final ParallelLoader parallelLoader;
 
-    public ApplicationInitializator() {
+    public ApplicationContextLoader() {
         this.parallelLoader = new ParallelLoader();
     }
 
-    public ApplicationContext initializeContext( CommandLine cmd ) throws ParseException, InterruptedException {
+    public ApplicationContext initialize( CommandLine cmd ) throws ParseException, InterruptedException,
+                                                           ExecutionException {
         ApplicationContextBuilder builder = ApplicationContext.builder();
 
         Future<ImmutableMap<String, Processor>> processors;
@@ -53,7 +54,8 @@ public class ApplicationInitializator
         parallel(new InitXmlServerInterface(config.getInterfaces(), builder, threadPool));
         parallel(new InitJobRepository(config.getJobs(), builder, processors));
 
-        // Wait for all components to initialize
+        // Wait for all components to initialize, check for exceptions and then shut down the loader
+        parallelLoader.checkForExceptions();
         parallelLoader.shutdown();
 
         // Create immutable context

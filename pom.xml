@@ -4,6 +4,8 @@
 	<groupId>cwierkacz</groupId>
 	<artifactId>cwierkacz</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<inceptionYear>2013</inceptionYear>
 
 	<scm>
 		<url>https://github.com/tguzik/cwierkacz.git</url>
@@ -45,16 +47,19 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-		</dependency>
-		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
 			<version>2.4.1</version>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+
+
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -62,6 +67,8 @@
 		<outputDirectory>dist/mvn/</outputDirectory>
 		<directory>dist</directory>
 		<finalName>cwierkacz</finalName>
+		<defaultGoal>package</defaultGoal>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -87,4 +94,107 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>generate-protobuf</id>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>dtrott</id>
+					<url>http://maven.davidtrott.com/repository</url>
+				</pluginRepository>
+			</pluginRepositories>
+			<build>
+				<plugins>
+                    <!-- 
+                    To compile the Google protobuf-based server we need to do three things: 
+                    1. Download Protobuf compiler or use the one installed in operating system 
+                    2. Compile .proto files to .java 
+                    3. Compile generated sources along with the rest of t he application 
+                    
+                    Sadly, there's no Maven plugin that would just compile .proto files, so 
+                    we have to endure this bullshit with downloading the compiler, unpacking 
+                    it and then using it :( 
+                    
+                    I hate you, Maven :S 
+                    -->
+					<plugin>
+						<!-- Fetch protobuf compiler to tools/ directory -->
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>wagon-maven-plugin</artifactId>
+						<version>1.0-beta-4</version>
+						<executions>
+							<execution>
+								<phase>initialize</phase>
+								<goals>
+									<goal>download-single</goal>
+								</goals>
+								<configuration>
+									<url>https://protobuf.googlecode.com/files/</url>
+									<fromFile>protoc-2.5.0-win32.zip</fromFile>
+									<toDir>${project.basedir}/tools/</toDir>
+									<toFile>protoc-2.5.0-win32.zip</toFile>
+									<skip>true</skip>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.3</version>
+						<executions>
+							<execution>
+								<phase>initialize</phase>
+								<configuration>
+									<tasks>
+										<unzip src="tools/protoc-2.5.0-win32.zip" dest="${project.basedir}/tools/" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<!-- Compile protobuf files to Java classes -->
+						<groupId>com.google.protobuf.tools</groupId>
+						<artifactId>maven-protoc-plugin</artifactId>
+						<version>0.1.10</version>
+						<configuration>
+							<protocExecutable>${project.basedir}/tools/protoc</protocExecutable>
+							<protoSourceRoot>${project.basedir}/protobuf/</protoSourceRoot>
+							<languageSpecifications>
+								<LanguageSpecification>
+									<language>JAVA</language>
+									<outputDirectory>${project.build.directory}/protobuf-generated</outputDirectory>
+								</LanguageSpecification>
+							</languageSpecifications>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.1.2</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

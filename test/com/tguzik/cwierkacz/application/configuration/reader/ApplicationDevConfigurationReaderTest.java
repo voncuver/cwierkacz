@@ -139,12 +139,12 @@ public class ApplicationDevConfigurationReaderTest
 
         assertEquals(2, conf.getInterfaces().size());
         verifyInterfaceConfig(conf.getInterfaces().get(0),
-                              "XMLSRV",
+                              "XmlServer",
                               (short) 3030,
                               true,
                               ImmutableMap.<String, String> builder().put("schema", "conf/schema/XmlRequestSchema.xsl")
                                           .build());
-        verifyInterfaceConfig(conf.getInterfaces().get(1), "PROTOBUFSRV", (short) 6060, true, EMPTYMAP);
+        verifyInterfaceConfig(conf.getInterfaces().get(1), "ProtobufServer", (short) 6060, true, EMPTYMAP);
     }
 
     private void verifyInterfaceConfig( SingleInterfaceConfiguration sic, String name, short portNumber,

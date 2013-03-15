@@ -31,6 +31,7 @@ public class InitProcessorRepository implements InitializationTask<ImmutableMap<
 
         for ( SingleProcessorConfiguration spc : configuration.getProcessors() ) {
             Processor processor = createProcessor(factory, spc);
+            processor.initialize();
 
             builder.withProcessor(spc.getName(), processor);
             processors.put(spc.getName(), processor);
