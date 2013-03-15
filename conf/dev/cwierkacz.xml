@@ -1,0 +1,7 @@
+<cwierkacz-configuration>
+	<thread-pool-configuration>
+		<minPoolSize>10</minPoolSize>
+		<maxPoolSize>100</maxPoolSize>
+		<keepAliveSeconds>30</keepAliveSeconds>
+	</thread-pool-configuration>
+</cwierkacz-configuration>

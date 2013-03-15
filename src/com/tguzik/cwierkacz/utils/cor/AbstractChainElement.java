@@ -1,12 +1,13 @@
 package com.tguzik.cwierkacz.utils.cor;
 
-
 public abstract class AbstractChainElement< T > implements ChainOfResponsibility<T>
 {
     private final AbstractChainElement<T> nextInChain;
+    private final String name;
 
-    public AbstractChainElement( final AbstractChainElement<T> nextInChain ) {
+    public AbstractChainElement( final AbstractChainElement<T> nextInChain, final String name ) {
         this.nextInChain = nextInChain;
+        this.name = name;
     }
 
     @Override
@@ -17,7 +18,9 @@ public abstract class AbstractChainElement< T > implements ChainOfResponsibility
         }
     }
 
-    abstract protected void processInner( T value ) throws Exception;
+    protected String getName( ) {
+        return name;
+    }
 
-    abstract String getName( );
+    abstract protected void processInner( T value ) throws Exception;
 }

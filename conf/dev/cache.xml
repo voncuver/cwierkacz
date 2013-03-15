@@ -1,0 +1,17 @@
+<cwierkacz-configuration>
+	<cache-configuration>
+		<cacheConfig>
+			<table>
+				<name>DEFAULT</name>
+				<maxObjects>5000</maxObjects>
+				<cacheable>true</cacheable>
+			</table>
+
+			<table>
+				<name>TWEETS</name>
+				<maxObjects>20000</maxObjects>
+			</table>
+		</cacheConfig>
+	</cache-configuration>
+</cwierkacz-configuration>
+		
