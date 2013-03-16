@@ -16,8 +16,8 @@ public class ProtobufServerInterface extends AbstractSocketInterface
     }
 
     @Override
-    protected Runnable createWorker( Socket clientSocket ) {
-        return new ProtobufWorker(clientSocket);
+    protected Runnable createWorker( Socket clientSocket, String originInterface ) {
+        return new ProtobufWorker(clientSocket, originInterface);
     }
 
     public static String getCanonicalName( ) {

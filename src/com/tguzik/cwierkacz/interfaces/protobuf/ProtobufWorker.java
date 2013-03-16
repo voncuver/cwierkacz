@@ -8,8 +8,8 @@ import com.tguzik.cwierkacz.interfaces.InterfaceWorker;
 
 public class ProtobufWorker extends InterfaceWorker
 {
-    protected ProtobufWorker( Socket clientSocket ) {
-        super(clientSocket);
+    protected ProtobufWorker( Socket clientSocket, String originInterface ) {
+        super(clientSocket, originInterface);
     }
 
     @Override

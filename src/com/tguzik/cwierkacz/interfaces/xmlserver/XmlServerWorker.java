@@ -8,8 +8,8 @@ import com.tguzik.cwierkacz.interfaces.InterfaceWorker;
 
 public class XmlServerWorker extends InterfaceWorker
 {
-    protected XmlServerWorker( Socket clientSocket ) {
-        super(clientSocket);
+    protected XmlServerWorker( Socket clientSocket, String originInterface ) {
+        super(clientSocket, originInterface);
     }
 
     @Override

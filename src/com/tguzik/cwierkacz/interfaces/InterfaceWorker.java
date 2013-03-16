@@ -16,15 +16,18 @@ import com.tguzik.cwierkacz.utils.annotation.SingleThreaded;
 public abstract class InterfaceWorker implements Runnable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(InterfaceWorker.class);
+    private final String originInterface;
     private final Socket clientSocket;
 
-    protected InterfaceWorker( Socket clientSocket ) {
+    protected InterfaceWorker( Socket clientSocket, String originInterface ) {
+        this.originInterface = originInterface;
         this.clientSocket = clientSocket;
     }
 
     @Override
     public final void run( ) {
         try {
+            preprocessing();
             createRequest(clientSocket.getInputStream());
             process();
             createResponse(clientSocket.getOutputStream());
@@ -44,11 +47,11 @@ public abstract class InterfaceWorker implements Runnable
     }
 
     protected void preprocessing( ) {
-        LOGGER.info(format("Interacting with client %s", clientSocket.getRemoteSocketAddress()));
+        LOGGER.info(format("[%s] Interacting with %s", originInterface, clientSocket.getRemoteSocketAddress()));
     }
 
     protected void postprocessing( ) {
-        LOGGER.info(format("Finished interacting with client %s", clientSocket.getRemoteSocketAddress()));
+        LOGGER.info(format("[%s] Finished interacting with %s", originInterface, clientSocket.getRemoteSocketAddress()));
     }
 
     abstract protected void createRequest( InputStream inputStream );

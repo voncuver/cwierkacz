@@ -15,8 +15,8 @@ public class XmlServerInterface extends AbstractSocketInterface
     }
 
     @Override
-    protected Runnable createWorker( Socket clientSocket ) {
-        return new XmlServerWorker(clientSocket);
+    protected Runnable createWorker( Socket clientSocket, String originInterface ) {
+        return new XmlServerWorker(clientSocket, originInterface);
     }
 
     public static String getCanonicalName( ) {

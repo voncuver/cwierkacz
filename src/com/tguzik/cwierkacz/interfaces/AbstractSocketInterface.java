@@ -37,7 +37,7 @@ public abstract class AbstractSocketInterface implements Initializable, Callable
 
             while ( serverSocket.isBound() ) {
                 Socket clientSocket = serverSocket.accept();
-                threadPool.execute(createWorker(clientSocket));
+                threadPool.execute(createWorker(clientSocket, nameWithPort));
             }
         }
         catch ( Exception e ) {
@@ -82,5 +82,5 @@ public abstract class AbstractSocketInterface implements Initializable, Callable
         return nameWithPort;
     }
 
-    protected abstract Runnable createWorker( Socket clientSocket );
+    protected abstract Runnable createWorker( Socket clientSocket, String originInterface );
 }
