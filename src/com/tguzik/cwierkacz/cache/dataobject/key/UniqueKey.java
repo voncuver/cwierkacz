@@ -1,6 +1,7 @@
 package com.tguzik.cwierkacz.cache.dataobject.key;
 
-public class UniqueKey< T >
+public abstract class UniqueKey implements Key
 {
+    protected static String OPERATOR_EQUALS = "=";
 
 }

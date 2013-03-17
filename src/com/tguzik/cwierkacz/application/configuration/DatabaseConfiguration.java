@@ -2,6 +2,7 @@ package com.tguzik.cwierkacz.application.configuration;
 
 import java.util.Arrays;
 
+import com.tguzik.cwierkacz.common.StandardElement;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 
@@ -9,10 +10,11 @@ import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 @ReflectionInstanitation
 public final class DatabaseConfiguration extends StandardElement
 {
-    private String url;
-    private String username;
-    private String serviceName;
-    private char[] password; // TODO: Move this data to more secure location
+    private final String url = null;
+    private final String username = null;
+    private final String serviceName = null;
+    private final char[] password = null; // TODO: Move this data to more secure location
+    private final Class<?> defaultDataLoader = null;
 
     private DatabaseConfiguration() {
     }
@@ -32,5 +34,9 @@ public final class DatabaseConfiguration extends StandardElement
     @Deprecated
     public char[] getPassword( ) {
         return Arrays.copyOf(password, password.length);
+    }
+
+    public Class<?> getDefaultDataLoader( ) {
+        return defaultDataLoader;
     }
 }

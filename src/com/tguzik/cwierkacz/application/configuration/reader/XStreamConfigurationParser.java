@@ -100,6 +100,9 @@ class XStreamConfigurationParser
     private static void bindDatabaseConfiguration( XStream xstream ) {
         xstream.alias("database-configuration", DatabaseConfiguration.class);
         xstream.registerLocalConverter(DatabaseConfiguration.class, "url", new StringConverter());
+        xstream.registerLocalConverter(DatabaseConfiguration.class,
+                                       "defaultDataLoader",
+                                       new JavaClassConverter(getClassLoader()));
     }
 
     private static void bindJobsConfiguration( XStream xstream ) {

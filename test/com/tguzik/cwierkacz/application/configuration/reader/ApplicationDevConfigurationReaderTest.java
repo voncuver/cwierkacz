@@ -22,6 +22,7 @@ import com.tguzik.cwierkacz.application.configuration.SingleInterfaceConfigurati
 import com.tguzik.cwierkacz.application.configuration.SingleJobConfiguration;
 import com.tguzik.cwierkacz.application.configuration.SingleProcessorConfiguration;
 import com.tguzik.cwierkacz.application.configuration.ThreadPoolConfiguration;
+import com.tguzik.cwierkacz.cache.loader.NoOperationDataObjectLoader;
 import com.tguzik.cwierkacz.processing.postprocessor.artifacts.ArtifactsProcessor;
 import com.tguzik.cwierkacz.processing.postprocessor.email.EmailNotificationProcessor;
 import com.tguzik.cwierkacz.processing.postprocessor.history.HistoryProcessor;
@@ -48,15 +49,18 @@ public class ApplicationDevConfigurationReaderTest
         assertNotNull(conf);
 
         assertEquals(2, conf.getRegionConfigs().size());
-        verifyCacheConfiguration(conf.getRegionConfigs().get(0), "DEFAULT", 5000, true);
-        verifyCacheConfiguration(conf.getRegionConfigs().get(1), "TWEETS", 20000, false);
+        verifyCacheConfiguration(conf.getRegionConfigs().get(0), "DEFAULT", 5000, true, true, false);
+        verifyCacheConfiguration(conf.getRegionConfigs().get(1), "TWEETS", 20000, null, null, null);
     }
 
-    private void verifyCacheConfiguration( CacheRegionConfiguration conf, String name, int maxObjects, boolean cacheable ) {
+    private void verifyCacheConfiguration( CacheRegionConfiguration conf, String name, Integer maxObjects,
+                                           Boolean cacheable, Boolean preloadable, Boolean disabled ) {
         assertNotNull(conf);
         assertEquals(name, conf.getName());
         assertEquals(maxObjects, conf.getMaxObjects());
         assertEquals(cacheable, conf.isCacheable());
+        assertEquals(preloadable, conf.isPreloadable());
+        assertEquals(disabled, conf.isDisabled());
     }
 
     @Test
@@ -68,7 +72,7 @@ public class ApplicationDevConfigurationReaderTest
         assertEquals("db", conf.getUsername());
         assertEquals("password", String.valueOf(conf.getPassword()));
         assertEquals("CWIERKACZ", conf.getServiceName());
-
+        assertEquals(NoOperationDataObjectLoader.class, conf.getDefaultDataLoader());
     }
 
     @Test

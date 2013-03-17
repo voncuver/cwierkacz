@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.common.Processor;
+import com.tguzik.cwierkacz.common.StandardElement;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 

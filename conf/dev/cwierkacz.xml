@@ -30,6 +30,8 @@
 			<name>DEFAULT</name>
 			<maxObjects>5000</maxObjects>
 			<cacheable>true</cacheable>
+			<preloadable>true</preloadable>
+			<disabled>false</disabled>
 		</region>
 
 		<region>

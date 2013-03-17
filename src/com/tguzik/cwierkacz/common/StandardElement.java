@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.application.configuration;
+package com.tguzik.cwierkacz.common;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -19,6 +19,6 @@ public abstract class StandardElement
 
     @Override
     public String toString( ) {
-        return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).toString();
+        return new ReflectionToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).toString();
     }
 }

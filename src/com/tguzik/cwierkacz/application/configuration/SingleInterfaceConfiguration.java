@@ -3,6 +3,7 @@ package com.tguzik.cwierkacz.application.configuration;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
+import com.tguzik.cwierkacz.common.StandardElement;
 import com.tguzik.cwierkacz.utils.CollectionUtil;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;

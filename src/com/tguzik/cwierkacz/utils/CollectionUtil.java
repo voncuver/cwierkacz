@@ -20,7 +20,7 @@ public class CollectionUtil
         return value == null ? ImmutableMap.<K, V> of() : ImmutableMap.copyOf(value);
     }
 
-    public static < T > ImmutableList<T> copyToImmutableList( List<T> value ) {
+    public static < T > ImmutableList<T> copyToImmutableList( Iterable<T> value ) {
         return value == null ? ImmutableList.<T> of() : ImmutableList.copyOf(value);
     }
 }

@@ -15,6 +15,7 @@ import com.tguzik.cwierkacz.application.configuration.CwierkaczConfiguration;
 import com.tguzik.cwierkacz.application.configuration.reader.ConfigurationReader;
 import com.tguzik.cwierkacz.application.initialization.ParallelLoader;
 import com.tguzik.cwierkacz.application.initialization.tasks.InitDataAccessor;
+import com.tguzik.cwierkacz.application.initialization.tasks.InitDataObjectLoader;
 import com.tguzik.cwierkacz.application.initialization.tasks.InitJobRepository;
 import com.tguzik.cwierkacz.application.initialization.tasks.InitMainThreadPool;
 import com.tguzik.cwierkacz.application.initialization.tasks.InitProcessorRepository;
@@ -22,6 +23,7 @@ import com.tguzik.cwierkacz.application.initialization.tasks.InitProtobufServerI
 import com.tguzik.cwierkacz.application.initialization.tasks.InitXmlServerInterface;
 import com.tguzik.cwierkacz.application.initialization.tasks.InitializationTask;
 import com.tguzik.cwierkacz.cache.DataAccessor;
+import com.tguzik.cwierkacz.cache.loader.DataObjectLoader;
 import com.tguzik.cwierkacz.common.Processor;
 
 public class ApplicationContextLoader
@@ -40,13 +42,15 @@ public class ApplicationContextLoader
 
         Future<ImmutableMap<String, Processor>> processors;
         Future<ThreadPoolExecutor> threadPool;
+        Future<DataObjectLoader> defaultDao;
         Future<DataAccessor> dataAccessor;
 
         // Load configuration from XML
         CwierkaczConfiguration config = initializeConfiguration(builder, getConfigurationDirectory(cmd));
 
         // Load components in parallel
-        dataAccessor = parallel(new InitDataAccessor(config.getCache(), config.getDatabase(), builder));
+        defaultDao = parallel(new InitDataObjectLoader(config.getDatabase()));
+        dataAccessor = parallel(new InitDataAccessor(config.getCache(), defaultDao, builder));
         threadPool = parallel(new InitMainThreadPool(config.getThreadPool(), builder));
         processors = parallel(new InitProcessorRepository(config.getProcessors(), builder, dataAccessor));
 

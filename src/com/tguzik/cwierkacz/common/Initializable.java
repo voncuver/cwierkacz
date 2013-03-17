@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.utils.annotation;
+package com.tguzik.cwierkacz.common;
 
 public interface Initializable
 {

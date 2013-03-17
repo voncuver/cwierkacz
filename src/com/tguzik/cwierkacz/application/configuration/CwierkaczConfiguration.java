@@ -1,5 +1,6 @@
 package com.tguzik.cwierkacz.application.configuration;
 
+import com.tguzik.cwierkacz.common.StandardElement;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 
