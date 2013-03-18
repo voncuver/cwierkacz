@@ -66,6 +66,7 @@ public class ApplicationDevConfigurationReaderTest
     @Test
     public void testDatabaseConfiguration( ) {
         DatabaseConfiguration conf = read("database.xml").getDatabase();
+
         assertNotNull(conf);
 
         assertEquals("localhost", conf.getUrl());
