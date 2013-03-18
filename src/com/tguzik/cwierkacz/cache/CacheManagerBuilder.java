@@ -4,10 +4,10 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
-import com.tguzik.cwierkacz.application.configuration.CacheRegionConfiguration;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
 import com.tguzik.cwierkacz.cache.dataobject.key.UniqueKey;
 import com.tguzik.cwierkacz.cache.loader.DataObjectLoader;
+import com.tguzik.cwierkacz.common.configuration.CacheRegionConfiguration;
 
 public class CacheManagerBuilder
 {

@@ -5,7 +5,7 @@ import java.util.Map;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
-import com.tguzik.cwierkacz.common.data.ValueByOwner;
+import com.tguzik.cwierkacz.common.data.HasOwner;
 
 public class OwnerKey extends UniqueKey
 {
@@ -28,8 +28,8 @@ public class OwnerKey extends UniqueKey
 
     @Override
     public boolean apply( DataObject obj ) {
-        if ( obj instanceof ValueByOwner ) {
-            ValueByOwner vbo = (ValueByOwner) obj;
+        if ( obj instanceof HasOwner ) {
+            HasOwner vbo = (HasOwner) obj;
             return Objects.equal(value, vbo.getOwner());
         }
 

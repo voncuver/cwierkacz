@@ -3,14 +3,14 @@
 		<!-- Preprocessors -->
 		<processor>
 			<name>CREDENTIALS-VALIDATION</name>
-			<class>com.tguzik.cwierkacz.processing.preprocessor.credentials.CredentialsValidationProcessor</class>
+			<class>com.tguzik.cwierkacz.component.preprocessor.credentials.CredentialsValidationProcessor</class>
 		</processor>
 
 
 		<!-- Postprocessors -->
 		<processor>
 			<name>EMAIL-NOTIFICATION</name>
-			<class>com.tguzik.cwierkacz.processing.postprocessor.email.EmailNotificationProcessor</class>
+			<class>com.tguzik.cwierkacz.component.postprocessor.email.EmailNotificationProcessor</class>
 			<properties>
 				<entry>
 					<string>smtpserver</string>
@@ -32,34 +32,34 @@
 		</processor>
 		<processor>
 			<name>SAVE-ARTIFACTS</name>
-			<class>com.tguzik.cwierkacz.processing.postprocessor.artifacts.ArtifactsProcessor</class>
+			<class>com.tguzik.cwierkacz.component.postprocessor.artifacts.ArtifactsProcessor</class>
 		</processor>
 		<processor>
 			<name>SAVE-OPERATION-HISTORY</name>
-			<class>com.tguzik.cwierkacz.processing.postprocessor.history.HistoryProcessor</class>
+			<class>com.tguzik.cwierkacz.component.postprocessor.history.HistoryProcessor</class>
 		</processor>
 
 
 		<!-- Everything else -->
 		<processor>
 			<name>ACCOUNT-CREATION</name>
-			<class>com.tguzik.cwierkacz.processing.processor.account.AccountCreatorProcessor</class>
+			<class>com.tguzik.cwierkacz.component.processor.account.AccountCreatorProcessor</class>
 		</processor>
 		<processor>
 			<name>ACCOUNT-MODIFICATION</name>
-			<class>com.tguzik.cwierkacz.processing.processor.account.AccountModificationProcessor</class>
+			<class>com.tguzik.cwierkacz.component.processor.account.AccountModificationProcessor</class>
 		</processor>
 		<processor>
 			<name>ACCOUNT-DELETION</name>
-			<class>com.tguzik.cwierkacz.processing.processor.account.AccountDeletionProcessor</class>
+			<class>com.tguzik.cwierkacz.component.processor.account.AccountDeletionProcessor</class>
 		</processor>
 		<processor>
 			<name>TWEET-POSTER</name>
-			<class>com.tguzik.cwierkacz.processing.processor.twitter.PosterProcessor</class>
+			<class>com.tguzik.cwierkacz.component.processor.twitter.PosterProcessor</class>
 		</processor>
 		<processor>
 			<name>TWEET-FETCHER</name>
-			<class>com.tguzik.cwierkacz.processing.processor.twitter.FetcherProcessor</class>
+			<class>com.tguzik.cwierkacz.component.processor.twitter.FetcherProcessor</class>
 		</processor>
 	</processors-configuration>
 </cwierkacz-configuration>

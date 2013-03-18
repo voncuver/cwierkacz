@@ -2,9 +2,9 @@ package com.tguzik.cwierkacz.cache.dataobject;
 
 import com.tguzik.cwierkacz.cache.dataobject.key.OwnerKey;
 import com.tguzik.cwierkacz.common.data.Owner;
-import com.tguzik.cwierkacz.common.data.ValueByOwner;
+import com.tguzik.cwierkacz.common.data.HasOwner;
 
-public class Customer extends DataObject implements ValueByOwner
+public class Customer extends DataObject implements HasOwner
 {
 
     @Override

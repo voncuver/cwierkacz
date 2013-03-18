@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.tguzik.cwierkacz.common.processing.ApplicationProcessingData;
 import com.tguzik.cwierkacz.utils.annotation.IgnoreErrorsFromThisProcessor;
 import com.tguzik.cwierkacz.utils.cor.AbstractChainElement;
 

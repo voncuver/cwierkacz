@@ -7,12 +7,12 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheStats;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.Iterables;
-import com.tguzik.cwierkacz.application.configuration.CacheRegionConfiguration;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
 import com.tguzik.cwierkacz.cache.dataobject.key.GeneralKey;
 import com.tguzik.cwierkacz.cache.dataobject.key.UniqueKey;
 import com.tguzik.cwierkacz.cache.loader.DataObjectLoader;
 import com.tguzik.cwierkacz.common.Initializable;
+import com.tguzik.cwierkacz.common.configuration.CacheRegionConfiguration;
 import com.tguzik.cwierkacz.utils.CollectionUtil;
 
 // FIXME: Add unit tests like, right now.

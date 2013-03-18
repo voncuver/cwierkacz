@@ -4,56 +4,50 @@ import com.google.common.collect.ImmutableList;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
 import com.tguzik.cwierkacz.cache.dataobject.key.GeneralKey;
 import com.tguzik.cwierkacz.cache.dataobject.key.UniqueKey;
-import com.tguzik.cwierkacz.common.configuration.DatabaseConfiguration;
 
-public class NoOperationDataObjectLoader extends DataObjectLoader
+// Placeholder, so FIXME: Implement.
+public class SqlDataObjectLoader extends DataObjectLoader
 {
-    public static final NoOperationDataObjectLoader INSTANCE = new NoOperationDataObjectLoader();
-
-    public static DataObjectLoader create( DatabaseConfiguration config ) {
-        return INSTANCE;
-    }
-
-    public static DataObjectLoader getInstance( ) {
-        return INSTANCE;
-    }
-
-    private NoOperationDataObjectLoader() {
-        // Do nothing.
-    }
 
     @Override
     public void initialize( ) throws Exception {
-        // Do nothing.
+        // TODO Auto-generated method stub
+
     }
 
     @Override
     public void shutdown( ) {
-        // Do nothing.
+        // TODO Auto-generated method stub
+
     }
 
     @Override
     public DataObject load( UniqueKey key ) {
+        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public ImmutableList<DataObject> load( GeneralKey key ) {
-        return ImmutableList.of();
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
     public void update( DataObject obj ) {
-        // Do nothing.
+        // TODO Auto-generated method stub
+
     }
 
     @Override
     public void insert( DataObject obj ) {
-        // Do nothing.
+        // TODO Auto-generated method stub
+
     }
 
     @Override
     public void remove( UniqueKey key ) {
-        // Do nothing.
+        // TODO Auto-generated method stub
+
     }
 }
