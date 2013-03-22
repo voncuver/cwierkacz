@@ -9,18 +9,18 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.tguzik.cwierkacz.server.initialization.ApplicationInitialization;
 
 public class Cwierkacz
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Cwierkacz.class);
 
     public static void main( String[] args ) {
-        ApplicationContextLoader initializator = new ApplicationContextLoader();
         ApplicationContext context = null;
 
         try {
             LOGGER.info("Starting up...");
-            context = initializator.initialize(parseCommandLine(args));
+            context = new ApplicationInitialization(getConfigurationDirectory(args)).initialize();
             LOGGER.info("Initialization complete.");
 
             System.out.println(ReflectionToStringBuilder.toString(context, ToStringStyle.MULTI_LINE_STYLE));
@@ -37,8 +37,15 @@ public class Cwierkacz
         }
     }
 
+    private static String getConfigurationDirectory( String[] args ) throws ParseException {
+        return parseCommandLine(args).getOptionValue("conf");
+    }
+
     private static CommandLine parseCommandLine( String[] args ) throws ParseException {
-        Options opt = new Options().addOption("conf", "configuration-path", true, "Path to configuration directory");
+        Options opt = new Options().addOption("conf",
+                                              "configuration-path",
+                                              true,
+                                              "Path to configuration directory");
         return new PosixParser().parse(opt, args, true);
     }
 }

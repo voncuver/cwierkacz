@@ -1,20 +1,23 @@
 package com.tguzik.cwierkacz.cache.dataobject;
 
-import com.tguzik.cwierkacz.cache.dataobject.key.OwnerKey;
-import com.tguzik.cwierkacz.common.data.Owner;
-import com.tguzik.cwierkacz.common.data.HasOwner;
+import com.tguzik.cwierkacz.cache.dataobject.key.CustomerKey;
+import com.tguzik.cwierkacz.common.data.traits.HasCustomerId;
+import com.tguzik.cwierkacz.utils.annotation.Immutable;
+import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 
-public class Customer extends DataObject implements HasOwner
+@Immutable
+@ReflectionInstanitation
+public final class Customer extends DataObject implements HasCustomerId
 {
+    private Integer customerId;
 
     @Override
-    public OwnerKey getUniqueKey( ) {
-        return null;
+    public CustomerKey getUniqueKey( ) {
+        return CustomerKey.create(customerId);
     }
 
     @Override
-    public Owner getOwner( ) {
-        // TODO Auto-generated method stub
-        return null;
+    public Integer getCustomerId( ) {
+        return customerId;
     }
 }

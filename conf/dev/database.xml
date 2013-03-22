@@ -1,9 +1,0 @@
-<cwierkacz-configuration>
-	<database-configuration>
-		<url>localhost</url>
-		<username>db</username>
-		<password>password</password>
-		<serviceName>CWIERKACZ</serviceName>
-		<defaultDataLoader>com.tguzik.cwierkacz.cache.loader.NoOperationDataObjectLoader</defaultDataLoader>
-	</database-configuration>
-</cwierkacz-configuration>

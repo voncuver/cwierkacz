@@ -7,10 +7,9 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.cache.DataAccessor;
-import com.tguzik.cwierkacz.common.Processor;
-import com.tguzik.cwierkacz.server.interfaces.AbstractSocketInterface;
+import com.tguzik.cwierkacz.common.Initializable;
+import com.tguzik.cwierkacz.database.DatabaseService;
 
 public class ApplicationContextDeactivator
 {
@@ -21,23 +20,27 @@ public class ApplicationContextDeactivator
             return;
         }
 
-        deactivateInterfaces(context.getInterfacesByName());
+        deactivateMap(context.getInterfacesByName(), "interfaces");
         deactivateThreadPool(context.getMainThreadPool());
-        deactivateProcessors(context.getProcessorsByName());
+        deactivateThreadPool(context.getEndpointThreadPool());
+        deactivateMap(context.getProcessorsByName(), "processors");
         deactivateDataAccessor(context.getDataAccessor());
+        deactivateDatabaseService(context.getDatabaseService());
 
         LOGGER.info("Deactivation complete");
     }
 
-    private static void deactivateInterfaces( ImmutableMap<String, AbstractSocketInterface> interfacesByName ) {
-        if ( interfacesByName == null ) {
+    private static void deactivateMap( Map<String, ?> map, String name ) {
+        if ( map == null ) {
             return;
         }
 
-        log("interfaces...");
-        for ( Map.Entry<String, AbstractSocketInterface> entry : interfacesByName.entrySet() ) {
-            log(entry.getKey());
-            entry.getValue().shutdown();
+        log(name);
+        for ( Map.Entry<String, ?> entry : map.entrySet() ) {
+            if ( entry.getValue() instanceof Initializable ) {
+                log(entry.getKey());
+                ( (Initializable) entry.getValue() ).shutdown();
+            }
         }
     }
 
@@ -56,27 +59,22 @@ public class ApplicationContextDeactivator
         }
     }
 
-    private static void deactivateProcessors( ImmutableMap<String, Processor> processorsByName ) {
-        if ( processorsByName == null ) {
-            return;
-        }
-
-        log("processors...");
-        for ( Map.Entry<String, Processor> entry : processorsByName.entrySet() ) {
-            log(entry.getKey());
-            entry.getValue().shutdown();
-        }
-    }
-
     private static void deactivateDataAccessor( DataAccessor dataAccessor ) {
         if ( dataAccessor == null ) {
             return;
         }
 
-        if ( dataAccessor != null ) {
-            log("Data Accessor");
-            dataAccessor.shutdown();
+        log("Data Accessor");
+        dataAccessor.shutdown();
+    }
+
+    private static void deactivateDatabaseService( DatabaseService databaseService ) {
+        if ( databaseService == null ) {
+            return;
         }
+
+        log("Data Accessor");
+        databaseService.shutdown();
     }
 
     private static void log( String name ) {

@@ -1,8 +1,12 @@
 package com.tguzik.cwierkacz.cache.dataobject;
 
-import com.tguzik.cwierkacz.cache.dataobject.key.UniqueKey;
+import com.tguzik.cwierkacz.cache.UniqueKey;
+import com.tguzik.cwierkacz.utils.annotation.Immutable;
+import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 
-public class Tweets extends DataObject
+@Immutable
+@ReflectionInstanitation
+public final class Tweets extends DataObject
 {
 
     @Override

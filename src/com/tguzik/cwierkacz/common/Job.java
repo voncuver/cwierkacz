@@ -6,6 +6,10 @@ import com.tguzik.cwierkacz.utils.annotation.Immutable;
 @Immutable
 public final class Job
 {
+    public static final Job NO_OPERATION = create("NO-OPERATION",
+                                                  ProcessorChainElement.EMPTY,
+                                                  ImmutableMap.<String, String> of());
+
     private final ImmutableMap<String, String> properties;
     private final ProcessorChainElement chain;
     private final String name;

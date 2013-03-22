@@ -5,9 +5,9 @@ import java.util.concurrent.Callable;
 import com.google.common.cache.CacheLoader;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
+import com.tguzik.cwierkacz.cache.GeneralKey;
+import com.tguzik.cwierkacz.cache.UniqueKey;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
-import com.tguzik.cwierkacz.cache.dataobject.key.GeneralKey;
-import com.tguzik.cwierkacz.cache.dataobject.key.UniqueKey;
 import com.tguzik.cwierkacz.common.Initializable;
 import com.tguzik.cwierkacz.utils.CollectionUtil;
 

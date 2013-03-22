@@ -1,18 +1,13 @@
 package com.tguzik.cwierkacz.cache.loader;
 
 import com.google.common.collect.ImmutableList;
+import com.tguzik.cwierkacz.cache.GeneralKey;
+import com.tguzik.cwierkacz.cache.UniqueKey;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
-import com.tguzik.cwierkacz.cache.dataobject.key.GeneralKey;
-import com.tguzik.cwierkacz.cache.dataobject.key.UniqueKey;
-import com.tguzik.cwierkacz.common.configuration.DatabaseConfiguration;
 
 public class NoOperationDataObjectLoader extends DataObjectLoader
 {
     public static final NoOperationDataObjectLoader INSTANCE = new NoOperationDataObjectLoader();
-
-    public static DataObjectLoader create( DatabaseConfiguration config ) {
-        return INSTANCE;
-    }
 
     public static DataObjectLoader getInstance( ) {
         return INSTANCE;

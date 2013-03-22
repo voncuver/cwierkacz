@@ -5,12 +5,13 @@ import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tguzik.cwierkacz.common.processing.ApplicationProcessingData;
+import com.tguzik.cwierkacz.common.data.ApplicationProcessingData;
 import com.tguzik.cwierkacz.utils.annotation.IgnoreErrorsFromThisProcessor;
 import com.tguzik.cwierkacz.utils.cor.AbstractChainElement;
 
 public class ProcessorChainElement extends AbstractChainElement<ApplicationProcessingData>
 {
+    public static final ProcessorChainElement EMPTY = create(null, "EMPTY", NoOperationProcessor.INSTANCE);
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessorChainElement.class);
     private final Processor processor;
     private final boolean rethrowExceptions;

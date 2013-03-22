@@ -8,11 +8,9 @@ import com.google.common.cache.CacheStats;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.Iterables;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
-import com.tguzik.cwierkacz.cache.dataobject.key.GeneralKey;
-import com.tguzik.cwierkacz.cache.dataobject.key.UniqueKey;
 import com.tguzik.cwierkacz.cache.loader.DataObjectLoader;
 import com.tguzik.cwierkacz.common.Initializable;
-import com.tguzik.cwierkacz.common.configuration.CacheRegionConfiguration;
+import com.tguzik.cwierkacz.server.configuration.CacheRegionConfiguration;
 import com.tguzik.cwierkacz.utils.CollectionUtil;
 
 // FIXME: Add unit tests like, right now.
@@ -20,13 +18,13 @@ public final class CacheRegion implements Initializable
 {
     private final static Logger LOGGER = LoggerFactory.getLogger(CacheRegion.class);
     private final CacheRegionConfiguration configuration;
-    private final DataObjectLoader dao;
     private final Cache<UniqueKey, DataObject> cache;
+    private final DataObjectLoader dao;
 
     CacheRegion( CacheRegionConfiguration configuration, DataObjectLoader dao, Cache<UniqueKey, DataObject> cache ) {
         this.configuration = configuration;
-        this.dao = dao;
         this.cache = cache;
+        this.dao = dao;
     }
 
     public void update( DataObject obj ) {

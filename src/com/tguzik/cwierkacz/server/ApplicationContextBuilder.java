@@ -1,71 +1,78 @@
 package com.tguzik.cwierkacz.server;
 
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicReference;
 
 import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.cache.DataAccessor;
 import com.tguzik.cwierkacz.common.Job;
 import com.tguzik.cwierkacz.common.Processor;
-import com.tguzik.cwierkacz.common.configuration.CwierkaczConfiguration;
+import com.tguzik.cwierkacz.database.DatabaseService;
+import com.tguzik.cwierkacz.server.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.server.interfaces.AbstractSocketInterface;
 
 public class ApplicationContextBuilder
 {
-    private final ImmutableMap.Builder<String, AbstractSocketInterface> interfacesByName;
-    private final ImmutableMap.Builder<String, Processor> processorsByName;
-    private final ImmutableMap.Builder<String, Job> jobsByName;
-
-    private final AtomicReference<CwierkaczConfiguration> configuration;
-    private final AtomicReference<ThreadPoolExecutor> mainThreadPool;
-    private final AtomicReference<DataAccessor> dataAccessor;
+    private ImmutableMap<String, AbstractSocketInterface> interfacesByName;
+    private ImmutableMap<String, Processor> processorsByName;
+    private ImmutableMap<String, Job> jobsByName;
+    private ApplicationConfiguration configuration;
+    private ThreadPoolExecutor mainThreadPool;
+    private ThreadPoolExecutor endpointThreadPool;
+    private DatabaseService databaseService;
+    private DataAccessor dataAccessor;
 
     ApplicationContextBuilder() {
-        this.interfacesByName = ImmutableMap.builder();
-        this.processorsByName = ImmutableMap.builder();
-        this.mainThreadPool = new AtomicReference<>();
-        this.configuration = new AtomicReference<>();
-        this.dataAccessor = new AtomicReference<>();
-        this.jobsByName = ImmutableMap.builder();
     }
 
-    public ApplicationContextBuilder withConfiguration( CwierkaczConfiguration config ) {
-        configuration.set(config);
+    public ApplicationContextBuilder withInterfacesByName( ImmutableMap<String, AbstractSocketInterface> interfacesByName ) {
+        this.interfacesByName = interfacesByName;
+        return this;
+    }
+
+    public ApplicationContextBuilder withProcessorsByName( ImmutableMap<String, Processor> processorsByName ) {
+        this.processorsByName = processorsByName;
+        return this;
+    }
+
+    public ApplicationContextBuilder withJobsByName( ImmutableMap<String, Job> jobsByName ) {
+        this.jobsByName = jobsByName;
+        return this;
+    }
+
+    public ApplicationContextBuilder withApplicationConfiguration( ApplicationConfiguration configuration ) {
+        this.configuration = configuration;
+        return this;
+    }
+
+    public ApplicationContextBuilder withMainThreadPool( ThreadPoolExecutor mainThreadPool ) {
+        this.mainThreadPool = mainThreadPool;
+        return this;
+    }
+
+    public ApplicationContextBuilder withDatabaseService( DatabaseService databaseService ) {
+        this.databaseService = databaseService;
         return this;
     }
 
     public ApplicationContextBuilder withDataAccessor( DataAccessor dataAccessor ) {
-        this.dataAccessor.set(dataAccessor);
+        this.dataAccessor = dataAccessor;
         return this;
     }
 
-    public synchronized ApplicationContextBuilder withJob( String name, Job job ) {
-        jobsByName.put(name, job);
-        return this;
-    }
-
-    public synchronized ApplicationContextBuilder withProcessor( String name, Processor processor ) {
-        processorsByName.put(name, processor);
-        return this;
-    }
-
-    public synchronized ApplicationContextBuilder withInterface( String name, AbstractSocketInterface server ) {
-        interfacesByName.put(name, server);
-        return this;
-    }
-
-    public ApplicationContextBuilder withMainThreadPool( ThreadPoolExecutor threadPool ) {
-        mainThreadPool.set(threadPool);
+    public ApplicationContextBuilder withEndpointThreadPool( ThreadPoolExecutor endpointThreadPool ) {
+        this.endpointThreadPool = endpointThreadPool;
         return this;
     }
 
     public ApplicationContext build( ) {
-        return new ApplicationContext(configuration.get(),
-                                      dataAccessor.get(),
-                                      mainThreadPool.get(),
-                                      interfacesByName.build(),
-                                      processorsByName.build(),
-                                      jobsByName.build());
+        return new ApplicationContext(configuration,
+                                      dataAccessor,
+                                      databaseService,
+                                      mainThreadPool,
+                                      endpointThreadPool,
+                                      interfacesByName,
+                                      processorsByName,
+                                      jobsByName);
     }
 
 }

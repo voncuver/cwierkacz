@@ -34,7 +34,6 @@ public abstract class AbstractSocketInterface implements Initializable, Callable
     public final Void call( ) {
         try {
             initialize();
-
             while ( serverSocket.isBound() ) {
                 Socket clientSocket = serverSocket.accept();
                 threadPool.execute(createWorker(clientSocket, nameWithPort));

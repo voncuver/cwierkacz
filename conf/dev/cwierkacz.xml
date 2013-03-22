@@ -1,9 +1,15 @@
 <cwierkacz-configuration>
-	<thread-pool-configuration>
+	<main-thread-pool-configuration>
 		<minPoolSize>10</minPoolSize>
 		<maxPoolSize>100</maxPoolSize>
 		<keepAliveSeconds>30</keepAliveSeconds>
-	</thread-pool-configuration>
+	</main-thread-pool-configuration>
+
+	<endpoint-thread-pool-configuration>
+		<minPoolSize>5</minPoolSize>
+		<maxPoolSize>100</maxPoolSize>
+		<keepAliveSeconds>30</keepAliveSeconds>
+	</endpoint-thread-pool-configuration>
 
 	<interface-configuration>
 		<interface>
@@ -17,12 +23,6 @@
 				</entry>
 			</properties>
 		</interface>
-
-		<interface>
-			<name>ProtobufServer</name>
-			<enabled>true</enabled>
-			<portNumber>6060</portNumber>
-		</interface>
 	</interface-configuration>
 
 	<cache-configuration>
@@ -32,6 +32,7 @@
 			<cacheable>true</cacheable>
 			<preloadable>true</preloadable>
 			<disabled>false</disabled>
+			<dataLoader>com.tguzik.cwierkacz.cache.loader.SqlDataObjectLoader</dataLoader>
 		</region>
 
 		<region>

@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.cache.dataobject.Customer;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
 import com.tguzik.cwierkacz.cache.dataobject.Tweets;
-import com.tguzik.cwierkacz.cache.dataobject.key.OwnerKey;
+import com.tguzik.cwierkacz.cache.dataobject.key.CustomerKey;
 import com.tguzik.cwierkacz.common.Initializable;
 
 public final class DataAccessor implements Initializable
@@ -19,7 +19,7 @@ public final class DataAccessor implements Initializable
         this.cacheManager = cacheManager;
     }
 
-    public Customer getCustomer( OwnerKey key ) {
+    public Customer getCustomer( CustomerKey key ) {
         return (Customer) cacheManager.retrieve(Customer.class, key);
     }
 

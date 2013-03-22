@@ -1,53 +1,51 @@
 package com.tguzik.cwierkacz.cache.loader;
 
 import com.google.common.collect.ImmutableList;
+import com.tguzik.cwierkacz.cache.GeneralKey;
+import com.tguzik.cwierkacz.cache.UniqueKey;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
-import com.tguzik.cwierkacz.cache.dataobject.key.GeneralKey;
-import com.tguzik.cwierkacz.cache.dataobject.key.UniqueKey;
+import com.tguzik.cwierkacz.database.DatabaseService;
 
-// Placeholder, so FIXME: Implement.
 public class SqlDataObjectLoader extends DataObjectLoader
 {
+    private final Class<? extends DataObject> table;
+    private final DatabaseService service;
+
+    public SqlDataObjectLoader( Class<? extends DataObject> table, DatabaseService service ) {
+        this.service = service;
+        this.table = table;
+    }
 
     @Override
     public void initialize( ) throws Exception {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void shutdown( ) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public DataObject load( UniqueKey key ) {
-        // TODO Auto-generated method stub
-        return null;
+        return service.load(table, key);
     }
 
     @Override
     public ImmutableList<DataObject> load( GeneralKey key ) {
-        // TODO Auto-generated method stub
-        return null;
+        return service.load(table, key);
     }
 
     @Override
     public void update( DataObject obj ) {
-        // TODO Auto-generated method stub
-
+        service.update(table, obj);
     }
 
     @Override
     public void insert( DataObject obj ) {
-        // TODO Auto-generated method stub
-
+        service.create(table, obj);
     }
 
     @Override
     public void remove( UniqueKey key ) {
-        // TODO Auto-generated method stub
-
+        service.remove(table, key);
     }
 }

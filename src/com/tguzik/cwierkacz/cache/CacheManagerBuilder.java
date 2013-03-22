@@ -5,9 +5,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
-import com.tguzik.cwierkacz.cache.dataobject.key.UniqueKey;
 import com.tguzik.cwierkacz.cache.loader.DataObjectLoader;
-import com.tguzik.cwierkacz.common.configuration.CacheRegionConfiguration;
+import com.tguzik.cwierkacz.server.configuration.CacheRegionConfiguration;
 
 public class CacheManagerBuilder
 {
@@ -18,11 +17,13 @@ public class CacheManagerBuilder
     }
 
     @SuppressWarnings( "unchecked" )
-    public CacheManagerBuilder withRegion( Class<?> clazz, DataObjectLoader dao, CacheRegionConfiguration configuration ) {
+    public CacheManagerBuilder withRegion( Class<?> clazz,
+                                           CacheRegionConfiguration configuration,
+                                           DataObjectLoader dao ) {
         Class<? extends DataObject> region = (Class<? extends DataObject>) clazz;
         Cache<UniqueKey, DataObject> cache;
 
-        cache = CacheBuilder.newBuilder().recordStats().maximumSize(configuration.getMaxObjects()).build(dao);
+        cache = CacheBuilder.newBuilder().recordStats().maximumSize(configuration.getMaxObjects()).build();
 
         regions.put(region, new CacheRegion(configuration, dao, cache));
         return this;
