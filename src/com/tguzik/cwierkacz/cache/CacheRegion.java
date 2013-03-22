@@ -10,7 +10,7 @@ import com.google.common.collect.Iterables;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
 import com.tguzik.cwierkacz.cache.loader.DataObjectLoader;
 import com.tguzik.cwierkacz.common.Initializable;
-import com.tguzik.cwierkacz.server.configuration.CacheRegionConfiguration;
+import com.tguzik.cwierkacz.common.configuration.CacheRegionConfiguration;
 import com.tguzik.cwierkacz.utils.CollectionUtil;
 
 // FIXME: Add unit tests like, right now.

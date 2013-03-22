@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tguzik.cwierkacz.server.initialization.ApplicationInitialization;
+import com.tguzik.cwierkacz.common.initialization.ApplicationInitialization;
 
 public class Cwierkacz
 {

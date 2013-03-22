@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.tguzik.cwierkacz.utils.MultiLineNoClassNameToStringStyle;
+
 public abstract class StandardElement
 {
     @Override
@@ -19,6 +21,8 @@ public abstract class StandardElement
 
     @Override
     public String toString( ) {
-        return new ReflectionToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).toString();
+        return new ReflectionToStringBuilder(this, STYLE).toString();
     }
+
+    private static final ToStringStyle STYLE = MultiLineNoClassNameToStringStyle.getInstance();
 }
