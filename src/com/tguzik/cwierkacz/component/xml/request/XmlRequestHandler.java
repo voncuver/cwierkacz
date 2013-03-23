@@ -1,6 +1,4 @@
-package com.tguzik.cwierkacz.component.xml.parser;
-
-import static java.lang.String.format;
+package com.tguzik.cwierkacz.component.xml.request;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,19 +61,19 @@ public class XmlRequestHandler extends DefaultHandler
 
     @Override
     public void warning( SAXParseException e ) throws SAXException {
-        LOGGER.warn(format("Warning from SAXParser: %s:%s on line %d",
-                           e.getClass().getSimpleName(),
-                           e.getMessage(),
-                           e.getLineNumber()),
+        LOGGER.warn("Warning from SAXParser: {}:{} on line {}",
+                    e.getClass().getSimpleName(),
+                    e.getMessage(),
+                    e.getLineNumber(),
                     e);
     }
 
     @Override
     public void error( SAXParseException e ) throws SAXException {
-        LOGGER.warn(format("Error from SAXParser: %s:%s on line %d",
-                           e.getClass().getSimpleName(),
-                           e.getMessage(),
-                           e.getLineNumber()),
+        LOGGER.warn("Error from SAXParser: {}:{} on line {}",
+                    e.getClass().getSimpleName(),
+                    e.getMessage(),
+                    e.getLineNumber(),
                     e);
     }
 

@@ -10,17 +10,17 @@ import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.common.configuration.ThreadPoolConfiguration;
 import com.tguzik.cwierkacz.common.initialization.InitializationState;
 
-public class InitMainThreadPool implements InitializationTask<ThreadPoolExecutor>
+public final class InitializeEndpointThreadPool implements InitializationTask<ThreadPoolExecutor>
 {
     private final Future<InitializationState> futureState;
 
-    public InitMainThreadPool( Future<InitializationState> futureState ) {
+    public InitializeEndpointThreadPool( Future<InitializationState> futureState ) {
         this.futureState = futureState;
     }
 
     @Override
     public ThreadPoolExecutor call( ) throws Exception {
-        ThreadPoolConfiguration configuration = getConfiguration().getMainThreadPoolConfiguration();
+        ThreadPoolConfiguration configuration = getConfiguration().getEndpointThreadPoolConfiguration();
 
         ThreadPoolExecutor threadPool = new ThreadPoolExecutor(configuration.getMinPoolSize(),
                                                                configuration.getMaxPoolSize(),
@@ -39,6 +39,6 @@ public class InitMainThreadPool implements InitializationTask<ThreadPoolExecutor
 
     @Override
     public String getName( ) {
-        return "Main Thread Pool";
+        return "Initialize Endpoint Thread Pool";
     }
 }

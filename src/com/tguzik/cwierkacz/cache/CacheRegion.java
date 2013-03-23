@@ -1,5 +1,7 @@
 package com.tguzik.cwierkacz.cache;
 
+import static com.tguzik.cwierkacz.utils.CollectionUtil.copyToImmutableList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +13,6 @@ import com.tguzik.cwierkacz.cache.dataobject.DataObject;
 import com.tguzik.cwierkacz.cache.loader.DataObjectLoader;
 import com.tguzik.cwierkacz.common.Initializable;
 import com.tguzik.cwierkacz.common.configuration.CacheRegionConfiguration;
-import com.tguzik.cwierkacz.utils.CollectionUtil;
 
 // FIXME: Add unit tests like, right now.
 public final class CacheRegion implements Initializable
@@ -21,7 +22,9 @@ public final class CacheRegion implements Initializable
     private final Cache<UniqueKey, DataObject> cache;
     private final DataObjectLoader dao;
 
-    CacheRegion( CacheRegionConfiguration configuration, DataObjectLoader dao, Cache<UniqueKey, DataObject> cache ) {
+    CacheRegion( CacheRegionConfiguration configuration,
+                 DataObjectLoader dao,
+                 Cache<UniqueKey, DataObject> cache ) {
         this.configuration = configuration;
         this.cache = cache;
         this.dao = dao;
@@ -62,24 +65,26 @@ public final class CacheRegion implements Initializable
         return retrieveFromSource(key);
     }
 
-    private DataObject retrieveFromCache( UniqueKey key ) {
+    public DataObject retrieveFromCache( UniqueKey key ) {
         return cache.getIfPresent(key);
     }
 
-    private DataObject retrieveFromSource( UniqueKey key ) {
+    public DataObject retrieveFromSource( UniqueKey key ) {
         return dao.load(key);
     }
 
-    private DataObject retrieveFromCacheAndSource( UniqueKey key ) {
+    public DataObject retrieveFromCacheAndSource( UniqueKey key ) {
         try {
             return cache.get(key, dao.createCallableRetriever(key));
         }
         catch ( Exception e ) {
             // Keep in mind that DAO should do its job and print exceptions by itself.
-            LOGGER.error(String.format("Error while retrieving %s:%s: %s",
-                                       configuration.getName(),
-                                       String.valueOf(key),
-                                       e.getMessage()), e);
+            LOGGER.error("Error while retrieving {}:{}: {}:{}",
+                         configuration.getName(),
+                         String.valueOf(key),
+                         e.getClass().getName(),
+                         e.getMessage(),
+                         e);
         }
         return null;
     }
@@ -105,16 +110,17 @@ public final class CacheRegion implements Initializable
         return retrieveFromSource(key);
     }
 
-    private ImmutableCollection<DataObject> retrieveFromCache( GeneralKey key ) {
+    public ImmutableCollection<DataObject> retrieveFromCache( GeneralKey key ) {
         Iterable<DataObject> matchingEntries = Iterables.filter(cache.asMap().values(), key);
-        return CollectionUtil.copyToImmutableList(matchingEntries);
+        return copyToImmutableList(matchingEntries);
     }
 
-    private ImmutableCollection<DataObject> retrieveFromSource( GeneralKey key ) {
-        return CollectionUtil.copyToImmutableList(dao.load(key));
+    public ImmutableCollection<DataObject> retrieveFromSource( GeneralKey key ) {
+        return copyToImmutableList(dao.load(key));
     }
 
-    private ImmutableCollection<DataObject> retrieveFromCacheAndSource( GeneralKey key ) {
+    /** For preloading */
+    public ImmutableCollection<DataObject> retrieveFromCacheAndSource( GeneralKey key ) {
         ImmutableCollection<DataObject> sourceItems = retrieveFromSource(key);
 
         // Put retrieved items to cache
@@ -127,6 +133,10 @@ public final class CacheRegion implements Initializable
 
     public CacheStats getStats( ) {
         return cache.stats();
+    }
+
+    public CacheRegionConfiguration getConfiguration( ) {
+        return configuration;
     }
 
     @Override

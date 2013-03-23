@@ -1,5 +1,6 @@
 package com.tguzik.cwierkacz.common.data;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.tguzik.cwierkacz.cache.dataobject.User;
@@ -16,7 +17,9 @@ public final class RequestData extends StandardElement
     private final ImmutableMultimap<User, UserMessage> userMessages;
     private final ImmutableSet<Diagnostic> requestedDiagnostics;
 
-    RequestData( Owner owner, Job requestedOperation, ImmutableMultimap<User, UserMessage> userMessages,
+    RequestData( Owner owner,
+                 Job requestedOperation,
+                 ImmutableMultimap<User, UserMessage> userMessages,
                  ImmutableSet<Diagnostic> requestedDiagnostics ) {
         super();
         this.requestedDiagnostics = requestedDiagnostics;
@@ -47,6 +50,11 @@ public final class RequestData extends StandardElement
 
     public static RequestDataBuilder builder( ) {
         return new RequestDataBuilder();
+    }
+
+    public ImmutableList<RequestedJob> getRequestedJobs( ) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

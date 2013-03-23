@@ -6,13 +6,14 @@ import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.cache.DataAccessor;
 import com.tguzik.cwierkacz.common.Job;
 import com.tguzik.cwierkacz.common.Processor;
+import com.tguzik.cwierkacz.common.StandardElement;
 import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.database.DatabaseService;
 import com.tguzik.cwierkacz.server.interfaces.AbstractSocketInterface;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 
 @Immutable
-public final class ApplicationContext
+public final class ApplicationContext extends StandardElement
 {
     private final ImmutableMap<String, AbstractSocketInterface> interfacesByName;
     private final ImmutableMap<String, Processor> processorsByName;

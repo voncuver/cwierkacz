@@ -1,10 +1,10 @@
 package com.tguzik.cwierkacz.common.initialization;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.SettableFuture;
 import com.tguzik.cwierkacz.cache.DataAccessor;
 import com.tguzik.cwierkacz.common.Job;
 import com.tguzik.cwierkacz.common.Processor;
@@ -17,6 +17,7 @@ public class InitializationState
 {
     private final Future<ImmutableMap<String, AbstractSocketInterface>> interfacesByName;
     private final Future<ImmutableMap<String, Processor>> processorsByName;
+    private final SettableFuture<ApplicationContext> applicationContext;
     private final Future<ThreadPoolExecutor> endpointThreadPool;
     private final Future<ImmutableMap<String, Job>> jobsByName;
     private final Future<ApplicationConfiguration> configuration;
@@ -34,6 +35,7 @@ public class InitializationState
                                 Future<ThreadPoolExecutor> mainThreadPool,
                                 Future<DatabaseService> databaseService,
                                 Future<DataAccessor> dataAccessor ) {
+        this.applicationContext = SettableFuture.<ApplicationContext> create();
         this.configurationDirectory = configurationDirectory;
         this.interfacesByName = interfacesByName;
         this.processorsByName = processorsByName;
@@ -81,17 +83,7 @@ public class InitializationState
         return dataAccessor;
     }
 
-    public ApplicationContext buildContext( ) throws InterruptedException, ExecutionException {
-        return ApplicationContext.builder() //
-                                 .withDataAccessor(dataAccessor.get())
-                                 .withApplicationConfiguration(configuration.get())
-                                 .withDatabaseService(databaseService.get())
-                                 .withEndpointThreadPool(endpointThreadPool.get())
-                                 .withInterfacesByName(interfacesByName.get())
-                                 .withJobsByName(jobsByName.get())
-                                 .withMainThreadPool(mainThreadPool.get())
-                                 .withProcessorsByName(processorsByName.get())
-                                 .build();
+    public SettableFuture<ApplicationContext> getApplicationContext( ) {
+        return applicationContext;
     }
-
 }

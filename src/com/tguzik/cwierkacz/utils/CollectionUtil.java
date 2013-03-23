@@ -1,6 +1,5 @@
 package com.tguzik.cwierkacz.utils;
 
-import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
@@ -12,7 +11,7 @@ public class CollectionUtil
         return value == null ? ImmutableMap.<K, V> of() : value;
     }
 
-    public static < T > List<T> safe( List<T> value ) {
+    public static < T > Iterable<T> safe( Iterable<T> value ) {
         return value == null ? ImmutableList.<T> of() : value;
     }
 

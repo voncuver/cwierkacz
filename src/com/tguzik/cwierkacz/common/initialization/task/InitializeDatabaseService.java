@@ -2,28 +2,28 @@ package com.tguzik.cwierkacz.common.initialization.task;
 
 import java.util.concurrent.Future;
 
-import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.common.configuration.reader.ConfigurationReader;
 import com.tguzik.cwierkacz.common.initialization.InitializationState;
+import com.tguzik.cwierkacz.database.DatabaseService;
 
-public final class InitConfiguration implements InitializationTask<ApplicationConfiguration>
+public final class InitializeDatabaseService implements InitializationTask<DatabaseService>
 {
     private final Future<InitializationState> futureState;
 
-    public InitConfiguration( Future<InitializationState> futureState ) {
+    public InitializeDatabaseService( Future<InitializationState> futureState ) {
         this.futureState = futureState;
     }
 
     @Override
-    public ApplicationConfiguration call( ) throws Exception {
+    public DatabaseService call( ) throws Exception {
         String configurationDirectory = futureState.get().getConfigurationDirectory();
         ConfigurationReader reader = new ConfigurationReader(configurationDirectory);
 
-        return reader.read();
+        return new DatabaseService(reader.getMyBatisSessionFactory());
     }
 
     @Override
     public String getName( ) {
-        return "Configuration";
+        return "Initialize MyBatis-based database service";
     }
 }

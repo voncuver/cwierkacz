@@ -14,11 +14,11 @@ import com.tguzik.cwierkacz.common.configuration.SingleProcessorConfiguration;
 import com.tguzik.cwierkacz.common.initialization.InitializationState;
 import com.tguzik.cwierkacz.common.initialization.ProcessorFactory;
 
-public class InitProcessors implements InitializationTask<ImmutableMap<String, Processor>>
+public class InitializeProcessors implements InitializationTask<ImmutableMap<String, Processor>>
 {
     private final Future<InitializationState> futureState;
 
-    public InitProcessors( Future<InitializationState> futureState ) {
+    public InitializeProcessors( Future<InitializationState> futureState ) {
         this.futureState = futureState;
     }
 
@@ -57,6 +57,6 @@ public class InitProcessors implements InitializationTask<ImmutableMap<String, P
 
     @Override
     public String getName( ) {
-        return "Processor repository";
+        return "Initialize Processor repository";
     }
 }

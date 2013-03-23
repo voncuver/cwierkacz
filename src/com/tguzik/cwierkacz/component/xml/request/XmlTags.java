@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.component.xml.parser;
+package com.tguzik.cwierkacz.component.xml.request;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -8,6 +8,8 @@ public enum XmlTags {
     JOB( "Job" ),
     CACHEONLY( "CacheOnly" ),
     ACCOUNT( "Account" ),
+    TWEET( "Tweet" ),
+    CONTENT( "Content" ),
     DIAGNOSTIC( "Diagnostic" );
 
     private static final ImmutableMap<String, XmlTags> mappings = createMappings();

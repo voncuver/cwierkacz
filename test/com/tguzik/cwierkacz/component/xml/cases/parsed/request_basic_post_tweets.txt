@@ -1,0 +1,41 @@
+XmlRequest[
+  jobs=[XmlJob[
+  accounts=[XmlAccount[
+  tweets=[XmlTweet[
+  id=<null>
+  date=<null>
+  account=<null>
+  content=Nasz tweet #1
+  replies=[]
+], XmlTweet[
+  id=<null>
+  date=<null>
+  account=<null>
+  content=Nasz tweet #2
+  replies=[]
+]]
+  name=konto-na-twitterze-1
+], XmlAccount[
+  tweets=[XmlTweet[
+  id=<null>
+  date=<null>
+  account=<null>
+  content=Nasz tweet #3
+  replies=[]
+], XmlTweet[
+  id=<null>
+  date=<null>
+  account=<null>
+  content=Nasz tweet #4
+  replies=[]
+]]
+  name=konto-na-twitterze-2
+]]
+  cacheOnly=false
+  name=POST-TWEETS
+]]
+  requestedDiagnostics=[1, 2, 3]
+  customer=XmlCustomer[
+  name=UZYTKOWNIK
+]
+]

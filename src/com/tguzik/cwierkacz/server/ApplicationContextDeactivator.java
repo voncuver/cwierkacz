@@ -78,6 +78,6 @@ public class ApplicationContextDeactivator
     }
 
     private static void log( String name ) {
-        LOGGER.info(String.format("Deactivating %s", name));
+        LOGGER.info("Deactivating {}", name);
     }
 }

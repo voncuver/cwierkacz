@@ -23,11 +23,11 @@ import com.tguzik.cwierkacz.common.configuration.CacheRegionConfiguration;
 import com.tguzik.cwierkacz.common.initialization.InitializationState;
 import com.tguzik.cwierkacz.database.DatabaseService;
 
-public final class InitDataAccessor implements InitializationTask<DataAccessor>
+public final class InitializeDataAccessor implements InitializationTask<DataAccessor>
 {
     private final Future<InitializationState> futureState;
 
-    public InitDataAccessor( Future<InitializationState> futureState ) {
+    public InitializeDataAccessor( Future<InitializationState> futureState ) {
         this.futureState = futureState;
     }
 
@@ -89,7 +89,7 @@ public final class InitDataAccessor implements InitializationTask<DataAccessor>
 
     @Override
     public String getName( ) {
-        return "Data Accessor";
+        return "Initialize Data Accessor";
     }
 }
 

@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.component.xml.parser;
+package com.tguzik.cwierkacz.component.xml.request;
 
 import java.io.InputStream;
 
@@ -9,12 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tguzik.cwierkacz.component.xml.beans.XmlRequest;
+import com.tguzik.cwierkacz.utils.annotation.Threadsafe;
 
+@Threadsafe
 public class XmlRequestParser
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(XmlRequestParser.class);
-
-    // TODO: Is SAXParserFactory thread safe?
     private static final SAXParserFactory factory = createFactory();
 
     public XmlRequest parse( InputStream is ) throws Exception {
@@ -28,9 +28,10 @@ public class XmlRequestParser
             return request;
         }
         catch ( Exception e ) {
-            LOGGER.warn(String.format("Caught exception while parsing request: %s:%s",
-                                      e.getClass().getSimpleName(),
-                                      e.getMessage()), e);
+            LOGGER.warn("Caught exception while parsing request: {}:{}",
+                        e.getClass().getName(),
+                        e.getMessage(),
+                        e);
             throw e;
         }
     }

@@ -12,11 +12,11 @@ import com.tguzik.cwierkacz.common.configuration.JobsConfiguration;
 import com.tguzik.cwierkacz.common.configuration.SingleJobConfiguration;
 import com.tguzik.cwierkacz.common.initialization.InitializationState;
 
-public final class InitJobs implements InitializationTask<ImmutableMap<String, Job>>
+public final class InitializeJobRepository implements InitializationTask<ImmutableMap<String, Job>>
 {
     private final Future<InitializationState> futureState;
 
-    public InitJobs( Future<InitializationState> futureState ) {
+    public InitializeJobRepository( Future<InitializationState> futureState ) {
         this.futureState = futureState;
     }
 
@@ -62,6 +62,6 @@ public final class InitJobs implements InitializationTask<ImmutableMap<String, J
 
     @Override
     public String getName( ) {
-        return "Job Repository";
+        return "Initialize Job Repository";
     }
 }

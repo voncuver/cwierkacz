@@ -1,13 +1,20 @@
 package com.tguzik.cwierkacz.component.xml.beans;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.collect.Lists;
 import com.tguzik.cwierkacz.common.StandardElement;
 
 public class XmlAccount extends StandardElement
 {
+    private final List<XmlTweet> tweets;
     private String name = StringUtils.EMPTY;
-    private String message = StringUtils.EMPTY;
+
+    public XmlAccount() {
+        this.tweets = Lists.newArrayList();
+    }
 
     public String getName( ) {
         return name;
@@ -17,11 +24,11 @@ public class XmlAccount extends StandardElement
         this.name = name;
     }
 
-    public String getMessage( ) {
-        return message;
+    public List<XmlTweet> getTweets( ) {
+        return tweets;
     }
 
-    public void setMessage( String message ) {
-        this.message = message;
+    public void addTweet( XmlTweet tweet ) {
+        tweets.add(tweet);
     }
 }

@@ -25,7 +25,7 @@ public class ParallelLoader
     }
 
     public < T > Future<T> schedule( InitializationTask<T> task ) {
-        LOGGER.info(String.format("Scheduling %s for set up...", task.getName()));
+        LOGGER.info("Scheduling task {}...", task.getName());
         return keepReference(executor.submit(task));
     }
 

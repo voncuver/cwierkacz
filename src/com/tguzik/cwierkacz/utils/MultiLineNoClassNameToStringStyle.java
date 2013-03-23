@@ -11,6 +11,7 @@ public class MultiLineNoClassNameToStringStyle extends org.apache.commons.lang3.
     MultiLineNoClassNameToStringStyle() {
         super();
         this.setUseIdentityHashCode(false);
+        this.setUseShortClassName(true);
         this.setContentStart("[");
         this.setFieldSeparator(SystemUtils.LINE_SEPARATOR + "  ");
         this.setFieldSeparatorAtStart(true);

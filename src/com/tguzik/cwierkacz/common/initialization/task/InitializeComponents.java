@@ -58,7 +58,6 @@ public class InitializeComponents implements InitializationTask<Void>
 
     @Override
     public String getName( ) {
-        return "Components";
+        return "Initialize Components";
     }
-
 }

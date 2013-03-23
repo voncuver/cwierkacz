@@ -1,7 +1,7 @@
 package com.tguzik.cwierkacz.cache;
 
-import java.util.Map;
-
+import com.google.common.base.Joiner;
+import com.google.common.base.Joiner.MapJoiner;
 import com.google.common.cache.CacheStats;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -13,6 +13,9 @@ import com.tguzik.cwierkacz.common.Initializable;
 
 public final class DataAccessor implements Initializable
 {
+    private static final MapJoiner MAP_JOINER = Joiner.on("\n")
+                                                      .withKeyValueSeparator(" - ")
+                                                      .useForNull("null");
     private final CacheManager cacheManager;
 
     private DataAccessor( CacheManager cacheManager ) {
@@ -33,6 +36,11 @@ public final class DataAccessor implements Initializable
         cacheManager.shutdown();
     }
 
+    /** For parallel preloading */
+    public CacheManager getCacheManager( ) {
+        return cacheManager;
+    }
+
     public ImmutableMap<Class<? extends DataObject>, CacheStats> getCacheStats( ) {
         return cacheManager.getCacheStats();
     }
@@ -48,11 +56,7 @@ public final class DataAccessor implements Initializable
     @Override
     public String toString( ) {
         StringBuilder builder = new StringBuilder("AptAccessor stats: \n");
-
-        for ( Map.Entry<Class<? extends DataObject>, CacheStats> entry : getCacheStats().entrySet() ) {
-            builder.append("Region ").append(entry.getKey().getSimpleName()).append(" - ").append(entry.getValue())
-                   .append("\n");
-        }
+        MAP_JOINER.appendTo(builder, getCacheStats().entrySet());
 
         return builder.toString();
     }

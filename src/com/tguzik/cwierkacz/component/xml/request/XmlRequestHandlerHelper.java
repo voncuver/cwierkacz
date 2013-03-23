@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.component.xml.parser;
+package com.tguzik.cwierkacz.component.xml.request;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -9,6 +9,7 @@ import com.tguzik.cwierkacz.component.xml.beans.XmlAccount;
 import com.tguzik.cwierkacz.component.xml.beans.XmlCustomer;
 import com.tguzik.cwierkacz.component.xml.beans.XmlJob;
 import com.tguzik.cwierkacz.component.xml.beans.XmlRequest;
+import com.tguzik.cwierkacz.component.xml.beans.XmlTweet;
 
 public class XmlRequestHandlerHelper
 {
@@ -16,6 +17,7 @@ public class XmlRequestHandlerHelper
     private final XmlRequest xmlRequest;
     private XmlCustomer customer;
     private XmlAccount account;
+    private XmlTweet tweet;
     private XmlJob job;
 
     public XmlRequestHandlerHelper( XmlRequest xmlRequest ) {
@@ -38,6 +40,14 @@ public class XmlRequestHandlerHelper
 
         case ACCOUNT:
             startAccountTag(attributes);
+            break;
+
+        case TWEET:
+            startTweetTag(attributes);
+            break;
+
+        case CONTENT:
+            startContentTag(attributes);
             break;
 
         case DIAGNOSTIC:
@@ -65,6 +75,14 @@ public class XmlRequestHandlerHelper
 
         case ACCOUNT:
             endAccountTag(characters);
+            break;
+
+        case TWEET:
+            endTweetTag(characters);
+            break;
+
+        case CONTENT:
+            endContentTag(characters);
             break;
 
         case DIAGNOSTIC:
@@ -106,6 +124,16 @@ public class XmlRequestHandlerHelper
         account.setName(name);
     }
 
+    private void startTweetTag( Attributes attributes ) throws SAXException {
+        throwMissingParentTagIf(account == null, "Tweet", "Account");
+
+        tweet = new XmlTweet();
+    }
+
+    private void startContentTag( Attributes attributes ) throws SAXException {
+        throwMissingParentTagIf(tweet == null, "Content", "Tweet");
+    }
+
     private void startDiagnosticTag( Attributes attributes ) {
         String number = attributes.getValue("number");
         Integer value = Integer.parseInt(number, 10);
@@ -127,8 +155,15 @@ public class XmlRequestHandlerHelper
     }
 
     private void endAccountTag( String characters ) {
-        account.setMessage(characters);
         job.addAccount(account);
+    }
+
+    private void endTweetTag( String characters ) {
+        account.addTweet(tweet);
+    }
+
+    private void endContentTag( String characters ) {
+        tweet.setContent(characters);
     }
 
     private void endDiagnosticTag( String characters ) {

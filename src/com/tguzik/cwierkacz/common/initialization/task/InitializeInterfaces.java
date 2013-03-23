@@ -10,15 +10,16 @@ import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.common.configuration.InterfaceConfiguration;
 import com.tguzik.cwierkacz.common.configuration.SingleInterfaceConfiguration;
 import com.tguzik.cwierkacz.common.initialization.InitializationState;
+import com.tguzik.cwierkacz.server.ApplicationContext;
 import com.tguzik.cwierkacz.server.interfaces.AbstractSocketInterface;
 import com.tguzik.cwierkacz.server.interfaces.xmlserver.XmlServerInterface;
 
-public final class InitInterfaces implements
-                                 InitializationTask<ImmutableMap<String, AbstractSocketInterface>>
+public final class InitializeInterfaces implements
+                                       InitializationTask<ImmutableMap<String, AbstractSocketInterface>>
 {
     private final Future<InitializationState> futureState;
 
-    public InitInterfaces( Future<InitializationState> futureState ) {
+    public InitializeInterfaces( Future<InitializationState> futureState ) {
         this.futureState = futureState;
     }
 
@@ -39,10 +40,12 @@ public final class InitInterfaces implements
     private AbstractSocketInterface createMatchingInterface( SingleInterfaceConfiguration sic ) throws IOException,
                                                                                                InterruptedException,
                                                                                                ExecutionException {
+        Future<ApplicationContext> futureContext = futureState.get().getApplicationContext();
         String name = String.valueOf(sic.getName()).toLowerCase();
+
         switch ( name ) {
         case "xmlserver":
-            return new XmlServerInterface(getMainThreadPool(), sic);
+            return new XmlServerInterface(getMainThreadPool(), sic, futureContext);
 
         default:
             throw new IllegalArgumentException("Unknown interface " + name);
@@ -59,6 +62,6 @@ public final class InitInterfaces implements
 
     @Override
     public String getName( ) {
-        return "Interfaces";
+        return "Initialize Interfaces";
     }
 }
