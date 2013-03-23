@@ -1,10 +1,10 @@
-package com.tguzik.cwierkacz.common.initialization.task;
+package com.tguzik.cwierkacz.server.initialization.task;
 
 import java.util.concurrent.Future;
 
 import com.google.common.util.concurrent.SettableFuture;
-import com.tguzik.cwierkacz.common.initialization.InitializationState;
 import com.tguzik.cwierkacz.server.ApplicationContext;
+import com.tguzik.cwierkacz.server.initialization.InitializationState;
 
 public class InitializeApplicationContext implements InitializationTask<Void>
 {

@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.common.initialization;
+package com.tguzik.cwierkacz.server.initialization;
 
 import java.util.concurrent.ThreadPoolExecutor;
 

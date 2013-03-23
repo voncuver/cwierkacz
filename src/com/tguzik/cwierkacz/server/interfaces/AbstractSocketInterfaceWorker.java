@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tguzik.cwierkacz.common.data.ApplicationProcessingData;
+import com.tguzik.cwierkacz.common.data.RequestData;
 import com.tguzik.cwierkacz.utils.annotation.SingleThreaded;
 
 @SingleThreaded
@@ -36,11 +37,11 @@ public abstract class AbstractSocketInterfaceWorker implements Runnable
             input = new BufferedInputStream(clientSocket.getInputStream());
             writer = new PrintWriter(clientSocket.getOutputStream(), true);
 
-            ApplicationProcessingData data = createRequest(input);
-            preprocessing(data);
-            process(data);
-            sendResponse(writer, createResponse(data));
-            postprocessing(data);
+            RequestData rd = createRequestData(input);
+            ApplicationProcessingData apd = preprocessing(rd);
+            process(apd);
+            sendResponse(writer, createResponse(apd));
+            postprocessing(apd);
         }
         catch ( Exception e ) {
             LOGGER.error("Exception caught while processing", e);
@@ -73,15 +74,15 @@ public abstract class AbstractSocketInterfaceWorker implements Runnable
         sendResponse(writer, produceErrorResponse(caught));
     }
 
-    abstract protected void preprocessing( ApplicationProcessingData data ) throws Exception;
+    abstract protected RequestData createRequestData( InputStream inputStream ) throws Exception;
 
-    abstract protected void postprocessing( ApplicationProcessingData data ) throws Exception;
-
-    abstract protected String produceErrorResponse( Exception e );
-
-    abstract protected ApplicationProcessingData createRequest( InputStream inputStream ) throws Exception;
+    abstract protected ApplicationProcessingData preprocessing( RequestData rd ) throws Exception;
 
     abstract protected void process( ApplicationProcessingData data ) throws Exception;
 
     abstract protected String createResponse( ApplicationProcessingData data ) throws Exception;
+
+    abstract protected void postprocessing( ApplicationProcessingData data ) throws Exception;
+
+    abstract protected String produceErrorResponse( Exception e );
 }

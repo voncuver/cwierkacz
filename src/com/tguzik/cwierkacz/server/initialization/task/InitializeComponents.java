@@ -1,11 +1,11 @@
-package com.tguzik.cwierkacz.common.initialization.task;
+package com.tguzik.cwierkacz.server.initialization.task;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.Future;
 
 import com.google.common.base.Objects;
 import com.tguzik.cwierkacz.common.Initializable;
-import com.tguzik.cwierkacz.common.initialization.InitializationState;
+import com.tguzik.cwierkacz.server.initialization.InitializationState;
 
 public class InitializeComponents implements InitializationTask<Void>
 {

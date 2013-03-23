@@ -1,10 +1,10 @@
-package com.tguzik.cwierkacz.common.initialization.task;
+package com.tguzik.cwierkacz.server.initialization.task;
 
 import java.util.concurrent.Future;
 
 import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.common.configuration.reader.ConfigurationReader;
-import com.tguzik.cwierkacz.common.initialization.InitializationState;
+import com.tguzik.cwierkacz.server.initialization.InitializationState;
 
 public final class InitializeConfiguration implements InitializationTask<ApplicationConfiguration>
 {

@@ -3,31 +3,31 @@ package com.tguzik.cwierkacz.cache.dataobject.key;
 import com.google.common.base.Objects;
 import com.tguzik.cwierkacz.cache.UniqueKey;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
-import com.tguzik.cwierkacz.common.data.traits.HasCustomerId;
+import com.tguzik.cwierkacz.common.data.traits.HasCustomerName;
 
 public class CustomerKey extends UniqueKey
 {
-    private final Integer customerId;
+    private final String customerName;
 
-    private CustomerKey( Integer customerId ) {
-        this.customerId = customerId;
+    private CustomerKey( String customerName ) {
+        this.customerName = customerName;
     }
 
     @Override
     public boolean apply( DataObject obj ) {
-        if ( obj instanceof HasCustomerId ) {
-            HasCustomerId vbo = (HasCustomerId) obj;
-            return Objects.equal(customerId, vbo.getCustomerId());
+        if ( obj instanceof HasCustomerName ) {
+            HasCustomerName vbo = (HasCustomerName) obj;
+            return Objects.equal(customerName, vbo.getCustomerName());
         }
 
         return false;
     }
 
-    public Integer getCustomerId( ) {
-        return customerId;
+    public String getCustomerName( ) {
+        return customerName;
     }
 
-    public static CustomerKey create( Integer customerId ) {
-        return new CustomerKey(customerId);
+    public static CustomerKey create( String customerName ) {
+        return new CustomerKey(customerName);
     }
 }

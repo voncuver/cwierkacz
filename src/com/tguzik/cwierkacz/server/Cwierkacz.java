@@ -7,7 +7,7 @@ import org.apache.commons.cli.PosixParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tguzik.cwierkacz.common.initialization.ApplicationInitialization;
+import com.tguzik.cwierkacz.server.initialization.ApplicationInitialization;
 
 public class Cwierkacz
 {

@@ -1,21 +1,21 @@
-package com.tguzik.cwierkacz.common.initialization;
+package com.tguzik.cwierkacz.server.initialization;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.google.common.util.concurrent.SettableFuture;
-import com.tguzik.cwierkacz.common.initialization.task.InitializationTask;
-import com.tguzik.cwierkacz.common.initialization.task.InitializeApplicationContext;
-import com.tguzik.cwierkacz.common.initialization.task.InitializeComponents;
-import com.tguzik.cwierkacz.common.initialization.task.InitializeConfiguration;
-import com.tguzik.cwierkacz.common.initialization.task.InitializeDataAccessor;
-import com.tguzik.cwierkacz.common.initialization.task.InitializeDatabaseService;
-import com.tguzik.cwierkacz.common.initialization.task.InitializeEndpointThreadPool;
-import com.tguzik.cwierkacz.common.initialization.task.InitializeInterfaces;
-import com.tguzik.cwierkacz.common.initialization.task.InitializeJobRepository;
-import com.tguzik.cwierkacz.common.initialization.task.InitializeMainThreadPool;
-import com.tguzik.cwierkacz.common.initialization.task.InitializeProcessors;
 import com.tguzik.cwierkacz.server.ApplicationContext;
+import com.tguzik.cwierkacz.server.initialization.task.InitializationTask;
+import com.tguzik.cwierkacz.server.initialization.task.InitializeApplicationContext;
+import com.tguzik.cwierkacz.server.initialization.task.InitializeComponents;
+import com.tguzik.cwierkacz.server.initialization.task.InitializeConfiguration;
+import com.tguzik.cwierkacz.server.initialization.task.InitializeDataAccessor;
+import com.tguzik.cwierkacz.server.initialization.task.InitializeDatabaseService;
+import com.tguzik.cwierkacz.server.initialization.task.InitializeEndpointThreadPool;
+import com.tguzik.cwierkacz.server.initialization.task.InitializeInterfaces;
+import com.tguzik.cwierkacz.server.initialization.task.InitializeJobRepository;
+import com.tguzik.cwierkacz.server.initialization.task.InitializeMainThreadPool;
+import com.tguzik.cwierkacz.server.initialization.task.InitializeProcessors;
 
 public class ApplicationInitialization
 {

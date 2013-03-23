@@ -6,7 +6,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import com.tguzik.cwierkacz.common.configuration.SingleInterfaceConfiguration;
-import com.tguzik.cwierkacz.component.xml.XmlConverter;
+import com.tguzik.cwierkacz.component.xml.converter.XmlConverter;
 import com.tguzik.cwierkacz.component.xml.request.XmlRequestParser;
 import com.tguzik.cwierkacz.component.xml.response.XmlResponseBuilder;
 import com.tguzik.cwierkacz.server.ApplicationContext;

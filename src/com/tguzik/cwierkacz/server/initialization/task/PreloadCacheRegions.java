@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.common.initialization.task;
+package com.tguzik.cwierkacz.server.initialization.task;
 
 import java.util.concurrent.Future;
 
@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.tguzik.cwierkacz.cache.CacheRegion;
 import com.tguzik.cwierkacz.cache.DataAccessor;
 import com.tguzik.cwierkacz.cache.GeneralKey;
-import com.tguzik.cwierkacz.common.initialization.InitializationState;
+import com.tguzik.cwierkacz.server.initialization.InitializationState;
 
 public class PreloadCacheRegions implements InitializationTask<Void>
 {

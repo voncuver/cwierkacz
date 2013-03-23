@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.common.initialization.task;
+package com.tguzik.cwierkacz.server.initialization.task;
 
 import java.util.concurrent.Callable;
 

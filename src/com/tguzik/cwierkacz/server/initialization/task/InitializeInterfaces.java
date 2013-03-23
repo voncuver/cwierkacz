@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.common.initialization.task;
+package com.tguzik.cwierkacz.server.initialization.task;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -9,8 +9,8 @@ import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.common.configuration.InterfaceConfiguration;
 import com.tguzik.cwierkacz.common.configuration.SingleInterfaceConfiguration;
-import com.tguzik.cwierkacz.common.initialization.InitializationState;
 import com.tguzik.cwierkacz.server.ApplicationContext;
+import com.tguzik.cwierkacz.server.initialization.InitializationState;
 import com.tguzik.cwierkacz.server.interfaces.AbstractSocketInterface;
 import com.tguzik.cwierkacz.server.interfaces.xmlserver.XmlServerInterface;
 

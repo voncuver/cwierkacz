@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.common.initialization;
+package com.tguzik.cwierkacz.server.initialization;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
-import com.tguzik.cwierkacz.common.initialization.task.InitializationTask;
+import com.tguzik.cwierkacz.server.initialization.task.InitializationTask;
 
 public class ParallelLoader
 {

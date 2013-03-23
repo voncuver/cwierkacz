@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.common.initialization.task;
+package com.tguzik.cwierkacz.server.initialization.task;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -8,19 +8,19 @@ import java.util.concurrent.TimeUnit;
 
 import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.common.configuration.ThreadPoolConfiguration;
-import com.tguzik.cwierkacz.common.initialization.InitializationState;
+import com.tguzik.cwierkacz.server.initialization.InitializationState;
 
-public final class InitializeEndpointThreadPool implements InitializationTask<ThreadPoolExecutor>
+public class InitializeMainThreadPool implements InitializationTask<ThreadPoolExecutor>
 {
     private final Future<InitializationState> futureState;
 
-    public InitializeEndpointThreadPool( Future<InitializationState> futureState ) {
+    public InitializeMainThreadPool( Future<InitializationState> futureState ) {
         this.futureState = futureState;
     }
 
     @Override
     public ThreadPoolExecutor call( ) throws Exception {
-        ThreadPoolConfiguration configuration = getConfiguration().getEndpointThreadPoolConfiguration();
+        ThreadPoolConfiguration configuration = getConfiguration().getMainThreadPoolConfiguration();
 
         ThreadPoolExecutor threadPool = new ThreadPoolExecutor(configuration.getMinPoolSize(),
                                                                configuration.getMaxPoolSize(),
@@ -39,6 +39,6 @@ public final class InitializeEndpointThreadPool implements InitializationTask<Th
 
     @Override
     public String getName( ) {
-        return "Initialize Endpoint Thread Pool";
+        return "Initialize Main Thread Pool";
     }
 }

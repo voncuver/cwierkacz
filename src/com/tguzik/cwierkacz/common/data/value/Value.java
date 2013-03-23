@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.common.data;
+package com.tguzik.cwierkacz.common.data.value;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 

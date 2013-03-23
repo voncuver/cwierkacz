@@ -18,13 +18,6 @@ public class MultiLineNoClassNameToStringStyle extends org.apache.commons.lang3.
         this.setContentEnd(SystemUtils.LINE_SEPARATOR + "]");
     }
 
-    /**
-     * <p>
-     * Ensure <code>Singleton</code> after serialization.
-     * </p>
-     * 
-     * @return the singleton
-     */
     private Object readResolve( ) {
         return INSTANCE;
     }

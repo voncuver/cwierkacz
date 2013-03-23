@@ -8,7 +8,7 @@ public final class ResponseData extends StandardElement
 {
     private final Integer returnCode;
 
-    public ResponseData( Integer returnCode ) {
+    ResponseData( Integer returnCode ) {
         super();
         this.returnCode = returnCode;
     }

@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.common.initialization.task;
+package com.tguzik.cwierkacz.server.initialization.task;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -11,8 +11,8 @@ import com.tguzik.cwierkacz.common.Processor;
 import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.common.configuration.ProcessorsConfiguration;
 import com.tguzik.cwierkacz.common.configuration.SingleProcessorConfiguration;
-import com.tguzik.cwierkacz.common.initialization.InitializationState;
-import com.tguzik.cwierkacz.common.initialization.ProcessorFactory;
+import com.tguzik.cwierkacz.server.initialization.InitializationState;
+import com.tguzik.cwierkacz.server.initialization.ProcessorFactory;
 
 public class InitializeProcessors implements InitializationTask<ImmutableMap<String, Processor>>
 {

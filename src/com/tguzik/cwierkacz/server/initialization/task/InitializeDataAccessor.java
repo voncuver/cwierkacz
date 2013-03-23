@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.common.initialization.task;
+package com.tguzik.cwierkacz.server.initialization.task;
 
 import static com.tguzik.cwierkacz.common.configuration.CacheRegionConfiguration.DEFAULT;
 import static com.tguzik.cwierkacz.common.configuration.CacheRegionConfiguration.create;
@@ -20,8 +20,8 @@ import com.tguzik.cwierkacz.cache.loader.NoOperationDataObjectLoader;
 import com.tguzik.cwierkacz.cache.loader.SqlDataObjectLoader;
 import com.tguzik.cwierkacz.common.configuration.CacheConfiguration;
 import com.tguzik.cwierkacz.common.configuration.CacheRegionConfiguration;
-import com.tguzik.cwierkacz.common.initialization.InitializationState;
 import com.tguzik.cwierkacz.database.DatabaseService;
+import com.tguzik.cwierkacz.server.initialization.InitializationState;
 
 public final class InitializeDataAccessor implements InitializationTask<DataAccessor>
 {
