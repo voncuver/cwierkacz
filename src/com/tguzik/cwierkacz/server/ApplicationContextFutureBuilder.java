@@ -26,13 +26,13 @@ public class ApplicationContextFutureBuilder
     ApplicationContextFutureBuilder() {
     }
 
-    public ApplicationContextFutureBuilder withInterfacesByName( Future<ImmutableMap<String, AbstractSocketInterface>> interfacesByName ) {
-        this.interfacesByName = interfacesByName;
+    public ApplicationContextFutureBuilder withInterfacesByName( Future<ImmutableMap<String, AbstractSocketInterface>> interfaces ) {
+        this.interfacesByName = interfaces;
         return this;
     }
 
-    public ApplicationContextFutureBuilder withProcessorsByName( Future<ImmutableMap<String, Processor>> processorsByName ) {
-        this.processorsByName = processorsByName;
+    public ApplicationContextFutureBuilder withProcessorsByName( Future<ImmutableMap<String, Processor>> processors ) {
+        this.processorsByName = processors;
         return this;
     }
 

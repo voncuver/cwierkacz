@@ -17,7 +17,7 @@ import com.tguzik.cwierkacz.common.configuration.CacheRegionConfiguration;
 // FIXME: Add unit tests like, right now.
 public final class CacheRegion implements Initializable
 {
-    private final static Logger LOGGER = LoggerFactory.getLogger(CacheRegion.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CacheRegion.class);
     private final CacheRegionConfiguration configuration;
     private final Cache<UniqueKey, DataObject> cache;
     private final DataObjectLoader dao;

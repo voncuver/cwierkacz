@@ -55,6 +55,18 @@ public abstract class AbstractSocketInterfaceWorker implements Runnable
         }
     }
 
+    abstract protected RequestData createRequestData( InputStream inputStream ) throws Exception;
+
+    abstract protected ApplicationProcessingData preprocessing( RequestData rd ) throws Exception;
+
+    abstract protected void process( ApplicationProcessingData data ) throws Exception;
+
+    abstract protected String createResponse( ApplicationProcessingData data ) throws Exception;
+
+    abstract protected void postprocessing( ApplicationProcessingData data ) throws Exception;
+
+    abstract protected String produceErrorResponse( Exception e );
+
     private void sendResponse( PrintWriter writer, String response ) {
         try {
             LOGGER.info("[{}] Sending response: {}", originInterface, response); //TODO: Change to debug stream.
@@ -73,16 +85,4 @@ public abstract class AbstractSocketInterfaceWorker implements Runnable
 
         sendResponse(writer, produceErrorResponse(caught));
     }
-
-    abstract protected RequestData createRequestData( InputStream inputStream ) throws Exception;
-
-    abstract protected ApplicationProcessingData preprocessing( RequestData rd ) throws Exception;
-
-    abstract protected void process( ApplicationProcessingData data ) throws Exception;
-
-    abstract protected String createResponse( ApplicationProcessingData data ) throws Exception;
-
-    abstract protected void postprocessing( ApplicationProcessingData data ) throws Exception;
-
-    abstract protected String produceErrorResponse( Exception e );
 }

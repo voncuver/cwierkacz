@@ -79,7 +79,7 @@ public final class InitializeDataAccessor implements InitializationTask<DataAcce
     }
 
     private static < T > T select( T first, T second ) {
-        return ( first != null ? first : second );
+        return first != null ? first : second;
     }
 
     @SuppressWarnings( "unchecked" )

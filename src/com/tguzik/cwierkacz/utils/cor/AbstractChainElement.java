@@ -11,7 +11,7 @@ public abstract class AbstractChainElement< M, N > implements ChainOfResponsibil
     }
 
     @Override
-    final public void process( M state, N value ) throws Exception {
+    public final void process( M state, N value ) throws Exception {
         processInner(state, value);
         if ( nextInChain != null ) {
             nextInChain.process(state, value);
@@ -22,5 +22,5 @@ public abstract class AbstractChainElement< M, N > implements ChainOfResponsibil
         return name;
     }
 
-    abstract protected void processInner( M state, N value ) throws Exception;
+    protected abstract void processInner( M state, N value ) throws Exception;
 }

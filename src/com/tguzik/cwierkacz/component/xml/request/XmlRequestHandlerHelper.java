@@ -170,10 +170,10 @@ public class XmlRequestHandlerHelper
         // do nothing.
     }
 
-    private void throwAttributeMissingIfEmpty( String value, String attributeName, String parentTag ) throws SAXException {
+    private void throwAttributeMissingIfEmpty( String value, String attribute, String parentTag ) throws SAXException {
         if ( isBlank(value) ) {
             throw new SAXException(String.format("Attribute %s in <%s> is blank or missing",
-                                                 attributeName,
+                                                 attribute,
                                                  parentTag));
         }
     }

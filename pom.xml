@@ -78,6 +78,14 @@
 		<directory>dist</directory>
 		<finalName>cwierkacz</finalName>
 		<defaultGoal>package</defaultGoal>
+		<resources>
+			<resource>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+				<directory>src</directory>
+			</resource>
+		</resources>
 
 		<plugins>
 			<plugin>
@@ -89,10 +97,14 @@
 					<showDeprecation>true</showDeprecation>
 					<showWarnings>true</showWarnings>
 					<fork>true</fork>
+
 				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
@@ -100,6 +112,24 @@
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.0.1</version>
+				<configuration>
+					<outputDirectory>dist/reports/pmd/</outputDirectory>
+					<targetDirectory>dist/reports/pmd/</targetDirectory>
+					<targetJdk>1.7</targetJdk>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<configLocation>doc/!eclipse/checkstyle.xml</configLocation>
+					<outputDirectory>dist/reports/checkstyle/</outputDirectory>
+					<outputFile>dist/reports/checkstyle/checkstyle.xml</outputFile>
 				</configuration>
 			</plugin>
 		</plugins>
