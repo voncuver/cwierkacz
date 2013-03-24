@@ -1,32 +1,29 @@
 package com.tguzik.cwierkacz.common.data;
 
-import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.tguzik.cwierkacz.cache.dataobject.User;
-import com.tguzik.cwierkacz.common.Job;
 import com.tguzik.cwierkacz.common.data.diagnostics.Diagnostic;
+import com.tguzik.cwierkacz.common.data.value.CustomerName;
 
 public final class RequestDataBuilder
 {
-    private Owner owner;
-    private final Job requestedOperation;
-    private final ImmutableMultimap.Builder<User, UserMessage> userMessagesBuilder;
+    private CustomerName customerName;
+    private final ImmutableList.Builder<RequestedJob> requestedJobsBuilder;
     private final ImmutableSet.Builder<Diagnostic> requestedDiagnosticsBuilder;
 
     public RequestDataBuilder() {
-        this.owner = Owner.EMPTY;
-        this.requestedOperation = Job.NO_OPERATION;
-        this.userMessagesBuilder = ImmutableMultimap.builder();
+        this.customerName = CustomerName.EMPTY;
+        this.requestedJobsBuilder = ImmutableList.builder();
         this.requestedDiagnosticsBuilder = ImmutableSet.builder();
     }
 
-    public RequestDataBuilder withOwner( Owner owner ) {
-        this.owner = owner;
+    public RequestDataBuilder withCustomerName( CustomerName customerName ) {
+        this.customerName = customerName;
         return this;
     }
 
-    public RequestDataBuilder withUserMessage( User user, UserMessage message ) {
-        this.userMessagesBuilder.put(user, message);
+    public RequestDataBuilder withRequestedJob( RequestedJob requestedJob ) {
+        this.requestedJobsBuilder.add(requestedJob);
         return this;
     }
 
@@ -36,9 +33,8 @@ public final class RequestDataBuilder
     }
 
     public RequestData build( ) {
-        return new RequestData(owner,
-                               requestedOperation,
-                               userMessagesBuilder.build(),
+        return new RequestData(customerName,
+                               requestedJobsBuilder.build(),
                                requestedDiagnosticsBuilder.build());
     }
 }

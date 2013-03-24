@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.cache.DataAccessor;
 import com.tguzik.cwierkacz.common.Processor;
 import com.tguzik.cwierkacz.common.data.ApplicationProcessingData;
+import com.tguzik.cwierkacz.common.data.RequestedJob;
 
 public class CredentialsValidationProcessor implements Processor
 {
@@ -13,7 +14,7 @@ public class CredentialsValidationProcessor implements Processor
     }
 
     @Override
-    public void process( ApplicationProcessingData data ) {
+    public void process( ApplicationProcessingData data, RequestedJob job ) {
 
     }
 

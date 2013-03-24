@@ -24,8 +24,8 @@ public class ApplicationContextBuilder
     ApplicationContextBuilder() {
     }
 
-    public ApplicationContextBuilder withInterfacesByName( ImmutableMap<String, AbstractSocketInterface> interfacesByName ) {
-        this.interfacesByName = interfacesByName;
+    public ApplicationContextBuilder withInterfacesByName( ImmutableMap<String, AbstractSocketInterface> interfaces ) {
+        this.interfacesByName = interfaces;
         return this;
     }
 

@@ -1,0 +1,17 @@
+XmlRequest[
+  jobs=[XmlJob[
+  accounts=[XmlAccount[
+  tweets=[]
+  name=konto-na-twitterze-1
+], XmlAccount[
+  tweets=[]
+  name=konto-na-twitterze-2
+]]
+  cacheOnly=true
+  name=FETCH-TWEETS
+]]
+  requestedDiagnostics=[1]
+  customer=XmlCustomer[
+  name=UZYTKOWNIK
+]
+]

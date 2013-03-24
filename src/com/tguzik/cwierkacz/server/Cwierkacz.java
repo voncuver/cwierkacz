@@ -4,12 +4,10 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tguzik.cwierkacz.common.initialization.ApplicationInitialization;
+import com.tguzik.cwierkacz.server.initialization.ApplicationInitialization;
 
 public class Cwierkacz
 {
@@ -22,8 +20,6 @@ public class Cwierkacz
             LOGGER.info("Starting up...");
             context = new ApplicationInitialization(getConfigurationDirectory(args)).initialize();
             LOGGER.info("Initialization complete.");
-
-            System.out.println(ReflectionToStringBuilder.toString(context, ToStringStyle.MULTI_LINE_STYLE));
 
             Application.createAndRun(context);
         }

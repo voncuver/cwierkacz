@@ -1,6 +1,6 @@
 package com.tguzik.cwierkacz.utils.cor;
 
-public interface ChainOfResponsibility< T >
+public interface ChainOfResponsibility< M, N >
 {
-    public void process( T value ) throws Exception;
+    void process( M state, N value ) throws Exception;
 }

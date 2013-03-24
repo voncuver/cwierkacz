@@ -22,8 +22,7 @@ public abstract class AbstractSocketInterface implements Initializable, Callable
     private final String nameWithPort;
     private final short portNumber;
 
-    protected AbstractSocketInterface( String interfaceName, ThreadPoolExecutor threadPool, short portNumber )
-                                                                                                              throws IOException {
+    protected AbstractSocketInterface( String interfaceName, ThreadPoolExecutor threadPool, short portNumber ) throws IOException {
         this.nameWithPort = format("%s:%d", interfaceName, portNumber);
         this.serverSocket = new ServerSocket();
         this.threadPool = threadPool;
@@ -40,7 +39,10 @@ public abstract class AbstractSocketInterface implements Initializable, Callable
             }
         }
         catch ( Exception e ) {
-            LOGGER.error(format("[%s] Recieved exception %s:%s", nameWithPort, e.getClass().getName(), e.getMessage()));
+            LOGGER.error("[{}] Recieved exception {}:{}",
+                         nameWithPort,
+                         e.getClass().getName(),
+                         e.getMessage());
         }
         finally {
             shutdown();
@@ -49,14 +51,15 @@ public abstract class AbstractSocketInterface implements Initializable, Callable
     }
 
     @Override
-    public void initialize( ) throws IOException {
-        LOGGER.info(format("[%s] Binding socket...", nameWithPort));
+    public void initialize( ) throws Exception {
+        LOGGER.info("[{}] Binding socket...", nameWithPort);
 
         serverSocket.setSoTimeout(0);
         serverSocket.setReuseAddress(true);
+        serverSocket.setPerformancePreferences(2, 1, 0);
         serverSocket.bind(new InetSocketAddress(portNumber));
 
-        LOGGER.info(format("[%s] Socket bound, accepting connections", nameWithPort));
+        LOGGER.info("[{}] Socket bound, accepting connections", nameWithPort);
     }
 
     @Override
@@ -66,14 +69,14 @@ public abstract class AbstractSocketInterface implements Initializable, Callable
         }
 
         try {
-            LOGGER.info(format("[%s] Closing socket...", nameWithPort));
+            LOGGER.info("[{}] Closing socket...", nameWithPort);
             serverSocket.close();
         }
         catch ( IOException e ) {
-            LOGGER.error(format("[%s] Error during clean up: %s:%s",
-                                nameWithPort,
-                                e.getClass().getName(),
-                                e.getMessage()));
+            LOGGER.error("[{}] Error during clean up: {}:{}",
+                         nameWithPort,
+                         e.getClass().getName(),
+                         e.getMessage());
         }
     }
 

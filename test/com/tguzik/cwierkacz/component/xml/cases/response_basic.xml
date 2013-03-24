@@ -1,0 +1,29 @@
+<CwierkaczResponse returnCode="42">
+    <Job name="FETCH-TWEETS">
+        <CacheOnly/>
+        <Account name="konto-na-twitterze-1">
+            <Tweet account="" date="20130322T000100.000Z" id="1234">
+                <Content>Nasz tweet #1</Content>
+                <Tweet account="odpowiadajacy-1" date="20130323T001800.000Z" id="1235">
+                    <Content>Odpowiedz #1 na tweeta #1</Content>
+                </Tweet>
+                <Tweet account="odpowiadajacy-2" date="20130324T121200.000Z" id="1236">
+                    <Content>Odpowiedz #2 na tweeta #1</Content>
+                </Tweet>
+            </Tweet>
+        </Account>
+        <Account name="konto-na-twitterze-2">
+            <Tweet account="" date="20130320T010100.000Z" id="321">
+                <Content>Nasz tweet #2</Content>
+            </Tweet>
+            <Tweet account="" date="20130322T000100.000Z" id="4321">
+                <Content>Nasz tweet #3</Content>
+            </Tweet>
+        </Account>
+    </Job>
+    <!--
+============ Diagnostics =============
+Lorem Ipsum Dolor Sit Amet
+======================================
+-->
+</CwierkaczResponse>

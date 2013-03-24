@@ -1,6 +1,7 @@
 package com.tguzik.cwierkacz.common;
 
 import com.tguzik.cwierkacz.common.data.ApplicationProcessingData;
+import com.tguzik.cwierkacz.common.data.RequestedJob;
 
 public final class NoOperationProcessor implements Processor
 {
@@ -15,6 +16,6 @@ public final class NoOperationProcessor implements Processor
     }
 
     @Override
-    public void process( ApplicationProcessingData data ) {
+    public void process( ApplicationProcessingData data, RequestedJob job ) {
     }
 }
