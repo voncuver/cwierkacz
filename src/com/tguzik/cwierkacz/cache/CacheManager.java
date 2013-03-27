@@ -76,6 +76,11 @@ public final class CacheManager implements Initializable
         }
     }
 
+    /** For parallel preloading */
+    public ImmutableMap<Class<? extends DataObject>, CacheRegion> getRegionsByClass( ) {
+        return regionsByClass;
+    }
+
     public ImmutableMap<Class<? extends DataObject>, CacheStats> getCacheStats( ) {
         Builder<Class<? extends DataObject>, CacheStats> builder = ImmutableMap.builder();
 
