@@ -1,6 +1,7 @@
 package com.tguzik.cwierkacz.twitter;
 
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,12 +13,11 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 
+import com.google.common.collect.ImmutableList;
 import com.tguzik.cwierkacz.cache.dataobject.Tweet;
-import com.tguzik.cwierkacz.cache.dataobject.Tweets;
 import com.tguzik.cwierkacz.cache.dataobject.User;
-import com.tguzik.cwierkacz.twitter.converters.DateConverter;
 import com.tguzik.cwierkacz.twitter.converters.TweetConverter;
-import com.tguzik.cwierkacz.twitter.converters.TweetsConverter;
+import com.tguzik.cwierkacz.utils.DateUtil;
 
 /**
  * Class which represents twitter account - using this account we can for
@@ -26,19 +26,15 @@ import com.tguzik.cwierkacz.twitter.converters.TweetsConverter;
  * @author radek
  * 
  */
+//TODO(Tomek): Rewrite to a separate service that selected processors would be using.
 public class TwitterAccount
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TwitterAccount.class);
+    private static final DateTimeFormatter DATE_FORMATTER = DateUtil.formatterUTC();
+
+    protected final User user;
     protected Twitter twitter;
-
-    protected User user;
-
-    protected DateConverter dateConverter = new DateConverter();
-
-    protected TweetsConverter tweetsConverter = new TweetsConverter();
-
     protected TweetConverter tweetConverter = new TweetConverter();
-
-    private final Logger log = LoggerFactory.getLogger(TwitterAccount.class);
 
     /**
      * Initialize a twitter account
@@ -65,7 +61,7 @@ public class TwitterAccount
             return tweetConverter.toTweet(stat);
         }
         catch ( TwitterException e ) {
-            log.error(e.getMessage());
+            LOGGER.error(e.getMessage());
             throw new TwitterActionException(e.getMessage());
         }
     }
@@ -82,7 +78,7 @@ public class TwitterAccount
             twitter.destroyStatus(tweet.getExternalId());
         }
         catch ( TwitterException e ) {
-            log.error(e.getMessage());
+            LOGGER.error(e.getMessage(), e);
             throw new TwitterActionException(e.getMessage());
         }
     }
@@ -93,27 +89,29 @@ public class TwitterAccount
      * @param sinceDate
      * @throws TwitterActionException
      */
-    public Tweets getTweetsSince( LocalDate sinceDate ) throws TwitterActionException {
-
-        Query query = new Query("from:" + user.getName()).since(dateConverter.toTruncateStringDate(sinceDate));
+    public ImmutableList<Tweet> getTweetsSince( LocalDate sinceDate ) throws TwitterActionException {
+        String queryString = String.format("from:%s", user.getName());
+        Query query = new Query(queryString).since(DATE_FORMATTER.print(sinceDate));
         return queryToTweets(query);
     }
 
-    protected Tweets queryToTweets( Query query ) throws TwitterActionException {
-        Query mutableQuery = query;
+    protected ImmutableList<Tweet> queryToTweets( Query query ) throws TwitterActionException {
+        ImmutableList.Builder<Tweet> builder = ImmutableList.builder();
         QueryResult result;
-        Tweets tweets = new Tweets();
+
         try {
             do {
-                result = twitter.search(mutableQuery);
-                tweets.addTweets(tweetsConverter.toTweets(result.getTweets()));
+                result = twitter.search(query);
+                for ( Status status : result.getTweets() ) {
+                    builder.add(tweetConverter.toTweet(status));
+                }
             }
             while ( ( query = result.nextQuery() ) != null );
 
-            return tweets;
+            return builder.build();
         }
         catch ( TwitterException e ) {
-            log.error(e.getMessage());
+            LOGGER.error(e.getMessage(), e);
             throw new TwitterActionException(e.getMessage());
         }
     }
@@ -125,7 +123,8 @@ public class TwitterAccount
             AccessToken token = new AccessToken(user.getAccessToken(), user.getAccessTokenSecret());
             twitter = factory.getInstance(token);
         }
-        else
+        else {
             throw new TwitterAuthenticationException("Simple authentication and oAuth authentication impossible");
+        }
     }
 }

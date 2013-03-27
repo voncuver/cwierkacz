@@ -13,14 +13,11 @@ import com.tguzik.cwierkacz.cache.dataobject.User;
 
 public class OAuthAuthentication
 {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(OAuthAuthentication.class);
+    private static final TwitterFactory FACTORY = new TwitterFactory();
     private final User user;
-
-    private RequestToken requestToken;
-
     private final Twitter twitter;
-
-    private final Logger log = LoggerFactory.getLogger(OAuthAuthentication.class);
+    private RequestToken requestToken;
 
     /**
      * initialize user authentication service
@@ -30,8 +27,7 @@ public class OAuthAuthentication
      */
     public OAuthAuthentication( User user ) {
         this.user = user;
-        TwitterFactory factory = new TwitterFactory();
-        this.twitter = factory.getInstance();
+        this.twitter = FACTORY.getInstance();
     }
 
     /**
@@ -39,10 +35,7 @@ public class OAuthAuthentication
      * if user have saved access token and secret
      */
     public boolean isAuthenticate( ) {
-        if ( user.getAccessToken() == null || user.getAccessTokenSecret() == null )
-            return false;
-        else
-            return true;
+        return user.getAccessToken() != null && user.getAccessTokenSecret() != null;
     }
 
     /**
@@ -56,7 +49,7 @@ public class OAuthAuthentication
             return requestToken.getAuthenticationURL();
         }
         catch ( TwitterException e ) {
-            log.error(e.getMessage());
+            LOGGER.error(e.getMessage());
             throw new TwitterAuthenticationException("Request token generation failure");
         }
     }
@@ -83,11 +76,11 @@ public class OAuthAuthentication
             return user;
         }
         catch ( TwitterException e ) {
-            log.error(e.getMessage());
+            LOGGER.error(e.getMessage());
             throw new TwitterAuthenticationException("Access token generation failure");
         }
         catch ( IllegalStateException e ) {
-            log.error(e.getMessage());
+            LOGGER.error(e.getMessage());
             throw new TwitterAuthenticationException("Access token generation failure - no token available");
         }
 

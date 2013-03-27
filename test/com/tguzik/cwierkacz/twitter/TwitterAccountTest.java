@@ -8,8 +8,8 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
 import com.tguzik.cwierkacz.cache.dataobject.Tweet;
-import com.tguzik.cwierkacz.cache.dataobject.Tweets;
 import com.tguzik.cwierkacz.cache.dataobject.User;
 
 public class TwitterAccountTest
@@ -23,7 +23,7 @@ public class TwitterAccountTest
 
     @Before
     public void setUp( ) throws Exception {
-        User user = new User(77L, username);
+        User user = User.create(77L, username);
         user.grantAccess(accessToken, accessTokenSecret);
         account = new TwitterAccount(user);
     }
@@ -43,7 +43,7 @@ public class TwitterAccountTest
     public void testGetTweetsSince( ) throws TwitterActionException {
         fail("Not working yet");
         //TODO
-        Tweets tt = account.getTweetsSince(new LocalDate(2013, 3, 22));
+        ImmutableList<Tweet> tt = account.getTweetsSince(new LocalDate(2013, 3, 22));
     }
 
 }

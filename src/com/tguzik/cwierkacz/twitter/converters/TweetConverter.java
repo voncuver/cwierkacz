@@ -3,17 +3,19 @@ package com.tguzik.cwierkacz.twitter.converters;
 import twitter4j.Status;
 
 import com.tguzik.cwierkacz.cache.dataobject.Tweet;
+import com.tguzik.cwierkacz.utils.DateUtil;
 
 public class TweetConverter
 {
+
     protected UserConverter userConverter = new UserConverter();
-    protected DateConverter dateConverter = new DateConverter();
 
     public Tweet toTweet( Status status ) {
-        Tweet tweet = new Tweet(status.getId(),
-                                userConverter.toModelUser(status.getUser()),
-                                dateConverter.toDate(status.getCreatedAt()),
-                                status.getText());
+        Tweet tweet = Tweet.create(status.getId(),
+                                   status.getInReplyToStatusId(),
+                                   status.getUser().getId(),
+                                   DateUtil.convertDateUTC(status.getCreatedAt()),
+                                   status.getText());
         return tweet;
     }
 }

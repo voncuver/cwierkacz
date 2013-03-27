@@ -10,5 +10,4 @@ public abstract class GeneralKey implements Key<DataObject>
             return true;
         }
     };
-
 }

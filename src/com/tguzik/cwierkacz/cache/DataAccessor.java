@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.cache.dataobject.Customer;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
-import com.tguzik.cwierkacz.cache.dataobject.Tweets;
+import com.tguzik.cwierkacz.cache.dataobject.Tweet;
 import com.tguzik.cwierkacz.cache.dataobject.key.CustomerKey;
 import com.tguzik.cwierkacz.common.Initializable;
 
@@ -46,7 +46,7 @@ public final class DataAccessor implements Initializable
     }
 
     public static ImmutableList<Class<? extends DataObject>> getAvailableCacheRegions( ) {
-        return ImmutableList.of(Customer.class, Tweets.class);
+        return ImmutableList.of(Customer.class, Tweet.class);
     }
 
     public static DataAccessor create( CacheManager cacheManager ) {
@@ -55,9 +55,6 @@ public final class DataAccessor implements Initializable
 
     @Override
     public String toString( ) {
-        StringBuilder builder = new StringBuilder("AptAccessor stats: \n");
-        MAP_JOINER.appendTo(builder, getCacheStats().entrySet());
-
-        return builder.toString();
+        return "AptAccessor stats: \n" + MAP_JOINER.join(getCacheStats().entrySet());
     }
 }

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.tguzik.cwierkacz.cache.dataobject.User;
@@ -23,7 +24,7 @@ public class OAuthAuthenticationTest
 
     @Before
     public void setUp( ) throws Exception {
-        user = new User(22L, "cwierkacz1");
+        user = User.create(22L, "cwierkacz1");
         userAuthentication = new OAuthAuthentication(user);
     }
 
@@ -51,7 +52,9 @@ public class OAuthAuthenticationTest
     }
 
     //NO AUTOMATIC TEST - probably to MOVE from this class
+    //Tomek: Ok, now here's a little philosophy question, why do we have manual tests in our automatic unit test suite? :) (Added @Ignore)
     @Test
+    @Ignore
     public void testComplexAuthentication( ) throws IOException,
                                             TwitterAuthenticationException,
                                             InterruptedException {
@@ -59,7 +62,7 @@ public class OAuthAuthenticationTest
 
         System.out.println("Enter your twitter username: for example 'cwierkacz1'");
         String username = br.readLine();
-        user = new User(22L, username);
+        user = User.create(22L, username);
         userAuthentication = new OAuthAuthentication(user);
 
         String url = userAuthentication.getAuthenticationURL();

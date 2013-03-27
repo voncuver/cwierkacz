@@ -1,6 +1,6 @@
 package com.tguzik.cwierkacz.cache.dataobject;
 
-import org.joda.time.LocalDate;
+import org.joda.time.DateTime;
 
 import com.tguzik.cwierkacz.cache.UniqueKey;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
@@ -15,32 +15,17 @@ import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 @ReflectionInstanitation
 public final class Tweet extends DataObject
 {
-    //TODO consider adding a internal id
-
     private final Long externalId;
-
-    private final User tweetCreator;
-
-    private final LocalDate cratedDate;
-
+    private final Long inReplyTo;
+    private final Long creatorId;
+    private final DateTime cratedDate;
     private final String text;
 
-    private Tweets reTweet;
-
-    /**
-     * Initialize a single tweet
-     * 
-     * @param externalId
-     *            Identifier of tweet - same as stored in twitter db
-     * @param tweetCreator
-     *            user which create this tweet
-     * @param cratedDate
-     *            date of this tweet creation
-     */
-    public Tweet( Long externalId, User tweetCreator, LocalDate cratedDate, String text ) {
-        this.tweetCreator = tweetCreator;
+    private Tweet( Long externalId, Long inReplyTo, Long creatorId, DateTime cratedDate, String text ) {
+        this.creatorId = creatorId;
         this.cratedDate = cratedDate;
         this.externalId = externalId;
+        this.inReplyTo = inReplyTo;
         this.text = text;
     }
 
@@ -53,22 +38,15 @@ public final class Tweet extends DataObject
     /**
      * returns a user which created this tweet
      */
-    public User getTweetCreator( ) {
-        return tweetCreator;
+    public Long getCreatorId( ) {
+        return creatorId;
     }
 
     /**
      * returns a date when this tweet was created
      */
-    public LocalDate getCratedDate( ) {
+    public DateTime getCratedDate( ) {
         return cratedDate;
-    }
-
-    /**
-     * returns a list of reply tweet
-     */
-    public Tweets getReTweet( ) {
-        return reTweet;
     }
 
     /**
@@ -78,13 +56,8 @@ public final class Tweet extends DataObject
         return externalId;
     }
 
-    /**
-     * add list of reply tweet to current tweet
-     * 
-     * @param reTweet
-     */
-    public void setReTweet( Tweets reTweet ) {
-        this.reTweet = reTweet;
+    public Long getInReplyTo( ) {
+        return inReplyTo;
     }
 
     /**
@@ -92,5 +65,13 @@ public final class Tweet extends DataObject
      */
     public String getText( ) {
         return text;
+    }
+
+    public static Tweet create( Long externalId,
+                                Long inReplyTo,
+                                Long creatorId,
+                                DateTime cratedDate,
+                                String text ) {
+        return new Tweet(externalId, inReplyTo, creatorId, cratedDate, text);
     }
 }

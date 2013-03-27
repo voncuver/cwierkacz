@@ -13,12 +13,22 @@ public final class User extends DataObject
     //TODO add properties enabling log in by oAuth instead login/password
 
     private final Long externalId;
-
     private final String name;
-
     private String accessToken;
-
     private String accessTokenSecret;
+
+    /**
+     * create instance of user
+     * 
+     * @param externalId
+     *            Identifier of user - same as stored in twitter db
+     * @param name
+     *            name of user
+     */
+    User( Long externalId, String name ) {
+        this.name = name;
+        this.externalId = externalId;
+    }
 
     @Override
     public UniqueKey getUniqueKey( ) {
@@ -41,19 +51,6 @@ public final class User extends DataObject
     }
 
     /**
-     * create instance of user
-     * 
-     * @param externalId
-     *            Identifier of user - same as stored in twitter db
-     * @param name
-     *            name of user
-     */
-    public User( Long externalId, String name ) {
-        this.name = name;
-        this.externalId = externalId;
-    }
-
-    /**
      * returns a access token for this user
      */
     public String getAccessToken( ) {
@@ -73,6 +70,7 @@ public final class User extends DataObject
      * @param accessToken
      * @param accessTokenSecret
      */
+    // FIXME(Tomek): Do we need that? It won't propagate to database by itself anyway.
     public void grantAccess( String accessToken, String accessTokenSecret ) {
         this.accessToken = accessToken;
         this.accessTokenSecret = accessTokenSecret;
@@ -82,9 +80,10 @@ public final class User extends DataObject
      * returns information if oAuth authentication is available
      */
     public boolean oAuthAuthenticationAvailable( ) {
-        if ( accessToken == null || accessTokenSecret == null )
-            return false;
-        else
-            return true;
+        return accessToken != null && accessTokenSecret != null;
+    }
+
+    public static User create( long externalId, String accountName ) {
+        return new User(externalId, accountName);
     }
 }
