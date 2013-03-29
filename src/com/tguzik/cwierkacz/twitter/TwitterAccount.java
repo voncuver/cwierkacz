@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -30,7 +31,7 @@ import com.tguzik.cwierkacz.utils.DateUtil;
 public class TwitterAccount
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(TwitterAccount.class);
-    private static final DateTimeFormatter DATE_FORMATTER = DateUtil.formatterUTC();
+    private static final DateTimeFormatter DATE_FORMATTER = DateUtil.formatterYyyyMMddUTC();
 
     protected final User user;
     protected Twitter twitter;
@@ -57,7 +58,54 @@ public class TwitterAccount
      */
     public Tweet composeNewTweet( String msg ) throws TwitterActionException {
         try {
+            validateTweetMsg(msg);
             Status stat = twitter.updateStatus(msg);
+            return tweetConverter.toTweet(stat);
+        }
+        catch ( TwitterException e ) {
+            LOGGER.error(e.getMessage());
+            throw new TwitterActionException(e.getMessage());
+        }
+    }
+
+    /**
+     * Method which compose new reply tweet in Tweeter account
+     * 
+     * @param msg
+     *            textual representation of tweet
+     * @param mainTweetId
+     *            identifier of tweet for which we reply
+     * @throws TwitterActionException
+     */
+    public Tweet composeNewReplyTweet( String msg, Tweet mainTweet ) throws TwitterActionException {
+        try {
+            validateTweetMsg(msg);
+            StatusUpdate update = new StatusUpdate(msg);
+            update.setInReplyToStatusId(mainTweet.getExternalId());
+            Status stat = twitter.updateStatus(update);
+            return tweetConverter.toTweet(stat);
+        }
+        catch ( TwitterException e ) {
+            LOGGER.error(e.getMessage());
+            throw new TwitterActionException(e.getMessage());
+        }
+    }
+
+    /**
+     * Method which compose new re tweet in Tweeter account
+     * 
+     * @param msg
+     *            textual representation of tweet
+     * @param mainTweetId
+     *            identifier of tweet for which we create reTweet
+     * @throws TwitterActionException
+     */
+    public Tweet composeNewReTweet( Tweet mainTweet ) throws TwitterActionException {
+        try {
+            if ( mainTweet.getCreatorId().compareTo(user.getExternalId()) == 0 )
+                throw new TwitterActionException("You cannot retweet himself");
+
+            Status stat = twitter.retweetStatus(mainTweet.getExternalId());
             return tweetConverter.toTweet(stat);
         }
         catch ( TwitterException e ) {
@@ -124,7 +172,12 @@ public class TwitterAccount
             twitter = factory.getInstance(token);
         }
         else {
-            throw new TwitterAuthenticationException("Simple authentication and oAuth authentication impossible");
+            throw new TwitterAuthenticationException("oAuth authentication impossible");
         }
+    }
+
+    protected void validateTweetMsg( String msg ) throws TwitterActionException {
+        if ( msg.length() > 140 )
+            throw new TwitterActionException("Size of tweeter message can't be grather than 140");
     }
 }
