@@ -11,11 +11,11 @@ import com.tguzik.cwierkacz.common.configuration.InterfaceConfiguration;
 import com.tguzik.cwierkacz.common.configuration.SingleInterfaceConfiguration;
 import com.tguzik.cwierkacz.server.ApplicationContext;
 import com.tguzik.cwierkacz.server.initialization.InitializationState;
-import com.tguzik.cwierkacz.server.interfaces.AbstractSocketInterface;
+import com.tguzik.cwierkacz.server.interfaces.socket.AbstractServerSocketInterface;
 import com.tguzik.cwierkacz.server.interfaces.xmlserver.XmlServerInterface;
 
 public final class InitializeInterfaces implements
-                                       InitializationTask<ImmutableMap<String, AbstractSocketInterface>>
+                                       InitializationTask<ImmutableMap<String, AbstractServerSocketInterface>>
 {
     private final Future<InitializationState> futureState;
 
@@ -24,8 +24,8 @@ public final class InitializeInterfaces implements
     }
 
     @Override
-    public ImmutableMap<String, AbstractSocketInterface> call( ) throws Exception {
-        ImmutableMap.Builder<String, AbstractSocketInterface> builder = ImmutableMap.builder();
+    public ImmutableMap<String, AbstractServerSocketInterface> call( ) throws Exception {
+        ImmutableMap.Builder<String, AbstractServerSocketInterface> builder = ImmutableMap.builder();
         InterfaceConfiguration interfaces = getConfiguration().getInterfaceConfigurations();
 
         for ( SingleInterfaceConfiguration sic : interfaces.getInterfaces() ) {
@@ -37,7 +37,7 @@ public final class InitializeInterfaces implements
         return builder.build();
     }
 
-    private AbstractSocketInterface createMatchingInterface( SingleInterfaceConfiguration sic ) throws IOException,
+    private AbstractServerSocketInterface createMatchingInterface( SingleInterfaceConfiguration sic ) throws IOException,
                                                                                                InterruptedException,
                                                                                                ExecutionException {
         Future<ApplicationContext> futureContext = futureState.get().getApplicationContext();

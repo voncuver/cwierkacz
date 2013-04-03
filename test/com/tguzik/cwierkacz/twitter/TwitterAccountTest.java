@@ -7,8 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
+import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
 import com.tguzik.cwierkacz.cache.dataobject.Tweet;
-import com.tguzik.cwierkacz.cache.dataobject.User;
 
 public class TwitterAccountTest
 {
@@ -22,8 +22,11 @@ public class TwitterAccountTest
 
     @Before
     public void setUp( ) throws Exception {
-        User user = User.create(userId, username);
-        user.grantAccess(accessToken, accessTokenSecret);
+        FunctionalAccount user = FunctionalAccount.create(userId,
+                                                          -1,
+                                                          username,
+                                                          accessToken,
+                                                          accessTokenSecret);
         account = new TwitterAccount(user);
     }
 
@@ -78,7 +81,7 @@ public class TwitterAccountTest
         System.out.println("============");
 
         for ( int i = 0; i < tweets.size(); i++ ) {
-            System.out.println(tweets.get(i).getExternalId());
+            System.out.println(tweets.get(i).getTweetId());
             System.out.println(tweets.get(i).getText());
             System.out.println(tweets.get(i).getInReplyTo());
             System.out.println("==============");

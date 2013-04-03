@@ -1,7 +1,6 @@
-package com.tguzik.cwierkacz.server.interfaces;
+package com.tguzik.cwierkacz.server.interfaces.socket;
 
 import java.io.BufferedInputStream;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -9,21 +8,25 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tguzik.cwierkacz.common.data.ApplicationProcessingData;
-import com.tguzik.cwierkacz.common.data.RequestData;
+import com.tguzik.cwierkacz.server.interfaces.ProtocolWorker;
 import com.tguzik.cwierkacz.utils.annotation.SingleThreaded;
 
 @SingleThreaded
-public abstract class AbstractSocketInterfaceWorker implements Runnable
+public class SocketWorker implements Runnable
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSocketInterfaceWorker.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SocketWorker.class);
+    private final ProtocolWorker protocolWorker;
     private final String remoteAddress;
     private final String originInterface;
     private final Socket clientSocket;
 
-    protected AbstractSocketInterfaceWorker( Socket clientSocket, String originInterface ) {
-        this.remoteAddress = String.valueOf(clientSocket.getRemoteSocketAddress());
+    private SocketWorker( Socket clientSocket,
+                          ProtocolWorker protocolWorker,
+                          String originInterface,
+                          String remoteAddress ) {
         this.originInterface = originInterface;
+        this.protocolWorker = protocolWorker;
+        this.remoteAddress = remoteAddress;
         this.clientSocket = clientSocket;
     }
 
@@ -37,11 +40,8 @@ public abstract class AbstractSocketInterfaceWorker implements Runnable
             input = new BufferedInputStream(clientSocket.getInputStream());
             writer = new PrintWriter(clientSocket.getOutputStream(), true);
 
-            RequestData rd = createRequestData(input);
-            ApplicationProcessingData apd = preprocessing(rd);
-            process(apd);
-            sendResponse(writer, createResponse(apd));
-            postprocessing(apd);
+            sendResponse(writer, protocolWorker.apply(input));
+            protocolWorker.postprocessing();
         }
         catch ( Exception e ) {
             LOGGER.error("Exception caught while processing", e);
@@ -54,18 +54,6 @@ public abstract class AbstractSocketInterfaceWorker implements Runnable
             LOGGER.info("[{}] Finished interacting with {}", originInterface, remoteAddress);
         }
     }
-
-    abstract protected RequestData createRequestData( InputStream inputStream ) throws Exception;
-
-    abstract protected ApplicationProcessingData preprocessing( RequestData rd ) throws Exception;
-
-    abstract protected void process( ApplicationProcessingData data ) throws Exception;
-
-    abstract protected String createResponse( ApplicationProcessingData data ) throws Exception;
-
-    abstract protected void postprocessing( ApplicationProcessingData data ) throws Exception;
-
-    abstract protected String produceErrorResponse( Exception e );
 
     private void sendResponse( PrintWriter writer, String response ) {
         try {
@@ -83,6 +71,15 @@ public abstract class AbstractSocketInterfaceWorker implements Runnable
             return;
         }
 
-        sendResponse(writer, produceErrorResponse(caught));
+        sendResponse(writer, protocolWorker.produceErrorResponse(caught));
+    }
+
+    public static SocketWorker create( Socket clientSocket,
+                                       String originInterface,
+                                       ProtocolWorker protocolWorker ) {
+        return new SocketWorker(clientSocket,
+                                protocolWorker,
+                                originInterface,
+                                String.valueOf(clientSocket.getRemoteSocketAddress()));
     }
 }

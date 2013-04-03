@@ -2,9 +2,9 @@ package com.tguzik.cwierkacz.common.data;
 
 import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.cache.dataobject.Customer;
-import com.tguzik.cwierkacz.cache.dataobject.TwitterAccount;
+import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
 import com.tguzik.cwierkacz.common.StandardElement;
-import com.tguzik.cwierkacz.common.data.value.TwitterAccountName;
+import com.tguzik.cwierkacz.common.data.value.FunctionalAccountName;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 
 @Immutable
@@ -15,14 +15,14 @@ public final class ApplicationProcessingData extends StandardElement
 
     // Information we pulled from cache/database
     private final Customer customer;
-    private final ImmutableMap<TwitterAccountName, TwitterAccount> accountsByName;
+    private final ImmutableMap<FunctionalAccountName, FunctionalAccount> accountsByName;
 
     // Placeholder for the response
     private final ResponseDataBuilder responseDataBuilder;
 
     ApplicationProcessingData( Customer owner,
                                RequestData requestData,
-                               ImmutableMap<TwitterAccountName, TwitterAccount> accountsByName ) {
+                               ImmutableMap<FunctionalAccountName, FunctionalAccount> accountsByName ) {
         this.responseDataBuilder = ResponseData.builder();
         this.accountsByName = accountsByName;
         this.requestData = requestData;
@@ -40,7 +40,7 @@ public final class ApplicationProcessingData extends StandardElement
     }
 
     /** Pulled from cache/database in preprocessing based on RequestData */
-    public ImmutableMap<TwitterAccountName, TwitterAccount> getAccountsByName( ) {
+    public ImmutableMap<FunctionalAccountName, FunctionalAccount> getAccountsByName( ) {
         return accountsByName;
     }
 

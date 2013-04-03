@@ -15,8 +15,8 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 
 import com.google.common.collect.ImmutableList;
+import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
 import com.tguzik.cwierkacz.cache.dataobject.Tweet;
-import com.tguzik.cwierkacz.cache.dataobject.User;
 import com.tguzik.cwierkacz.twitter.converters.TweetConverter;
 import com.tguzik.cwierkacz.utils.DateUtil;
 
@@ -33,7 +33,7 @@ public class TwitterAccount
     private static final Logger LOGGER = LoggerFactory.getLogger(TwitterAccount.class);
     private static final DateTimeFormatter DATE_FORMATTER = DateUtil.formatterYyyyMMddUTC();
 
-    protected final User user;
+    protected final FunctionalAccount user;
     protected Twitter twitter;
     protected TweetConverter tweetConverter = new TweetConverter();
 
@@ -44,7 +44,7 @@ public class TwitterAccount
      *            owner of this account
      * @throws TwitterAuthenticationException
      */
-    public TwitterAccount( User user ) throws TwitterAuthenticationException {
+    public TwitterAccount( FunctionalAccount user ) throws TwitterAuthenticationException {
         authenticate(user);
         this.user = user;
     }
@@ -81,7 +81,7 @@ public class TwitterAccount
         try {
             validateTweetMsg(msg);
             StatusUpdate update = new StatusUpdate(msg);
-            update.setInReplyToStatusId(mainTweet.getExternalId());
+            update.setInReplyToStatusId(mainTweet.getTweetId().toValue());
             Status stat = twitter.updateStatus(update);
             return tweetConverter.toTweet(stat);
         }
@@ -102,10 +102,10 @@ public class TwitterAccount
      */
     public Tweet composeNewReTweet( Tweet mainTweet ) throws TwitterActionException {
         try {
-            if ( mainTweet.getCreatorId().compareTo(user.getExternalId()) == 0 )
+            if ( mainTweet.getAccountId().equals(user.getAccountId()) )
                 throw new TwitterActionException("You cannot retweet himself");
 
-            Status stat = twitter.retweetStatus(mainTweet.getExternalId());
+            Status stat = twitter.retweetStatus(mainTweet.getTweetId().toValue());
             return tweetConverter.toTweet(stat);
         }
         catch ( TwitterException e ) {
@@ -123,7 +123,7 @@ public class TwitterAccount
      */
     public void deleteTweet( Tweet tweet ) throws TwitterActionException {
         try {
-            twitter.destroyStatus(tweet.getExternalId());
+            twitter.destroyStatus(tweet.getTweetId().toValue());
         }
         catch ( TwitterException e ) {
             LOGGER.error(e.getMessage(), e);
@@ -138,7 +138,7 @@ public class TwitterAccount
      * @throws TwitterActionException
      */
     public ImmutableList<Tweet> getTweetsSince( LocalDate sinceDate ) throws TwitterActionException {
-        String queryString = String.format("from:%s", user.getName());
+        String queryString = String.format("from:%s", user.getAccountName().toValue());
         Query query = new Query(queryString).since(DATE_FORMATTER.print(sinceDate));
         return queryToTweets(query);
     }
@@ -164,10 +164,10 @@ public class TwitterAccount
         }
     }
 
-    protected void authenticate( User user ) throws TwitterAuthenticationException {
+    protected void authenticate( FunctionalAccount user ) throws TwitterAuthenticationException {
         TwitterFactory factory = new TwitterFactory();
 
-        if ( user.oAuthAuthenticationAvailable() ) {
+        if ( user.isOAuthAvailable() ) {
             AccessToken token = new AccessToken(user.getAccessToken(), user.getAccessTokenSecret());
             twitter = factory.getInstance(token);
         }

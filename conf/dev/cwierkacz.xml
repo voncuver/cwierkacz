@@ -28,7 +28,7 @@
 	<cache-configuration>
 		<region>
 			<name>DEFAULT</name>
-			<maxObjects>5000</maxObjects>
+			<maxObjects>50000</maxObjects>
 			<cacheable>true</cacheable>
 			<preloadable>true</preloadable>
 			<disabled>false</disabled>
@@ -37,7 +37,7 @@
 
 		<region>
 			<name>TWEETS</name>
-			<maxObjects>20000</maxObjects>
+			<maxObjects>2000000</maxObjects>
 		</region>
 	</cache-configuration>
 </cwierkacz-configuration>

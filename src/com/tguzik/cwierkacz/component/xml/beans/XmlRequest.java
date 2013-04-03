@@ -13,19 +13,19 @@ public class XmlRequest extends StandardElement
 {
     private final List<XmlJob> jobs;
     private final Set<Integer> requestedDiagnostics;
-    private XmlCustomer customer;
+    private Long customerId;
 
     public XmlRequest() {
         this.requestedDiagnostics = Sets.newHashSet();
         this.jobs = Lists.newArrayList();
     }
 
-    public XmlCustomer getCustomer( ) {
-        return customer;
+    public Long getCustomerId( ) {
+        return customerId;
     }
 
-    public void setCustomer( XmlCustomer customer ) {
-        this.customer = customer;
+    public void setCustomerId( Long customerId ) {
+        this.customerId = customerId;
     }
 
     public List<XmlJob> getJobs( ) {

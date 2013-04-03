@@ -9,13 +9,13 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
-import com.tguzik.cwierkacz.cache.dataobject.User;
+import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
 
 public class OAuthAuthentication
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuthAuthentication.class);
     private static final TwitterFactory FACTORY = new TwitterFactory();
-    private final User user;
+    private final FunctionalAccount user;
     private final Twitter twitter;
     private RequestToken requestToken;
 
@@ -25,7 +25,7 @@ public class OAuthAuthentication
      * @param user
      *            user which we wont authenticate
      */
-    public OAuthAuthentication( User user ) {
+    public OAuthAuthentication( FunctionalAccount user ) {
         this.user = user;
         this.twitter = FACTORY.getInstance();
     }
@@ -66,14 +66,17 @@ public class OAuthAuthentication
      * @return user with access token and access token secret
      * @throws TwitterAuthenticationException
      */
-    public User authenticate( String pin, boolean forceAuthorizations ) throws TwitterAuthenticationException {
+    public FunctionalAccount authenticate( String pin, boolean forceAuthorizations ) throws TwitterAuthenticationException {
         if ( isAuthenticate() && !forceAuthorizations )
             return user;
 
         try {
             AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, pin);
-            user.grantAccess(accessToken.getToken(), accessToken.getTokenSecret());
-            return user;
+            return FunctionalAccount.create(user.getAccountId(),
+                                            user.getCustomerId(),
+                                            user.getAccountName(),
+                                            accessToken.getToken(),
+                                            accessToken.getTokenSecret());
         }
         catch ( TwitterException e ) {
             LOGGER.error(e.getMessage());
@@ -95,7 +98,7 @@ public class OAuthAuthentication
      * @return user with access token and access token secret
      * @throws TwitterAuthenticationException
      */
-    public User authenticate( String pin ) throws TwitterAuthenticationException {
+    public FunctionalAccount authenticate( String pin ) throws TwitterAuthenticationException {
         return authenticate(pin, false);
     }
 }

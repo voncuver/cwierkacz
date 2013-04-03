@@ -8,11 +8,11 @@ import com.tguzik.cwierkacz.common.Job;
 import com.tguzik.cwierkacz.common.Processor;
 import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.database.DatabaseService;
-import com.tguzik.cwierkacz.server.interfaces.AbstractSocketInterface;
+import com.tguzik.cwierkacz.server.interfaces.socket.AbstractServerSocketInterface;
 
 public class ApplicationContextBuilder
 {
-    private ImmutableMap<String, AbstractSocketInterface> interfacesByName;
+    private ImmutableMap<String, AbstractServerSocketInterface> interfacesByName;
     private ImmutableMap<String, Processor> processorsByName;
     private ImmutableMap<String, Job> jobsByName;
     private ApplicationConfiguration configuration;
@@ -24,7 +24,7 @@ public class ApplicationContextBuilder
     ApplicationContextBuilder() {
     }
 
-    public ApplicationContextBuilder withInterfacesByName( ImmutableMap<String, AbstractSocketInterface> interfaces ) {
+    public ApplicationContextBuilder withInterfacesByName( ImmutableMap<String, AbstractServerSocketInterface> interfaces ) {
         this.interfacesByName = interfaces;
         return this;
     }

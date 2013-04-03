@@ -24,8 +24,6 @@ import com.tguzik.cwierkacz.common.configuration.SingleInterfaceConfiguration;
 import com.tguzik.cwierkacz.common.configuration.SingleJobConfiguration;
 import com.tguzik.cwierkacz.common.configuration.SingleProcessorConfiguration;
 import com.tguzik.cwierkacz.common.configuration.ThreadPoolConfiguration;
-import com.tguzik.cwierkacz.common.configuration.reader.ConfigurationReader;
-import com.tguzik.cwierkacz.common.configuration.reader.XStreamConfigurationParser;
 import com.tguzik.cwierkacz.component.postprocessor.artifacts.ArtifactsProcessor;
 import com.tguzik.cwierkacz.component.postprocessor.email.EmailNotificationProcessor;
 import com.tguzik.cwierkacz.component.postprocessor.history.HistoryProcessor;
@@ -54,12 +52,12 @@ public class ApplicationDevConfigurationReaderTest
         assertEquals(2, conf.getRegionConfigs().size());
         verifyCacheConfig(conf.getRegionConfigs().get(0),
                           "DEFAULT",
-                          5000,
+                          50000,
                           true,
                           true,
                           false,
                           SqlDataObjectLoader.class);
-        verifyCacheConfig(conf.getRegionConfigs().get(1), "TWEETS", 20000, null, null, null, null);
+        verifyCacheConfig(conf.getRegionConfigs().get(1), "TWEETS", 2000000, null, null, null, null);
     }
 
     private void verifyCacheConfig( CacheRegionConfiguration conf,

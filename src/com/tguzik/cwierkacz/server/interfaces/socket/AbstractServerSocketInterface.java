@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.server.interfaces;
+package com.tguzik.cwierkacz.server.interfaces.socket;
 
 import static java.lang.String.format;
 
@@ -14,15 +14,15 @@ import org.slf4j.LoggerFactory;
 
 import com.tguzik.cwierkacz.common.Initializable;
 
-public abstract class AbstractSocketInterface implements Initializable, Callable<Void>
+public abstract class AbstractServerSocketInterface implements Initializable, Callable<Void>
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSocketInterface.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractServerSocketInterface.class);
     private final ThreadPoolExecutor threadPool;
     private final ServerSocket serverSocket;
     private final String nameWithPort;
     private final short portNumber;
 
-    protected AbstractSocketInterface( String interfaceName, ThreadPoolExecutor threadPool, short portNumber ) throws IOException {
+    protected AbstractServerSocketInterface( String interfaceName, ThreadPoolExecutor threadPool, short portNumber ) throws IOException {
         this.nameWithPort = format("%s:%d", interfaceName, portNumber);
         this.serverSocket = new ServerSocket();
         this.threadPool = threadPool;

@@ -3,6 +3,11 @@ package com.tguzik.cwierkacz.cache.dataobject;
 import org.joda.time.DateTime;
 
 import com.tguzik.cwierkacz.cache.UniqueKey;
+import com.tguzik.cwierkacz.cache.dataobject.key.TweetKey;
+import com.tguzik.cwierkacz.common.data.traits.HasFunctionalAccountId;
+import com.tguzik.cwierkacz.common.data.traits.HasTweetId;
+import com.tguzik.cwierkacz.common.data.value.FunctionalAccountId;
+import com.tguzik.cwierkacz.common.data.value.TweetId;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
 
@@ -13,7 +18,7 @@ import com.tguzik.cwierkacz.utils.annotation.ReflectionInstanitation;
  */
 @Immutable
 @ReflectionInstanitation
-public final class Tweet extends DataObject
+public final class Tweet extends DataObject implements HasFunctionalAccountId, HasTweetId
 {
     private final Long externalId;
     private final Long inReplyTo;
@@ -31,45 +36,34 @@ public final class Tweet extends DataObject
 
     @Override
     public UniqueKey getUniqueKey( ) {
-        // TODO Auto-generated method stub
-        return null;
+        return TweetKey.create(getTweetId());
     }
 
-    /**
-     * returns a user which created this tweet
-     */
-    public Long getCreatorId( ) {
-        return creatorId;
+    @Override
+    public FunctionalAccountId getAccountId( ) {
+        return FunctionalAccountId.create(creatorId);
     }
 
-    /**
-     * returns a date when this tweet was created
-     */
+    @Override
+    public TweetId getTweetId( ) {
+        return TweetId.create(externalId);
+    }
+
     public DateTime getCratedDate( ) {
         return cratedDate;
     }
 
-    /**
-     * returns a id stored in twitter
-     */
-    public Long getExternalId( ) {
-        return externalId;
+    public TweetId getInReplyTo( ) {
+        return TweetId.create(inReplyTo);
     }
 
-    public Long getInReplyTo( ) {
-        return inReplyTo;
-    }
-
-    /**
-     * returns text representation of tweet
-     */
     public String getText( ) {
         return text;
     }
 
     public static Tweet create( Long externalId,
-                                Long inReplyTo,
                                 Long creatorId,
+                                Long inReplyTo,
                                 DateTime cratedDate,
                                 String text ) {
         return new Tweet(externalId, inReplyTo, creatorId, cratedDate, text);

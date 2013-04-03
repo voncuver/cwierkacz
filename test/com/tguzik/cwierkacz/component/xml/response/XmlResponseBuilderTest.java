@@ -40,6 +40,7 @@ public class XmlResponseBuilderTest
         XmlJob job = new XmlJob();
 
         response.setReturnCode(42);
+        response.setCustomerId(12345L);
 
         job.setName("FETCH-TWEETS");
         job.setCacheOnly(true);

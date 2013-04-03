@@ -10,11 +10,11 @@ import com.tguzik.cwierkacz.common.Job;
 import com.tguzik.cwierkacz.common.Processor;
 import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.database.DatabaseService;
-import com.tguzik.cwierkacz.server.interfaces.AbstractSocketInterface;
+import com.tguzik.cwierkacz.server.interfaces.socket.AbstractServerSocketInterface;
 
 public class ApplicationContextFutureBuilder
 {
-    private Future<ImmutableMap<String, AbstractSocketInterface>> interfacesByName;
+    private Future<ImmutableMap<String, AbstractServerSocketInterface>> interfacesByName;
     private Future<ImmutableMap<String, Processor>> processorsByName;
     private Future<ThreadPoolExecutor> endpointThreadPool;
     private Future<ImmutableMap<String, Job>> jobsByName;
@@ -26,7 +26,7 @@ public class ApplicationContextFutureBuilder
     ApplicationContextFutureBuilder() {
     }
 
-    public ApplicationContextFutureBuilder withInterfacesByName( Future<ImmutableMap<String, AbstractSocketInterface>> interfaces ) {
+    public ApplicationContextFutureBuilder withInterfacesByName( Future<ImmutableMap<String, AbstractServerSocketInterface>> interfaces ) {
         this.interfacesByName = interfaces;
         return this;
     }

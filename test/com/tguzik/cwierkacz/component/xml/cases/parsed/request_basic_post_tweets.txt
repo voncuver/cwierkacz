@@ -35,7 +35,5 @@ XmlRequest[
   name=POST-TWEETS
 ]]
   requestedDiagnostics=[1, 2, 3]
-  customer=XmlCustomer[
-  name=UZYTKOWNIK
-]
+  customerId=1234
 ]

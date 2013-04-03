@@ -4,12 +4,9 @@ import com.google.common.collect.ImmutableMap;
 
 public enum XmlTags {
     REQUEST( "CwierkaczRequest" ),
-    CUSTOMER( "Customer" ),
     JOB( "Job" ),
-    CACHEONLY( "CacheOnly" ),
     ACCOUNT( "Account" ),
     TWEET( "Tweet" ),
-    CONTENT( "Content" ),
     DIAGNOSTIC( "Diagnostic" );
 
     private static final ImmutableMap<String, XmlTags> mappings = createMappings();

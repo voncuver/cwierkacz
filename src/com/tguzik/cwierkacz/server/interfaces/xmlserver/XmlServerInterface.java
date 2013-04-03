@@ -10,11 +10,13 @@ import com.tguzik.cwierkacz.component.xml.converter.XmlConverter;
 import com.tguzik.cwierkacz.component.xml.request.XmlRequestParser;
 import com.tguzik.cwierkacz.component.xml.response.XmlResponseBuilder;
 import com.tguzik.cwierkacz.server.ApplicationContext;
-import com.tguzik.cwierkacz.server.interfaces.AbstractSocketInterface;
+import com.tguzik.cwierkacz.server.interfaces.ProtocolWorker;
+import com.tguzik.cwierkacz.server.interfaces.socket.AbstractServerSocketInterface;
+import com.tguzik.cwierkacz.server.interfaces.socket.SocketWorker;
 import com.tguzik.cwierkacz.utils.annotation.SingleThreaded;
 
 @SingleThreaded
-public class XmlServerInterface extends AbstractSocketInterface
+public class XmlServerInterface extends AbstractServerSocketInterface
 {
     private final Future<ApplicationContext> futureContext;
     private final XmlResponseBuilder xmlResponseBuilder;
@@ -40,12 +42,11 @@ public class XmlServerInterface extends AbstractSocketInterface
 
     @Override
     protected Runnable createWorker( Socket clientSocket, String originInterface ) {
-        return new XmlServerWorker(originInterface,
-                                   context,
-                                   xmlRequestParser,
-                                   xmlConverter,
-                                   xmlResponseBuilder,
-                                   clientSocket);
+        return SocketWorker.create(clientSocket, originInterface, createProtocolWorker());
+    }
+
+    private ProtocolWorker createProtocolWorker( ) {
+        return new XmlServerWorker(context, xmlRequestParser, xmlConverter, xmlResponseBuilder);
     }
 
     public static String getCanonicalName( ) {

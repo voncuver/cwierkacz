@@ -9,15 +9,15 @@ public final class UserMessage extends Value<String>
 {
     public static final UserMessage EMPTY = new UserMessage("");
 
-    UserMessage( String message ) {
-        super(message);
+    UserMessage( String value ) {
+        super(value);
     }
 
     public boolean isEmpty( ) {
         return this.equals(EMPTY);
     }
 
-    public static UserMessage create( String message ) {
-        return isBlank(message) ? EMPTY : new UserMessage(message);
+    public static UserMessage create( String name ) {
+        return isBlank(name) ? EMPTY : new UserMessage(name);
     }
 }

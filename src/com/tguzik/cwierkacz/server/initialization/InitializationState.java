@@ -11,11 +11,11 @@ import com.tguzik.cwierkacz.common.Processor;
 import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.database.DatabaseService;
 import com.tguzik.cwierkacz.server.ApplicationContext;
-import com.tguzik.cwierkacz.server.interfaces.AbstractSocketInterface;
+import com.tguzik.cwierkacz.server.interfaces.socket.AbstractServerSocketInterface;
 
 public class InitializationState
 {
-    private final Future<ImmutableMap<String, AbstractSocketInterface>> interfacesByName;
+    private final Future<ImmutableMap<String, AbstractServerSocketInterface>> interfacesByName;
     private final Future<ImmutableMap<String, Processor>> processorsByName;
     private final SettableFuture<ApplicationContext> applicationContext;
     private final Future<ThreadPoolExecutor> endpointThreadPool;
@@ -27,7 +27,7 @@ public class InitializationState
     private final String configurationDirectory;
 
     public InitializationState( String configurationDirectory,
-                                Future<ImmutableMap<String, AbstractSocketInterface>> interfacesByName,
+                                Future<ImmutableMap<String, AbstractServerSocketInterface>> interfacesByName,
                                 Future<ImmutableMap<String, Processor>> processorsByName,
                                 Future<ImmutableMap<String, Job>> jobsByName,
                                 Future<ThreadPoolExecutor> endpointThreadPool,
@@ -51,7 +51,7 @@ public class InitializationState
         return configurationDirectory;
     }
 
-    public Future<ImmutableMap<String, AbstractSocketInterface>> getInterfacesByName( ) {
+    public Future<ImmutableMap<String, AbstractServerSocketInterface>> getInterfacesByName( ) {
         return interfacesByName;
     }
 

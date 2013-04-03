@@ -11,7 +11,5 @@ XmlRequest[
   name=FETCH-TWEETS
 ]]
   requestedDiagnostics=[1]
-  customer=XmlCustomer[
-  name=UZYTKOWNIK
-]
+  customerId=12345
 ]

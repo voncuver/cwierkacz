@@ -10,10 +10,8 @@ import com.tguzik.cwierkacz.common.data.RequestedAccountBuilder;
 import com.tguzik.cwierkacz.common.data.RequestedJob;
 import com.tguzik.cwierkacz.common.data.RequestedJobBuilder;
 import com.tguzik.cwierkacz.common.data.diagnostics.Diagnostic;
-import com.tguzik.cwierkacz.common.data.value.CustomerName;
 import com.tguzik.cwierkacz.common.data.value.UserMessage;
 import com.tguzik.cwierkacz.component.xml.beans.XmlAccount;
-import com.tguzik.cwierkacz.component.xml.beans.XmlCustomer;
 import com.tguzik.cwierkacz.component.xml.beans.XmlJob;
 import com.tguzik.cwierkacz.component.xml.beans.XmlRequest;
 import com.tguzik.cwierkacz.component.xml.beans.XmlTweet;
@@ -24,7 +22,7 @@ class FromXmlConverter implements Function<XmlRequest, RequestData>
     public RequestData apply( XmlRequest xmlRequest ) {
         RequestDataBuilder builder = RequestData.builder();
 
-        builder.withCustomerName(fromXmlCustomerName(xmlRequest.getCustomer()));
+        builder.withCustomerId(xmlRequest.getCustomerId());
 
         for ( XmlJob job : safe(xmlRequest.getJobs()) ) {
             builder.withRequestedJob(fromXmlJob(job));
@@ -35,10 +33,6 @@ class FromXmlConverter implements Function<XmlRequest, RequestData>
         }
 
         return builder.build();
-    }
-
-    private CustomerName fromXmlCustomerName( XmlCustomer xmlCustomer ) {
-        return xmlCustomer == null ? CustomerName.EMPTY : CustomerName.create(xmlCustomer.getName());
     }
 
     private RequestedJob fromXmlJob( XmlJob job ) {

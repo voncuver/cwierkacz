@@ -1,12 +1,15 @@
 package com.tguzik.cwierkacz.component.xml.request;
 
+import static com.tguzik.cwierkacz.component.xml.request.XmlTags.REQUEST;
+import static com.tguzik.cwierkacz.component.xml.request.XmlTags.TWEET;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import com.tguzik.cwierkacz.component.xml.beans.XmlAccount;
-import com.tguzik.cwierkacz.component.xml.beans.XmlCustomer;
 import com.tguzik.cwierkacz.component.xml.beans.XmlJob;
 import com.tguzik.cwierkacz.component.xml.beans.XmlRequest;
 import com.tguzik.cwierkacz.component.xml.beans.XmlTweet;
@@ -15,7 +18,6 @@ public class XmlRequestHandlerHelper
 {
     private static final String STRING_NAME = "name";
     private final XmlRequest xmlRequest;
-    private XmlCustomer customer;
     private XmlAccount account;
     private XmlTweet tweet;
     private XmlJob job;
@@ -26,16 +28,12 @@ public class XmlRequestHandlerHelper
 
     public void startElement( XmlTags tag, Attributes attributes ) throws SAXException {
         switch ( tag ) {
-        case CUSTOMER:
-            startCustomerTag(attributes);
+        case REQUEST:
+            startRequestTag(attributes);
             break;
 
         case JOB:
             startJobTag(attributes);
-            break;
-
-        case CACHEONLY:
-            startCacheOnlyTag(attributes);
             break;
 
         case ACCOUNT:
@@ -44,10 +42,6 @@ public class XmlRequestHandlerHelper
 
         case TWEET:
             startTweetTag(attributes);
-            break;
-
-        case CONTENT:
-            startContentTag(attributes);
             break;
 
         case DIAGNOSTIC:
@@ -61,16 +55,8 @@ public class XmlRequestHandlerHelper
 
     public void endElement( XmlTags tag, String characters ) {
         switch ( tag ) {
-        case CUSTOMER:
-            endCustomerTag(characters);
-            break;
-
         case JOB:
             endJobTag(characters);
-            break;
-
-        case CACHEONLY:
-            endCacheOnlyTag(characters);
             break;
 
         case ACCOUNT:
@@ -79,10 +65,6 @@ public class XmlRequestHandlerHelper
 
         case TWEET:
             endTweetTag(characters);
-            break;
-
-        case CONTENT:
-            endContentTag(characters);
             break;
 
         case DIAGNOSTIC:
@@ -94,25 +76,23 @@ public class XmlRequestHandlerHelper
         }
     }
 
-    private void startCustomerTag( Attributes attributes ) throws SAXException {
-        String name = attributes.getValue(STRING_NAME);
-        throwAttributeMissingIfEmpty(name, STRING_NAME, "Customer");
+    private void startRequestTag( Attributes attributes ) throws SAXException {
+        String customerId = attributes.getValue("customerId");
+        throwAttributeMissingIfEmpty(customerId, "customerId", REQUEST.getName());
 
-        customer = new XmlCustomer();
-        customer.setName(name);
+        xmlRequest.setCustomerId(NumberUtils.toLong(customerId));
+
     }
 
     private void startJobTag( Attributes attributes ) throws SAXException {
         String name = attributes.getValue(STRING_NAME);
         throwAttributeMissingIfEmpty(name, STRING_NAME, "Job");
 
+        String cacheOnly = attributes.getValue("cacheOnly");
+
         this.job = new XmlJob();
         this.job.setName(name);
-    }
-
-    private void startCacheOnlyTag( Attributes attributes ) throws SAXException {
-        throwMissingParentTagIf(this.job == null, "CacheOnly", "Job");
-        this.job.setCacheOnly(true);
+        this.job.setCacheOnly(BooleanUtils.toBoolean(cacheOnly));
     }
 
     private void startAccountTag( Attributes attributes ) throws SAXException {
@@ -127,11 +107,11 @@ public class XmlRequestHandlerHelper
     private void startTweetTag( Attributes attributes ) throws SAXException {
         throwMissingParentTagIf(account == null, "Tweet", "Account");
 
-        tweet = new XmlTweet();
-    }
+        String content = attributes.getValue("content");
+        throwAttributeMissingIfEmpty(content, "content", TWEET.getName());
 
-    private void startContentTag( Attributes attributes ) throws SAXException {
-        throwMissingParentTagIf(tweet == null, "Content", "Tweet");
+        tweet = new XmlTweet();
+        tweet.setContent(content);
     }
 
     private void startDiagnosticTag( Attributes attributes ) {
@@ -140,18 +120,9 @@ public class XmlRequestHandlerHelper
         xmlRequest.addRequestedDiagnostics(value);
     }
 
-    private void endCustomerTag( String characters ) {
-        xmlRequest.setCustomer(customer);
-        customer = null;
-    }
-
     private void endJobTag( String characters ) {
         xmlRequest.addJob(job);
         job = null;
-    }
-
-    private void endCacheOnlyTag( String characters ) {
-        // do nothing.
     }
 
     private void endAccountTag( String characters ) {
@@ -160,10 +131,6 @@ public class XmlRequestHandlerHelper
 
     private void endTweetTag( String characters ) {
         account.addTweet(tweet);
-    }
-
-    private void endContentTag( String characters ) {
-        tweet.setContent(characters);
     }
 
     private void endDiagnosticTag( String characters ) {

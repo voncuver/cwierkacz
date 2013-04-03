@@ -10,6 +10,7 @@ public class XmlResponse extends StandardElement
     private final List<XmlJob> jobs;
     private final StringBuilder diagnostics;
     private int returnCode;
+    private Long customerId;
 
     public XmlResponse() {
         this.diagnostics = new StringBuilder();
@@ -22,6 +23,14 @@ public class XmlResponse extends StandardElement
 
     public void setReturnCode( int returnCode ) {
         this.returnCode = returnCode;
+    }
+
+    public Long getCustomerId( ) {
+        return customerId;
+    }
+
+    public void setCustomerId( Long customerId ) {
+        this.customerId = customerId;
     }
 
     public List<XmlJob> getJobs( ) {

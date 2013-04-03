@@ -27,12 +27,14 @@ public class XmlResponseBuilder
         XMLBuilder builder = XMLBuilder.create("CwierkaczResponse")
                                        .attribute("returnCode", String.valueOf(response.getReturnCode()));
 
-        for ( XmlJob job : response.getJobs() ) {
-            builder = builder.element("Job").attribute("name", job.getName());
+        if ( response.getCustomerId() != null ) {
+            builder = builder.attribute("customerId", Long.toString(response.getCustomerId(), 10));
+        }
 
-            if ( job.isCacheOnly() ) {
-                builder = builder.element("CacheOnly").up();
-            }
+        for ( XmlJob job : response.getJobs() ) {
+            builder = builder.element("Job")
+                             .attribute("name", job.getName())
+                             .attribute("cacheOnly", Boolean.toString(job.isCacheOnly()));
 
             for ( XmlAccount account : job.getAccounts() ) {
                 builder = builder.element("Account").attribute("name", account.getName());
@@ -57,9 +59,7 @@ public class XmlResponseBuilder
                          .attribute("id", String.valueOf(tweet.getId()))
                          .attribute("date", serializeDateTime(tweet.getDate()))
                          .attribute("account", tweet.getAccount())
-                         .element("Content")
-                         .text(tweet.getContent())
-                         .up();
+                         .attribute("content", tweet.getContent());
 
         for ( XmlTweet reply : tweet.getReplies() ) {
             serializeTweet(builder, reply);

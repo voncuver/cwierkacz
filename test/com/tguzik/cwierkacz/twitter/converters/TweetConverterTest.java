@@ -39,12 +39,12 @@ public class TweetConverterTest
         stub(tweetUser.getId()).toReturn(1234L);
 
         Tweet tweet = converter.toTweet(status);
-        assertEquals(new Long(tweet.getExternalId()), new Long(status.getId()));
-        assertEquals(new Long(tweet.getExternalId()), new Long(77));
+        assertEquals(tweet.getTweetId().toValue(), new Long(status.getId()));
+        assertEquals(tweet.getTweetId().toValue(), new Long(77));
 
         assertEquals(tweet.getCratedDate(), date);
 
-        assertEquals((long) tweet.getCreatorId(), (long) 1234);
+        assertEquals((long) tweet.getAccountId().toValue(), 1234L);
 
         assertEquals(tweet.getText(), "test msg");
     }

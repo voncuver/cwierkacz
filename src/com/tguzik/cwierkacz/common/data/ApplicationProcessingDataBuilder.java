@@ -2,12 +2,12 @@ package com.tguzik.cwierkacz.common.data;
 
 import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.cache.dataobject.Customer;
-import com.tguzik.cwierkacz.cache.dataobject.TwitterAccount;
-import com.tguzik.cwierkacz.common.data.value.TwitterAccountName;
+import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
+import com.tguzik.cwierkacz.common.data.value.FunctionalAccountName;
 
 public class ApplicationProcessingDataBuilder
 {
-    private final ImmutableMap.Builder<TwitterAccountName, TwitterAccount> accountsByName;
+    private final ImmutableMap.Builder<FunctionalAccountName, FunctionalAccount> accountsByName;
     private RequestData requestData;
     private Customer customer;
 
@@ -25,7 +25,8 @@ public class ApplicationProcessingDataBuilder
         return this;
     }
 
-    public ApplicationProcessingDataBuilder withRequestData( TwitterAccountName name, TwitterAccount account ) {
+    public ApplicationProcessingDataBuilder withRequestData( FunctionalAccountName name,
+                                                             FunctionalAccount account ) {
         this.accountsByName.put(name, account);
         return this;
     }

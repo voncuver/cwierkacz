@@ -7,7 +7,7 @@ import static org.mockito.Mockito.stub;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.tguzik.cwierkacz.cache.dataobject.User;
+import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
 
 public class UserConverterTest
 {
@@ -24,10 +24,10 @@ public class UserConverterTest
         stub(tweetUser.getId()).toReturn(77L);
         stub(tweetUser.getName()).toReturn("test name");
 
-        User user = converter.toModelUser(tweetUser);
-        assertEquals(new Long(user.getExternalId()), new Long(tweetUser.getId()));
-        assertEquals(new Long(user.getExternalId()), new Long(77));
-        assertEquals(user.getName(), tweetUser.getName());
-        assertEquals(user.getName(), "test name");
+        FunctionalAccount user = converter.toModelUser(tweetUser);
+        assertEquals(user.getAccountId().toValue(), new Long(tweetUser.getId()));
+        assertEquals(user.getAccountId().toValue(), new Long(77));
+        assertEquals(user.getAccountName().toValue(), tweetUser.getName());
+        assertEquals(user.getAccountName().toValue(), "test name");
     }
 }

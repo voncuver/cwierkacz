@@ -9,13 +9,13 @@ import com.tguzik.cwierkacz.common.Processor;
 import com.tguzik.cwierkacz.common.StandardElement;
 import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.database.DatabaseService;
-import com.tguzik.cwierkacz.server.interfaces.AbstractSocketInterface;
+import com.tguzik.cwierkacz.server.interfaces.socket.AbstractServerSocketInterface;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 
 @Immutable
 public final class ApplicationContext extends StandardElement
 {
-    private final ImmutableMap<String, AbstractSocketInterface> interfacesByName;
+    private final ImmutableMap<String, AbstractServerSocketInterface> interfacesByName;
     private final ImmutableMap<String, Processor> processorsByName;
     private final ImmutableMap<String, Job> jobsByName;
     private final ApplicationConfiguration configuration;
@@ -29,7 +29,7 @@ public final class ApplicationContext extends StandardElement
                         DatabaseService databaseService,
                         ThreadPoolExecutor mainThreadPool,
                         ThreadPoolExecutor endpointThreadPool,
-                        ImmutableMap<String, AbstractSocketInterface> interfacesByName,
+                        ImmutableMap<String, AbstractServerSocketInterface> interfacesByName,
                         ImmutableMap<String, Processor> processorsByName,
                         ImmutableMap<String, Job> jobsByName ) {
         this.endpointThreadPool = endpointThreadPool;
@@ -42,7 +42,7 @@ public final class ApplicationContext extends StandardElement
         this.jobsByName = jobsByName;
     }
 
-    public ImmutableMap<String, AbstractSocketInterface> getInterfacesByName( ) {
+    public ImmutableMap<String, AbstractServerSocketInterface> getInterfacesByName( ) {
         return interfacesByName;
     }
 

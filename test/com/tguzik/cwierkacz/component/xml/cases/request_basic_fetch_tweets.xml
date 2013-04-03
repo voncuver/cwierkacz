@@ -1,7 +1,5 @@
-<CwierkaczRequest>
-    <Customer name="UZYTKOWNIK" />
-    <Job name="FETCH-TWEETS">
-        <CacheOnly />
+<CwierkaczRequest customerId="12345">
+    <Job name="FETCH-TWEETS" cacheOnly="true">
         <Account name="konto-na-twitterze-1" />
         <Account name="konto-na-twitterze-2" />
     </Job>
