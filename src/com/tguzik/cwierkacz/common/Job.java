@@ -32,7 +32,9 @@ public final class Job
         return name;
     }
 
-    public static Job create( String name, ProcessorChainElement chain, ImmutableMap<String, String> properties ) {
+    public static Job create( String name,
+                              ProcessorChainElement chain,
+                              ImmutableMap<String, String> properties ) {
         return new Job(name, chain, properties);
     }
 }

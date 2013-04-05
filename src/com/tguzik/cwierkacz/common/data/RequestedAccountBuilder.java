@@ -1,22 +1,21 @@
 package com.tguzik.cwierkacz.common.data;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.collect.ImmutableList;
+import com.tguzik.cwierkacz.common.data.value.FunctionalAccountName;
 import com.tguzik.cwierkacz.common.data.value.UserMessage;
 
 public class RequestedAccountBuilder
 {
     private final ImmutableList.Builder<UserMessage> messages;
-    private String name;
+    private FunctionalAccountName name;
 
     RequestedAccountBuilder() {
         this.messages = ImmutableList.builder();
-        this.name = StringUtils.EMPTY;
+        this.name = FunctionalAccountName.EMPTY;
     }
 
     public RequestedAccountBuilder withName( String name ) {
-        this.name = name;
+        this.name = FunctionalAccountName.create(name);
         return this;
     }
 

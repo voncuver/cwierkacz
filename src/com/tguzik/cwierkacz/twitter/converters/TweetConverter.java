@@ -22,6 +22,11 @@ public class TweetConverter
         return TO_TWEET.apply(status);
     }
 
+    public ImmutableList<Tweet> toTweets( Iterable<Status> result ) {
+        Iterable<Status> statuses = safe(result);
+        return copyToImmutableList(Iterables.transform(statuses, TO_TWEET));
+    }
+
     public StatusUpdate fromTweet( Tweet tweet ) {
         return TO_STATUS_UPDATE.apply(tweet);
     }
@@ -30,4 +35,5 @@ public class TweetConverter
         Iterable<Status> statuses = safe(result != null ? result.getTweets() : null);
         return copyToImmutableList(Iterables.transform(statuses, TO_TWEET));
     }
+
 }

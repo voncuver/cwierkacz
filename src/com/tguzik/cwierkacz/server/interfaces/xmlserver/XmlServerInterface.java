@@ -10,6 +10,7 @@ import com.tguzik.cwierkacz.component.xml.converter.XmlConverter;
 import com.tguzik.cwierkacz.component.xml.request.XmlRequestParser;
 import com.tguzik.cwierkacz.component.xml.response.XmlResponseBuilder;
 import com.tguzik.cwierkacz.server.ApplicationContext;
+import com.tguzik.cwierkacz.server.MasterProcessor;
 import com.tguzik.cwierkacz.server.interfaces.ProtocolWorker;
 import com.tguzik.cwierkacz.server.interfaces.socket.AbstractServerSocketInterface;
 import com.tguzik.cwierkacz.server.interfaces.socket.SocketWorker;
@@ -42,11 +43,17 @@ public class XmlServerInterface extends AbstractServerSocketInterface
 
     @Override
     protected Runnable createWorker( Socket clientSocket, String originInterface ) {
-        return SocketWorker.create(clientSocket, originInterface, createProtocolWorker());
+        return MasterProcessor.create(context,
+                                      createSocketWorker(clientSocket, originInterface),
+                                      createProtocolWorker());
+    }
+
+    private SocketWorker createSocketWorker( Socket clientSocket, String originInterface ) {
+        return SocketWorker.create(clientSocket, originInterface);
     }
 
     private ProtocolWorker createProtocolWorker( ) {
-        return new XmlServerWorker(context, xmlRequestParser, xmlConverter, xmlResponseBuilder);
+        return XmlServerWorker.create(xmlRequestParser, xmlConverter, xmlResponseBuilder);
     }
 
     public static String getCanonicalName( ) {

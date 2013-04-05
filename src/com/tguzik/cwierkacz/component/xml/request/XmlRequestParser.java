@@ -1,10 +1,9 @@
 package com.tguzik.cwierkacz.component.xml.request;
 
-import java.io.InputStream;
-
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,13 +16,13 @@ public class XmlRequestParser
     private static final Logger LOGGER = LoggerFactory.getLogger(XmlRequestParser.class);
     private static final SAXParserFactory factory = createFactory();
 
-    public XmlRequest parse( InputStream is ) throws Exception {
+    public XmlRequest parse( String input ) throws Exception {
         XmlRequest request = new XmlRequest();
         XmlRequestHandler handler = new XmlRequestHandler(request);
 
         try {
             SAXParser parser = factory.newSAXParser();
-            parser.parse(is, handler);
+            parser.parse(IOUtils.toInputStream(input), handler);
 
             return request;
         }

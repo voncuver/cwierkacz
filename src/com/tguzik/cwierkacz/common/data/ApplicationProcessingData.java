@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.cache.dataobject.Customer;
 import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
 import com.tguzik.cwierkacz.common.StandardElement;
+import com.tguzik.cwierkacz.common.data.artifacts.ArtifactsHistory;
 import com.tguzik.cwierkacz.common.data.value.FunctionalAccountName;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;
 
@@ -17,13 +18,13 @@ public final class ApplicationProcessingData extends StandardElement
     private final Customer customer;
     private final ImmutableMap<FunctionalAccountName, FunctionalAccount> accountsByName;
 
-    // Placeholder for the response
-    private final ResponseDataBuilder responseDataBuilder;
+    // What happened during request?
+    private final ArtifactsHistory artifacts;
 
     ApplicationProcessingData( Customer owner,
                                RequestData requestData,
                                ImmutableMap<FunctionalAccountName, FunctionalAccount> accountsByName ) {
-        this.responseDataBuilder = ResponseData.builder();
+        this.artifacts = ArtifactsHistory.create();
         this.accountsByName = accountsByName;
         this.requestData = requestData;
         this.customer = owner;
@@ -44,9 +45,8 @@ public final class ApplicationProcessingData extends StandardElement
         return accountsByName;
     }
 
-    /** Placeholder */
-    public ResponseDataBuilder getResponseDataBuilder( ) {
-        return responseDataBuilder;
+    public ArtifactsHistory getArtifacts( ) {
+        return artifacts;
     }
 
     public static ApplicationProcessingDataBuilder builder( ) {

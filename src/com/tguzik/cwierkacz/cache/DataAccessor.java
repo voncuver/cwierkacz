@@ -7,9 +7,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.cache.dataobject.Customer;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
+import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
 import com.tguzik.cwierkacz.cache.dataobject.Tweet;
 import com.tguzik.cwierkacz.cache.dataobject.key.CustomerKey;
 import com.tguzik.cwierkacz.common.Initializable;
+import com.tguzik.cwierkacz.common.data.value.CustomerId;
+import com.tguzik.cwierkacz.common.data.value.FunctionalAccountName;
 
 public final class DataAccessor implements Initializable
 {
@@ -24,6 +27,15 @@ public final class DataAccessor implements Initializable
 
     public Customer getCustomer( CustomerKey key ) {
         return (Customer) cacheManager.retrieve(Customer.class, key);
+    }
+
+    public Customer getCustomer( CustomerId customerId ) {
+        return getCustomer(CustomerKey.create(customerId));
+    }
+
+    public FunctionalAccount getFunctionalAccount( FunctionalAccountName name ) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -57,4 +69,5 @@ public final class DataAccessor implements Initializable
     public String toString( ) {
         return "AptAccessor stats: \n" + MAP_JOINER.join(getCacheStats().entrySet());
     }
+
 }

@@ -1,99 +1,69 @@
 package com.tguzik.cwierkacz.server.interfaces.xmlserver;
 
-import java.io.InputStream;
-
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import com.tguzik.cwierkacz.cache.DataAccessor;
-import com.tguzik.cwierkacz.cache.dataobject.key.CustomerKey;
-import com.tguzik.cwierkacz.common.Job;
 import com.tguzik.cwierkacz.common.data.ApplicationProcessingData;
-import com.tguzik.cwierkacz.common.data.ApplicationProcessingDataBuilder;
 import com.tguzik.cwierkacz.common.data.RequestData;
-import com.tguzik.cwierkacz.common.data.RequestedJob;
 import com.tguzik.cwierkacz.component.xml.beans.XmlRequest;
+import com.tguzik.cwierkacz.component.xml.beans.XmlResponse;
 import com.tguzik.cwierkacz.component.xml.converter.XmlConverter;
 import com.tguzik.cwierkacz.component.xml.request.XmlRequestParser;
 import com.tguzik.cwierkacz.component.xml.response.XmlResponseBuilder;
-import com.tguzik.cwierkacz.server.ApplicationContext;
 import com.tguzik.cwierkacz.server.interfaces.ProtocolWorker;
 
 public class XmlServerWorker implements ProtocolWorker
 {
     private final XmlResponseBuilder xmlResponseBuilder;
     private final XmlRequestParser xmlRequestParser;
-    private final ApplicationContext context;
     private final XmlConverter xmlConverter;
-    private final DataAccessor dataAccessor;
 
-    public XmlServerWorker( ApplicationContext context,
-                            XmlRequestParser xmlRequestParser,
-                            XmlConverter xmlConverter,
-                            XmlResponseBuilder xmlResponseBuilder ) {
-        this.dataAccessor = context.getDataAccessor();
+    private XmlServerWorker( XmlRequestParser xmlRequestParser,
+                             XmlConverter xmlConverter,
+                             XmlResponseBuilder xmlResponseBuilder ) {
         this.xmlResponseBuilder = xmlResponseBuilder;
         this.xmlRequestParser = xmlRequestParser;
         this.xmlConverter = xmlConverter;
-        this.context = context;
-    }
-
-    @Override
-    public String apply( InputStream input ) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void postprocessing( ) throws Exception {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public String produceErrorResponse( Exception e ) {
-        // TODO Auto-generated method stub
-        return null;
+        return String.format("<Error>%s</Error>\n", e.getMessage());
     }
 
-    protected RequestData createRequestData( InputStream inputStream ) throws Exception {
-        XmlRequest xmlRequest = xmlRequestParser.parse(inputStream);
+    @Override
+    public RequestData createRequestData( String request ) throws Exception {
+        XmlRequest xmlRequest = xmlRequestParser.parse(request);
         return xmlConverter.fromXml(xmlRequest);
     }
 
-    /**
-     * TODO: FIXME: Move this type of preprocessing to a master processor that
-     * would be shared with other interfaces
-     */
-    protected ApplicationProcessingData preprocessing( RequestData rd ) throws Exception {
-        ApplicationProcessingDataBuilder builder = ApplicationProcessingData.builder();
-
-        builder.withRequestData(rd);
-
-        if ( rd.getCustomerId() != null ) {
-            CustomerKey customerKey = CustomerKey.create(rd.getCustomerId());
-            builder.withCustomer(dataAccessor.getCustomer(customerKey));
-        }
-
-        return builder.build();
+    @Override
+    public String createResponse( ApplicationProcessingData data ) throws ParserConfigurationException,
+                                                                  FactoryConfigurationError,
+                                                                  TransformerException {
+        XmlResponse xmlResponse = xmlConverter.toXml(data);
+        return xmlResponseBuilder.build(xmlResponse);
     }
 
-    protected void process( ApplicationProcessingData data ) throws Exception {
-        // TODO: Refactor
-
-        RequestData requestData = data.getRequestData();
-
-        for ( RequestedJob requestedJob : requestData.getRequestedJobs() ) {
-            Job job = context.getJobsByName().get(requestedJob.getName());
-
-            job.getChain().process(data, requestedJob);
-        }
+    @Override
+    public String produceEmptyRequestResponse( ) {
+        return "<Error>Empty request</Error>\n";
     }
 
-    protected String createResponse( ApplicationProcessingData data ) throws ParserConfigurationException,
-                                                                     FactoryConfigurationError,
-                                                                     TransformerException {
-        return xmlResponseBuilder.build(xmlConverter.toXml(data));
+    @Override
+    public void initialize( ) throws Exception {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void shutdown( ) {
+        // TODO Auto-generated method stub
+    }
+
+    public static ProtocolWorker create( XmlRequestParser xmlRequestParser,
+                                         XmlConverter xmlConverter,
+                                         XmlResponseBuilder xmlResponseBuilder ) {
+        return new XmlServerWorker(xmlRequestParser, xmlConverter, xmlResponseBuilder);
     }
 }

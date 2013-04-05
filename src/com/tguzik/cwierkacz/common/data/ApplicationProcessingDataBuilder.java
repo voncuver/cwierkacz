@@ -25,8 +25,8 @@ public class ApplicationProcessingDataBuilder
         return this;
     }
 
-    public ApplicationProcessingDataBuilder withRequestData( FunctionalAccountName name,
-                                                             FunctionalAccount account ) {
+    public ApplicationProcessingDataBuilder withFunctionalAccount( FunctionalAccountName name,
+                                                                   FunctionalAccount account ) {
         this.accountsByName.put(name, account);
         return this;
     }
