@@ -29,7 +29,11 @@ public class XmlServerWorker implements ProtocolWorker
 
     @Override
     public String produceErrorResponse( Exception e ) {
-        return String.format("<Error>%s</Error>\n", e.getMessage());
+        return String.format("<Error> %s </Error>\n", escape(e.toString()));
+    }
+
+    private String escape( String str ) {
+        return str.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
     }
 
     @Override

@@ -26,7 +26,7 @@ public final class InitializeEndpointThreadPool implements InitializationTask<Th
     public ThreadPoolExecutor call( ) throws Exception {
         ThreadPoolConfiguration configuration = getConfiguration().getEndpointThreadPoolConfiguration();
         RejectedExecutionHandler rejectedExecutionHandler = new ThreadPoolExecutor.DiscardOldestPolicy();
-        BasicThreadFactory factory = ThreadUtils.create("endpoint");
+        BasicThreadFactory factory = ThreadUtils.createThreadFactory("endpoint");
 
         ThreadPoolExecutor threadPool = new ThreadPoolExecutor(configuration.getMinPoolSize(),
                                                                configuration.getMaxPoolSize(),

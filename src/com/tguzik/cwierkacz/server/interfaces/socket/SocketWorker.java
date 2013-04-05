@@ -33,13 +33,16 @@ public class SocketWorker implements Initializable
     }
 
     public String getRequest( ) throws IOException {
-        return IOUtils.toString(clientSocket.getInputStream());
+        String request = IOUtils.toString(clientSocket.getInputStream());
+        clientSocket.shutdownInput();
+        return request;
     }
 
     public void sendResponse( String response ) {
         try {
             LOGGER.info("[{}] Sending response: {}", originInterface, response); //TODO: Change to debug stream.
             IOUtils.write(response, clientSocket.getOutputStream());
+            clientSocket.shutdownOutput();
         }
         catch ( Exception e ) {
             LOGGER.error("Error while sending response", e);

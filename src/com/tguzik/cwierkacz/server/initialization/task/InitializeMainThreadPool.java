@@ -26,7 +26,7 @@ public class InitializeMainThreadPool implements InitializationTask<ThreadPoolEx
     public ThreadPoolExecutor call( ) throws Exception {
         ThreadPoolConfiguration configuration = getConfiguration().getMainThreadPoolConfiguration();
         RejectedExecutionHandler rejectedExecutionHandler = new ThreadPoolExecutor.DiscardOldestPolicy();
-        BasicThreadFactory factory = ThreadUtils.create("main");
+        BasicThreadFactory factory = ThreadUtils.createThreadFactory("main");
 
         ThreadPoolExecutor threadPool = new ThreadPoolExecutor(configuration.getMinPoolSize(),
                                                                configuration.getMaxPoolSize(),

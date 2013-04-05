@@ -3,6 +3,9 @@ package com.tguzik.cwierkacz.server;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+
+import com.tguzik.cwierkacz.utils.thread.ThreadUtils;
 
 // TODO: Refactor this class away.
 public class Application implements Callable<Void>
@@ -11,8 +14,15 @@ public class Application implements Callable<Void>
     private final ExecutorService serverThreadPool;
 
     public Application( ApplicationContext context ) {
-        this.serverThreadPool = Executors.unconfigurableExecutorService(Executors.newCachedThreadPool());
+        this.serverThreadPool = createInterfacesThreadPool();
         this.context = context;
+    }
+
+    private ExecutorService createInterfacesThreadPool( ) {
+        ThreadFactory factory = ThreadUtils.createThreadFactory("interfaces");
+        ExecutorService pool = Executors.newCachedThreadPool(factory);
+
+        return Executors.unconfigurableExecutorService(pool);
     }
 
     @Override
