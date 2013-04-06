@@ -10,9 +10,9 @@ import com.tguzik.cwierkacz.cache.dataobject.DataObject;
 import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
 import com.tguzik.cwierkacz.cache.dataobject.Tweet;
 import com.tguzik.cwierkacz.cache.dataobject.key.CustomerKey;
-import com.tguzik.cwierkacz.common.Initializable;
 import com.tguzik.cwierkacz.common.data.value.CustomerId;
 import com.tguzik.cwierkacz.common.data.value.FunctionalAccountName;
+import com.tguzik.cwierkacz.common.processing.traits.Initializable;
 
 public final class DataAccessor implements Initializable
 {

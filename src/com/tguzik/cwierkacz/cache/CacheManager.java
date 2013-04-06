@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
-import com.tguzik.cwierkacz.common.Initializable;
+import com.tguzik.cwierkacz.common.processing.traits.Initializable;
 
 public final class CacheManager implements Initializable
 {

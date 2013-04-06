@@ -7,7 +7,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tguzik.cwierkacz.common.Initializable;
+import com.tguzik.cwierkacz.common.processing.traits.Initializable;
 import com.tguzik.cwierkacz.utils.annotation.SingleThreaded;
 
 @SingleThreaded

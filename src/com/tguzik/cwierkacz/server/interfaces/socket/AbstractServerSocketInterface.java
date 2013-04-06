@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tguzik.cwierkacz.common.Initializable;
+import com.tguzik.cwierkacz.common.processing.traits.Initializable;
 
 public abstract class AbstractServerSocketInterface implements Initializable, Callable<Void>
 {

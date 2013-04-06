@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.common;
+package com.tguzik.cwierkacz.common.processing.traits;
 
 import com.tguzik.cwierkacz.common.data.ApplicationProcessingData;
 import com.tguzik.cwierkacz.common.data.RequestedJob;
@@ -10,6 +10,5 @@ import com.tguzik.cwierkacz.common.data.RequestedJob;
  */
 public interface Processor extends Initializable
 {
-
     void process( ApplicationProcessingData data, RequestedJob job );
 }

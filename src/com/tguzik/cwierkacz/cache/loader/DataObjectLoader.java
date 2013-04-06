@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 import com.tguzik.cwierkacz.cache.GeneralKey;
 import com.tguzik.cwierkacz.cache.UniqueKey;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
-import com.tguzik.cwierkacz.common.Initializable;
+import com.tguzik.cwierkacz.common.processing.traits.Initializable;
 import com.tguzik.cwierkacz.utils.CollectionUtil;
 
 public abstract class DataObjectLoader extends CacheLoader<UniqueKey, DataObject> implements Initializable

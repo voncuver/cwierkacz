@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tguzik.cwierkacz.cache.DataAccessor;
-import com.tguzik.cwierkacz.common.Initializable;
+import com.tguzik.cwierkacz.common.processing.traits.Initializable;
 import com.tguzik.cwierkacz.database.DatabaseService;
 
 public class ApplicationContextDeactivator

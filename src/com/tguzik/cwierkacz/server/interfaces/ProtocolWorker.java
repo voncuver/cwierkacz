@@ -1,8 +1,8 @@
 package com.tguzik.cwierkacz.server.interfaces;
 
-import com.tguzik.cwierkacz.common.Initializable;
 import com.tguzik.cwierkacz.common.data.ApplicationProcessingData;
 import com.tguzik.cwierkacz.common.data.RequestData;
+import com.tguzik.cwierkacz.common.processing.traits.Initializable;
 import com.tguzik.cwierkacz.utils.annotation.SingleThreaded;
 
 @SingleThreaded

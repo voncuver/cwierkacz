@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.cache.DataAccessor;
-import com.tguzik.cwierkacz.common.Processor;
+import com.tguzik.cwierkacz.common.processing.traits.Processor;
 import com.tguzik.cwierkacz.component.postprocessor.artifacts.ArtifactsProcessor;
 import com.tguzik.cwierkacz.component.postprocessor.email.EmailNotificationProcessor;
 import com.tguzik.cwierkacz.component.postprocessor.history.HistoryProcessor;

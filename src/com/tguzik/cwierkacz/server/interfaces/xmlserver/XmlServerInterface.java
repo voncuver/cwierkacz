@@ -6,11 +6,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import com.tguzik.cwierkacz.common.configuration.SingleInterfaceConfiguration;
+import com.tguzik.cwierkacz.common.processing.MasterProcessor;
 import com.tguzik.cwierkacz.component.xml.converter.XmlConverter;
 import com.tguzik.cwierkacz.component.xml.request.XmlRequestParser;
 import com.tguzik.cwierkacz.component.xml.response.XmlResponseBuilder;
 import com.tguzik.cwierkacz.server.ApplicationContext;
-import com.tguzik.cwierkacz.server.MasterProcessor;
 import com.tguzik.cwierkacz.server.interfaces.ProtocolWorker;
 import com.tguzik.cwierkacz.server.interfaces.socket.AbstractServerSocketInterface;
 import com.tguzik.cwierkacz.server.interfaces.socket.SocketWorker;

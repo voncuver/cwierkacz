@@ -1,7 +1,8 @@
-package com.tguzik.cwierkacz.common;
+package com.tguzik.cwierkacz.common.processing;
 
 import com.tguzik.cwierkacz.common.data.ApplicationProcessingData;
 import com.tguzik.cwierkacz.common.data.RequestedJob;
+import com.tguzik.cwierkacz.common.processing.traits.Processor;
 
 public final class NoOperationProcessor implements Processor
 {

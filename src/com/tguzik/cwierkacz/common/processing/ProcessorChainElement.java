@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.common;
+package com.tguzik.cwierkacz.common.processing;
 
 import java.lang.reflect.Method;
 
@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.tguzik.cwierkacz.common.data.ApplicationProcessingData;
 import com.tguzik.cwierkacz.common.data.RequestedJob;
+import com.tguzik.cwierkacz.common.processing.traits.Processor;
 import com.tguzik.cwierkacz.utils.annotation.IgnoreErrorsFromThisProcessor;
 import com.tguzik.cwierkacz.utils.cor.AbstractChainElement;
 

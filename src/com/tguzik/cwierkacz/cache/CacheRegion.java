@@ -11,8 +11,8 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.Iterables;
 import com.tguzik.cwierkacz.cache.dataobject.DataObject;
 import com.tguzik.cwierkacz.cache.loader.DataObjectLoader;
-import com.tguzik.cwierkacz.common.Initializable;
 import com.tguzik.cwierkacz.common.configuration.CacheRegionConfiguration;
+import com.tguzik.cwierkacz.common.processing.traits.Initializable;
 
 // FIXME: Add unit tests like, right now.
 public final class CacheRegion implements Initializable

@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.common;
+package com.tguzik.cwierkacz.common.processing;
 
 import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.utils.annotation.Immutable;

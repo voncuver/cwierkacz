@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.server;
+package com.tguzik.cwierkacz.common.processing;
 
 import static com.tguzik.cwierkacz.utils.CollectionUtil.safe;
 
@@ -9,13 +9,13 @@ import org.slf4j.LoggerFactory;
 import com.tguzik.cwierkacz.cache.DataAccessor;
 import com.tguzik.cwierkacz.cache.dataobject.Customer;
 import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
-import com.tguzik.cwierkacz.common.Job;
 import com.tguzik.cwierkacz.common.data.ApplicationProcessingData;
 import com.tguzik.cwierkacz.common.data.ApplicationProcessingDataBuilder;
 import com.tguzik.cwierkacz.common.data.RequestData;
 import com.tguzik.cwierkacz.common.data.RequestedAccount;
 import com.tguzik.cwierkacz.common.data.RequestedJob;
 import com.tguzik.cwierkacz.common.data.value.FunctionalAccountName;
+import com.tguzik.cwierkacz.server.ApplicationContext;
 import com.tguzik.cwierkacz.server.interfaces.ProtocolWorker;
 import com.tguzik.cwierkacz.server.interfaces.socket.SocketWorker;
 
@@ -93,6 +93,10 @@ public class MasterProcessor implements Runnable
     private void process( ApplicationProcessingData data ) throws Exception {
         RequestData requestData = data.getRequestData();
 
+        if ( requestData.getRequestedJobs().isEmpty() ) {
+            throw new ProcessingException("No jobs were requested.");
+        }
+
         for ( RequestedJob requestedJob : requestData.getRequestedJobs() ) {
             getRequestedJob(requestedJob).getChain().process(data, requestedJob);
         }
@@ -102,11 +106,11 @@ public class MasterProcessor implements Runnable
         // TODO Auto-generated method stub
     }
 
-    private Job getRequestedJob( RequestedJob requestedJob ) {
+    private Job getRequestedJob( RequestedJob requestedJob ) throws ProcessingException {
         Job job = context.getJobsByName().get(requestedJob.getName());
 
         if ( job == null ) {
-            throw new IllegalArgumentException("Invalid job name");
+            throw new ProcessingException("Invalid job name");
         }
 
         return job;

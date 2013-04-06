@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.concurrent.Future;
 
 import com.google.common.base.Objects;
-import com.tguzik.cwierkacz.common.Initializable;
+import com.tguzik.cwierkacz.common.processing.traits.Initializable;
 import com.tguzik.cwierkacz.server.initialization.InitializationState;
 
 public class InitializeComponents implements InitializationTask<Void>

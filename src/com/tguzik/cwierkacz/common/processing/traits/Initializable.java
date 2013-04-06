@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.common;
+package com.tguzik.cwierkacz.common.processing.traits;
 
 public interface Initializable
 {

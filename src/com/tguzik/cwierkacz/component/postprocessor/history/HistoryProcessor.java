@@ -2,9 +2,9 @@ package com.tguzik.cwierkacz.component.postprocessor.history;
 
 import com.google.common.collect.ImmutableMap;
 import com.tguzik.cwierkacz.cache.DataAccessor;
-import com.tguzik.cwierkacz.common.Processor;
 import com.tguzik.cwierkacz.common.data.ApplicationProcessingData;
 import com.tguzik.cwierkacz.common.data.RequestedJob;
+import com.tguzik.cwierkacz.common.processing.traits.Processor;
 
 public class HistoryProcessor implements Processor
 {

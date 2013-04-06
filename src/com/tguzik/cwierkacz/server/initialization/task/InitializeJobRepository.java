@@ -4,12 +4,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.google.common.collect.ImmutableMap;
-import com.tguzik.cwierkacz.common.Job;
-import com.tguzik.cwierkacz.common.Processor;
-import com.tguzik.cwierkacz.common.ProcessorChainElement;
 import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.common.configuration.JobsConfiguration;
 import com.tguzik.cwierkacz.common.configuration.SingleJobConfiguration;
+import com.tguzik.cwierkacz.common.processing.Job;
+import com.tguzik.cwierkacz.common.processing.ProcessorChainElement;
+import com.tguzik.cwierkacz.common.processing.traits.Processor;
 import com.tguzik.cwierkacz.server.initialization.InitializationState;
 
 public final class InitializeJobRepository implements InitializationTask<ImmutableMap<String, Job>>

@@ -7,10 +7,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.tguzik.cwierkacz.cache.DataAccessor;
-import com.tguzik.cwierkacz.common.Processor;
 import com.tguzik.cwierkacz.common.configuration.ApplicationConfiguration;
 import com.tguzik.cwierkacz.common.configuration.ProcessorsConfiguration;
 import com.tguzik.cwierkacz.common.configuration.SingleProcessorConfiguration;
+import com.tguzik.cwierkacz.common.processing.traits.Processor;
 import com.tguzik.cwierkacz.server.initialization.InitializationState;
 import com.tguzik.cwierkacz.server.initialization.ProcessorFactory;
 

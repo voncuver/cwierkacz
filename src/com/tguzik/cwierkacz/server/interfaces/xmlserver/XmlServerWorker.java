@@ -29,11 +29,7 @@ public class XmlServerWorker implements ProtocolWorker
 
     @Override
     public String produceErrorResponse( Exception e ) {
-        return String.format("<Error> %s </Error>\n", escape(e.toString()));
-    }
-
-    private String escape( String str ) {
-        return str.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+        return createErrorMessage(e.toString());
     }
 
     @Override
@@ -52,7 +48,11 @@ public class XmlServerWorker implements ProtocolWorker
 
     @Override
     public String produceEmptyRequestResponse( ) {
-        return "<Error>Empty request</Error>\n";
+        return createErrorMessage("Empty request");
+    }
+
+    private String createErrorMessage( String message ) {
+        return String.format("<Error><![CDATA[ %s ]]></Error>\n", message);
     }
 
     @Override
