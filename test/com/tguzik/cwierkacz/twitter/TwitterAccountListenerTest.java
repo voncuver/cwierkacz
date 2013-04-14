@@ -164,4 +164,30 @@ public class TwitterAccountListenerTest
         assertTrue(storage.contain(retweetTweet.getTweetId().toValue()));
     }
 
+    @Test
+    public void testDeleteTweetByOwner( ) throws TwitterActionException, InterruptedException {
+        Tweet tweet = account1.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
+        Thread.sleep(1000);
+        assertEquals(1, storage.size());
+
+        account1.deleteTweet(tweet);
+
+        Thread.sleep(1000);
+        assertEquals(0, storage.size());
+    }
+
+    @Test
+    public void testDeleteReplyTweetByOther( ) throws TwitterActionException, InterruptedException {
+        Tweet tweet = account1.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
+        Tweet replyTweet = account2.composeNewReplyTweet("reply " + new Date().getTime(), tweet);
+        Thread.sleep(1000);
+        assertEquals(2, storage.size());
+
+        account2.deleteTweet(replyTweet);
+
+        Thread.sleep(1000);
+        assertEquals(1, storage.size());
+        assertTrue(!storage.contain(replyTweet.getTweetId().toValue()));
+    }
+
 }
