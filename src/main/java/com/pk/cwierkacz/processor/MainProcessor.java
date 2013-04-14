@@ -22,6 +22,6 @@ public class MainProcessor
     }
 
     public Response process( Request request ) {
-        return new Response();
+        return null;
     }
 }

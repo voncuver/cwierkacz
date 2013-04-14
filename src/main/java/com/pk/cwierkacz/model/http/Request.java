@@ -5,19 +5,19 @@ import java.sql.Timestamp;
 public class Request
 {
 
-    private final String action;
+    private final Action action;
 
     private final Timestamp timestamp;
 
     private final String functionalUserName;
 
-    public Request( String action, Timestamp timestamp, String functionalUserName ) {
+    public Request( Action action, Timestamp timestamp, String functionalUserName ) {
         this.action = action;
         this.timestamp = timestamp;
         this.functionalUserName = functionalUserName;
     }
 
-    public String getAction( ) {
+    public Action getAction( ) {
         return action;
     }
 
