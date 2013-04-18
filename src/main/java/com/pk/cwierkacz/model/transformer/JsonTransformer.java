@@ -1,16 +1,23 @@
 package com.pk.cwierkacz.model.transformer;
 
-import com.pk.cwierkacz.model.http.Request;
-import com.pk.cwierkacz.model.http.Response;
+import java.io.IOException;
+
+import org.codehaus.jackson.map.ObjectMapper;
+
+import com.tguzik.cwierkacz.common.processing.ProcessingException;
 
 public class JsonTransformer
 {
-    public static String responseToJson( Response response ) {
-        return "";
-    }
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static Request jsonToRequest( String request ) {
-        return null;
+    public static < T > String responseToJson( T response ) throws ProcessingException {
+
+        try {
+            return objectMapper.writeValueAsString(response);
+        }
+        catch ( IOException e ) {
+            throw new ProcessingException("Exception while processing response: " + e.getMessage(), e);
+        }
     }
 
 }

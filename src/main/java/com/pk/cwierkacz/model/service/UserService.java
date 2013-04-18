@@ -13,6 +13,10 @@ public class UserService extends AbstractService<UserDao>
     }
 
     public List<UserDao> getAllUsers( ) {
-        return getByQuery("From UserDao");
+        return getListByQuery("From Users");
+    }
+
+    public UserDao getByUserId( String name ) {
+        return getByQuery("From Users where Users.name = " + name);
     }
 }

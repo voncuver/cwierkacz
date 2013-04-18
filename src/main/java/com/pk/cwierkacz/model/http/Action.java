@@ -5,7 +5,8 @@ public enum Action {
 
     LOGIN( "Login" ),
     CREATEACCOUNT( "Create" ),
-    PUBLISHTWEET( "PublishTweet" );
+    PUBLISHTWEET( "PublishTweet" ),
+    FETCHTEETS( "FetchTweets" );
 
     private String actionName;
 
@@ -17,7 +18,7 @@ public enum Action {
         return actionName;
     }
 
-    public Action getActionByName( String name ) {
+    public static Action getActionByName( String name ) {
         for ( Action action : Action.values() ) {
             if ( action.getActionName().equals(name) ) {
                 return action;

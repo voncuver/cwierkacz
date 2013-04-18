@@ -40,7 +40,7 @@ public class AbstractService< T >
         session.close();
     }
 
-    public List<T> getByQuery( String query ) {
+    public List<T> getListByQuery( String query ) {
         Session session = sessionFactory.openSession();
         @SuppressWarnings( "unchecked" )
         List<T> result = session.createQuery(query).list();
@@ -48,4 +48,11 @@ public class AbstractService< T >
         return result;
     }
 
+    public T getByQuery( String query ) {
+        Session session = sessionFactory.openSession();
+        @SuppressWarnings( "unchecked" )
+        T result = (T) session.createQuery(query).list().get(0);
+        session.close();
+        return result;
+    }
 }

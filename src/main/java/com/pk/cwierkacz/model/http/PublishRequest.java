@@ -3,38 +3,40 @@ package com.pk.cwierkacz.model.http;
 import java.sql.Timestamp;
 import java.util.List;
 
-public class PublishRequest
+public class PublishRequest extends Request
 {
-    private String retweetId;
+    private long replayForId;
 
-    private String tweet;
+    private final String tweet;
 
-    private List<String> accounts;
+    private final List<String> accounts;
 
-    private Request request;
-
-    public PublishRequest buildPublishRequest( Request request, String tweet, List<String> accounts ) {
-        PublishRequest publishRequest = new PublishRequest();
-        publishRequest.request = request;
-        publishRequest.tweet = tweet;
-        publishRequest.accounts = accounts;
-        return publishRequest;
+    public PublishRequest( Action action,
+                           Timestamp timestamp,
+                           String functionalUserName,
+                           long tokenId,
+                           String tweet,
+                           List<String> accounts ) {
+        super(action, timestamp, functionalUserName, tokenId);
+        this.tweet = tweet;
+        this.accounts = accounts;
     }
 
-    public PublishRequest buildPublishRequest( Request request,
-                                               String tweet,
-                                               List<String> accounts,
-                                               String retweetId ) {
-        PublishRequest publishRequest = new PublishRequest();
-        publishRequest.request = request;
-        publishRequest.tweet = tweet;
-        publishRequest.accounts = accounts;
-        publishRequest.retweetId = retweetId;
-        return publishRequest;
+    public PublishRequest( Action action,
+                           Timestamp timestamp,
+                           String functionalUserName,
+                           long tokenId,
+                           String tweet,
+                           List<String> accounts,
+                           long replayForId ) {
+        super(action, timestamp, functionalUserName, tokenId);
+        this.tweet = tweet;
+        this.accounts = accounts;
+        this.replayForId = replayForId;
     }
 
-    public String getRetweetId( ) {
-        return retweetId;
+    public long getReplayForId( ) {
+        return replayForId;
     }
 
     public String getTweet( ) {
@@ -45,15 +47,4 @@ public class PublishRequest
         return accounts;
     }
 
-    public Action getAction( ) {
-        return request.getAction();
-    }
-
-    public Timestamp getTimestamp( ) {
-        return request.getTimestamp();
-    }
-
-    public String getFunctionalUserName( ) {
-        return request.getFunctionalUserName();
-    }
 }

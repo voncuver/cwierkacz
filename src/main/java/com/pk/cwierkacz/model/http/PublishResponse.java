@@ -4,28 +4,16 @@ import java.util.List;
 
 import com.pk.cwierkacz.model.dao.Tweet;
 
-public class PublishResponse
+public class PublishResponse extends Response
 {
-    private Response response;
+    private final List<Tweet> responses;
 
-    List<Tweet> responses;
-
-    public PublishResponse buildPublishResponse( Response response, List<Tweet> tweets ) {
-        PublishResponse publishResponse = new PublishResponse();
-        publishResponse.response = response;
-        publishResponse.responses = tweets;
-        return publishResponse;
+    public PublishResponse( Status status, String message, long tokenId, List<Tweet> tweets ) {
+        super(status, message, tokenId);
+        this.responses = tweets;
     }
 
     public List<Tweet> getResponses( ) {
         return responses;
-    }
-
-    public String getStatus( ) {
-        return response.getStatus();
-    }
-
-    public String getMessage( ) {
-        return response.getMessage();
     }
 }

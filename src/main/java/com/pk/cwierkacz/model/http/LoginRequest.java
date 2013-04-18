@@ -2,35 +2,40 @@ package com.pk.cwierkacz.model.http;
 
 import java.sql.Timestamp;
 
-public class LoginRequest
+public class LoginRequest extends Request
 {
-    private String password;
 
-    private Request request;
+    private final String password;
 
     private boolean create;
 
     private boolean logout;
 
-    public static LoginRequest buildLoginRequest( Request request, String password ) {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.password = password;
-        loginRequest.request = request;
+    public LoginRequest( Action action,
+                         Timestamp timestamp,
+                         String functionalUserName,
+                         String password,
+                         long tokenId ) {
+        super(action, timestamp, functionalUserName, tokenId);
+        this.password = password;
+    }
+
+    public LoginRequest createAccount( Action action,
+                                       Timestamp timestamp,
+                                       String functionalUserName,
+                                       String password,
+                                       long tokenId ) {
+        LoginRequest loginRequest = new LoginRequest(action, timestamp, functionalUserName, password, tokenId);
+        loginRequest.create = true;
         return loginRequest;
     }
 
-    public static LoginRequest buildLoginRequest( Request request, String password, boolean createAccount ) {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.password = password;
-        loginRequest.request = request;
-        loginRequest.create = createAccount;
-        return loginRequest;
-    }
-
-    public static LoginRequest buildLogoutRequest( Request request, String password ) {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.password = password;
-        loginRequest.request = request;
+    public LoginRequest logoutAccount( Action action,
+                                       Timestamp timestamp,
+                                       String functionalUserName,
+                                       String password,
+                                       long tokenId ) {
+        LoginRequest loginRequest = new LoginRequest(action, timestamp, functionalUserName, password, tokenId);
         loginRequest.logout = true;
         return loginRequest;
     }
@@ -45,17 +50,5 @@ public class LoginRequest
 
     public boolean isLogout( ) {
         return logout;
-    }
-
-    public Action getAction( ) {
-        return request.getAction();
-    }
-
-    public Timestamp getTimestamp( ) {
-        return request.getTimestamp();
-    }
-
-    public String getFunctionalUserName( ) {
-        return request.getFunctionalUserName();
     }
 }

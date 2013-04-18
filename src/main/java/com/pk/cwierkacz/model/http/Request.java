@@ -2,6 +2,8 @@ package com.pk.cwierkacz.model.http;
 
 import java.sql.Timestamp;
 
+import org.joda.time.DateTime;
+
 public class Request
 {
 
@@ -11,10 +13,16 @@ public class Request
 
     private final String functionalUserName;
 
-    public Request( Action action, Timestamp timestamp, String functionalUserName ) {
+    private final long tokenId;
+
+    private final DateTime dateTime;
+
+    public Request( Action action, Timestamp timestamp, String functionalUserName, long tokenId ) {
         this.action = action;
         this.timestamp = timestamp;
         this.functionalUserName = functionalUserName;
+        this.tokenId = tokenId;
+        this.dateTime = new DateTime();
     }
 
     public Action getAction( ) {
@@ -28,4 +36,13 @@ public class Request
     public String getFunctionalUserName( ) {
         return functionalUserName;
     }
+
+    public long getTokenId( ) {
+        return tokenId;
+    }
+
+    public DateTime getDateTime( ) {
+        return dateTime;
+    }
+
 }
