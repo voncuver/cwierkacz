@@ -12,6 +12,7 @@ class ToTweetConverter implements Function<Status, Tweet>
     public Tweet apply( Status status ) {
         return Tweet.create(status.getId(),
                             status.getUser().getId(),
+                            status.getUser().getScreenName(),
                             status.getInReplyToStatusId(),
                             DateUtil.convertDateUTC(status.getCreatedAt()),
                             status.getText());

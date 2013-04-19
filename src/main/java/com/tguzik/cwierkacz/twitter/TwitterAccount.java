@@ -70,8 +70,9 @@ public class TwitterAccount
      */
     public Tweet composeNewReplyTweet( String msg, Tweet mainTweet ) throws TwitterActionException {
         try {
-            validateTweetMsg(msg);
-            StatusUpdate update = new StatusUpdate(msg);
+            String msgWithTarget = "@" + mainTweet.getCreatorName() + " " + msg;
+            validateTweetMsg(msgWithTarget);
+            StatusUpdate update = new StatusUpdate(msgWithTarget);
             update.setInReplyToStatusId(mainTweet.getTweetId().toValue());
             Status stat = twitter.updateStatus(update);
             return tweetConverter.toTweet(stat);
@@ -128,6 +129,8 @@ public class TwitterAccount
      * @param sinceDate
      * @throws TwitterActionException
      */
+    @Deprecated
+    //probably to delete or rewrite since Twitter Account Listener was created
     public ImmutableList<Tweet> getTweetsSince( LocalDate sinceDate ) throws TwitterActionException {
         String queryString = String.format("from:%s", user.getAccountName().toValue());
         Query query = new Query(queryString).since(DATE_FORMATTER.print(sinceDate));

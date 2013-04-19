@@ -2,11 +2,9 @@ package com.tguzik.cwierkacz.twitter;
 
 import java.util.Date;
 
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
 import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
 import com.tguzik.cwierkacz.cache.dataobject.Tweet;
 
@@ -17,6 +15,11 @@ public class TwitterAccountTest
     private final String accessToken = "1291752048-EINIa817O7rBs5FTcyQu6dozbgV6KQJx339Cn3I";
     private final String accessTokenSecret = "sIxeZvvJ0eSxgy3Zj27829De0KI0HytKtPcWrLK9Y";
     private final long userId = 1291752048;
+
+    /*private final String username = "cwierkacz13";
+    private final String accessToken = "1291708484-x2GIuJprsYm4Wf2MWSFvsRYkdVPxUZncUxzKaJw";
+    private final String accessTokenSecret = "jxqddQ8NdcFa0uqJJGuQcMgBifjj0us8BX4GNto4YQ";
+    private final long userId = 1291708484;*/
 
     private TwitterAccount account;
 
@@ -71,21 +74,4 @@ public class TwitterAccountTest
         Tweet tweet = account.composeNewTweet("TEST CWIERKACZ TWEET TO DELETE " + ( new Date() ).getTime());
         account.deleteTweet(tweet);
     }
-
-    @Test
-    public void testGetTweetsSince( ) throws TwitterActionException {
-
-        ImmutableList<Tweet> tweets = account.getTweetsSince(new LocalDate(2013, 3, 25));
-
-        System.out.println(tweets.size());
-        System.out.println("============");
-
-        for ( int i = 0; i < tweets.size(); i++ ) {
-            System.out.println(tweets.get(i).getTweetId());
-            System.out.println(tweets.get(i).getText());
-            System.out.println(tweets.get(i).getInReplyTo());
-            System.out.println("==============");
-        }
-    }
-
 }

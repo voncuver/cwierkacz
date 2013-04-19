@@ -23,15 +23,22 @@ public final class Tweet extends DataObject implements HasFunctionalAccountId, H
     private final Long externalId;
     private final Long inReplyTo;
     private final Long creatorId;
+    private final String creatorName; // Redundant information, but useful
     private final DateTime cratedDate;
     private final String text;
 
-    private Tweet( Long externalId, Long inReplyTo, Long creatorId, DateTime cratedDate, String text ) {
+    private Tweet( Long externalId,
+                   Long inReplyTo,
+                   Long creatorId,
+                   String creatorName,
+                   DateTime cratedDate,
+                   String text ) {
         this.creatorId = creatorId;
         this.cratedDate = cratedDate;
         this.externalId = externalId;
         this.inReplyTo = inReplyTo;
         this.text = text;
+        this.creatorName = creatorName;
     }
 
     @Override
@@ -63,9 +70,14 @@ public final class Tweet extends DataObject implements HasFunctionalAccountId, H
 
     public static Tweet create( Long externalId,
                                 Long creatorId,
+                                String creatorName,
                                 Long inReplyTo,
                                 DateTime cratedDate,
                                 String text ) {
-        return new Tweet(externalId, inReplyTo, creatorId, cratedDate, text);
+        return new Tweet(externalId, inReplyTo, creatorId, creatorName, cratedDate, text);
+    }
+
+    public String getCreatorName( ) {
+        return creatorName;
     }
 }
