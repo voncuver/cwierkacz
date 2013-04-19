@@ -2,6 +2,8 @@ package com.tguzik.cwierkacz.twitter;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.Date;
 
 import org.junit.Before;
@@ -10,6 +12,8 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
 import com.tguzik.cwierkacz.cache.dataobject.Tweet;
+import com.tguzik.cwierkacz.twitter.attachment.ImageAttachment;
+import com.tguzik.cwierkacz.twitter.attachment.TweetAttachments;
 
 public class TwitterAccountTest
 {
@@ -42,6 +46,13 @@ public class TwitterAccountTest
     }
 
     @Test
+    public void testComposeNewTweetWithImg( ) throws TwitterActionException, URISyntaxException {
+        ImageAttachment image = new ImageAttachment(new File("resources/lena.PNG"));
+        account.composeNewTweet("11 TEST CWIERKACZ TWEET " + ( new Date() ).getTime(),
+                                TweetAttachments.createImage(image));
+    }
+
+    @Test
     public void testComposeMaxSizeNewTweet( ) throws TwitterActionException {
         StringBuilder builder = new StringBuilder(140);
         for ( int i = 0; i < 127; i++ )
@@ -63,6 +74,15 @@ public class TwitterAccountTest
     public void testComposeNewReplyTweet( ) throws TwitterActionException {
         Tweet tweet = account.composeNewTweet("TEST CWIERKACZ TWEET FOR REPLY" + ( new Date() ).getTime());
         account.composeNewReplyTweet("TEST CWIERKACZ REPLY TWEET FOR" + ( new Date() ).getTime(), tweet);
+    }
+
+    @Test
+    public void testComposeNewReplyTweetWithImg( ) throws TwitterActionException {
+        Tweet tweet = account.composeNewTweet("TEST CWIERKACZ TWEET FOR REPLY" + ( new Date() ).getTime());
+        ImageAttachment image = new ImageAttachment(new File("resources/lena.PNG"));
+        account.composeNewReplyTweet("QQ TEST CWIERKACZ REPLY TWEET FOR" + ( new Date() ).getTime(),
+                                     tweet,
+                                     TweetAttachments.createImage(image));
     }
 
     @Test( expected = TwitterActionException.class )

@@ -22,6 +22,11 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 
 import com.google.common.collect.ImmutableList;
+import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
+import com.tguzik.cwierkacz.cache.dataobject.Tweet;
+import com.tguzik.cwierkacz.twitter.attachment.TweetAttachments;
+import com.tguzik.cwierkacz.twitter.converters.TweetConverter;
+import com.tguzik.cwierkacz.utils.DateUtil;
 
 /**
  * Class which represents twitter account - using this account we can for
@@ -61,7 +66,6 @@ public class TwitterAccount
      */
     public Tweet composeNewTweet( String msg ) throws TwitterActionException {
         try {
-            validateTweetMsg(msg);
             Status stat = twitter.updateStatus(msg);
             return tweetConverter.toTweet(stat);
         }
@@ -69,6 +73,19 @@ public class TwitterAccount
             LOGGER.error(e.getMessage());
             throw new TwitterActionException(e.getMessage());
         }
+    }
+
+    /**
+     * Method which compose new tweet in Tweeter account
+     * 
+     * @param msg
+     *            textual representation of tweet
+     * @param attachments
+     *            tweet attachments f.ex. image
+     * @throws TwitterActionException
+     */
+    public Tweet composeNewTweet( String msg, TweetAttachments attachments ) throws TwitterActionException {
+        return customComposeNewTweet(msg, null, attachments);
     }
 
     /**
@@ -81,11 +98,38 @@ public class TwitterAccount
      * @throws TwitterActionException
      */
     public Tweet composeNewReplyTweet( String msg, Tweet mainTweet ) throws TwitterActionException {
+        return customComposeNewTweet(msg, mainTweet, TweetAttachments.empty());
+    }
+
+    /**
+     * Method which compose new reply tweet in Tweeter account
+     * 
+     * @param msg
+     *            textual representation of tweet
+     * @param mainTweetId
+     *            identifier of tweet for which we reply
+     * @param attachments
+     *            tweet attachments f.ex. image
+     * @throws TwitterActionException
+     */
+    public Tweet composeNewReplyTweet( String msg, Tweet mainTweet, TweetAttachments attachments ) throws TwitterActionException {
+        return customComposeNewTweet(msg, mainTweet, attachments);
+    }
+
+    protected Tweet customComposeNewTweet( String msg, Tweet toReplyTweet, TweetAttachments attachments ) throws TwitterActionException {
         try {
-            String msgWithTarget = "@" + mainTweet.getCreatorName() + " " + msg;
-            validateTweetMsg(msgWithTarget);
-            StatusUpdate update = new StatusUpdate(msgWithTarget);
-            update.setInReplyToStatusId(mainTweet.getTweetId().toValue());
+            StatusUpdate update;
+            if ( toReplyTweet == null ) {
+                update = new StatusUpdate(msg);
+            }
+            else {
+                String msgWithTarget = "@" + toReplyTweet.getCreatorName() + " " + msg;
+                update = new StatusUpdate(msgWithTarget);
+                update.setInReplyToStatusId(toReplyTweet.getTweetId().toValue());
+            }
+            if ( attachments.haveImage() )
+                update.setMedia(attachments.getImage().getAttachment());
+
             Status stat = twitter.updateStatus(update);
             return tweetConverter.toTweet(stat);
         }
@@ -219,6 +263,8 @@ public class TwitterAccount
         }
     }
 
+    @Deprecated
+    //twitter validation is more sophisticated so we must rely on twitter response
     protected void validateTweetMsg( String msg ) throws TwitterActionException {
         if ( msg.length() > 140 )
             throw new TwitterActionException("Size of tweeter message can't be grather than 140");
