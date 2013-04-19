@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.twitter;
+package com.pk.cwierkacz.twitter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,15 +12,15 @@ import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.auth.AccessToken;
 
-import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
-import com.tguzik.cwierkacz.cache.dataobject.Tweet;
-import com.tguzik.cwierkacz.twitter.converters.TweetConverter;
+import com.pk.cwierkacz.model.dao.Tweet;
+import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.twitter.converters.TweetConverter;
 
 public class TwitterAccountListener
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(TwitterAccountListener.class);
 
-    protected final FunctionalAccount user;
+    protected final UserDao user;
     protected TweetConverter tweetConverter = new TweetConverter();
     protected TwitterStream twitterStream;
 
@@ -31,7 +31,7 @@ public class TwitterAccountListener
      *            owner of this account
      * @throws TwitterAuthenticationException
      */
-    public TwitterAccountListener( FunctionalAccount user ) throws TwitterAuthenticationException {
+    public TwitterAccountListener( UserDao user ) throws TwitterAuthenticationException {
         authenticate(user);
         this.user = user;
     }
@@ -89,7 +89,7 @@ public class TwitterAccountListener
      * listen o twitter status on current user account
      */
     public void listen( ) {
-        long[] followers = {user.getAccountId().toValue()};
+        long[] followers = {user.getId()};
         FilterQuery query = new FilterQuery(0, followers);
         twitterStream.filter(query);
     }
@@ -101,7 +101,7 @@ public class TwitterAccountListener
         twitterStream.cleanUp();
     }
 
-    protected void authenticate( FunctionalAccount user ) throws TwitterAuthenticationException {
+    protected void authenticate( UserDao user ) throws TwitterAuthenticationException {
         TwitterStreamFactory factory = new TwitterStreamFactory();
 
         if ( user.isOAuthAvailable() ) {
@@ -115,7 +115,7 @@ public class TwitterAccountListener
 
     @Override
     public String toString( ) {
-        return "Twitter Acount Listener on " + user.getAccountName() + " (" + user.getAccountId() + ")";
+        return "Twitter Acount Listener on " + user.getName() + " (" + user.getId() + ")";
     }
 
 }

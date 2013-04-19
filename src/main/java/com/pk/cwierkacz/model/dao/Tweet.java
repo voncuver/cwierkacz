@@ -15,33 +15,35 @@ public class Tweet
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
-    private long Id;
-    private long inReplyTo;
-    private long creatorId;
+    private Long Id;
+    private Long inReplyTo;
+    private Long retweetedId;
+    private Long creatorId;
     private DateTime cratedDate;
     private String text;
+    private String creatorName; // Redundant information, but useful
 
-    public long getId( ) {
+    public Long getId( ) {
         return Id;
     }
 
-    public void setId( long id ) {
+    public void setId( Long id ) {
         Id = id;
     }
 
-    public long getInReplyTo( ) {
+    public Long getInReplyTo( ) {
         return inReplyTo;
     }
 
-    public void setInReplyTo( long inReplyTo ) {
+    public void setInReplyTo( Long inReplyTo ) {
         this.inReplyTo = inReplyTo;
     }
 
-    public long getCreatorId( ) {
+    public Long getCreatorId( ) {
         return creatorId;
     }
 
-    public void setCreatorId( long creatorId ) {
+    public void setCreatorId( Long creatorId ) {
         this.creatorId = creatorId;
     }
 
@@ -61,12 +63,39 @@ public class Tweet
         this.text = text;
     }
 
-    public static Tweet create( long id2,
-                                long id3,
-                                long inReplyToStatusId,
-                                DateTime convertDateUTC,
-                                String text2 ) {
-        // TODO Auto-generated method stub
-        return null;
+    public String getCreatorName( ) {
+        return creatorName;
     }
+
+    public void setCreatorName( String creatorName ) {
+        this.creatorName = creatorName;
+    }
+
+    public Long getRetweetedId( ) {
+        return retweetedId;
+    }
+
+    public void setRetweetedId( Long retweetedId ) {
+        this.retweetedId = retweetedId;
+    }
+
+    public static Tweet create( Long id,
+                                Long userId,
+                                String username,
+                                Long inReplyToStatusId,
+                                Long retweetedId,
+                                DateTime convertDateUTC,
+                                String text ) {
+        Tweet t = new Tweet();
+        t.setCratedDate(convertDateUTC);
+        t.setCreatorId(userId);
+        t.setCreatorName(username);
+        t.setId(id);
+        t.setInReplyTo(inReplyToStatusId);
+        t.setText(text);
+        t.setRetweetedId(retweetedId);
+
+        return t;
+    }
+
 }

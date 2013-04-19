@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.twitter.converters;
+package com.pk.cwierkacz.twitter.converters;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -7,7 +7,7 @@ import static org.mockito.Mockito.stub;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
+import com.pk.cwierkacz.model.dao.UserDao;
 
 public class UserConverterTest
 {
@@ -24,10 +24,10 @@ public class UserConverterTest
         stub(tweetUser.getId()).toReturn(77L);
         stub(tweetUser.getScreenName()).toReturn("test name");
 
-        FunctionalAccount user = converter.toModelUser(tweetUser);
-        assertEquals(user.getAccountId().toValue(), new Long(tweetUser.getId()));
-        assertEquals(user.getAccountId().toValue(), new Long(77));
-        assertEquals(user.getAccountName().toValue(), tweetUser.getScreenName());
-        assertEquals(user.getAccountName().toValue(), "test name");
+        UserDao user = converter.toModelUser(tweetUser);
+        assertEquals(user.getId(), tweetUser.getId());
+        assertEquals(user.getId(), 77);
+        assertEquals(user.getName(), tweetUser.getScreenName());
+        assertEquals(user.getName(), "test name");
     }
 }

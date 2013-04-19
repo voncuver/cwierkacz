@@ -19,9 +19,9 @@ public class UserDao
 
     private String password;
 
-    private long accessToken;
+    private String accessToken;
 
-    private long accessTokenSecret;
+    private String accessTokenSecret;
 
     public long getId( ) {
         return id;
@@ -47,35 +47,42 @@ public class UserDao
         this.password = password;
     }
 
-    public Long getAccessToken( ) {
+    public String getAccessToken( ) {
         return accessToken;
     }
 
-    public void setAccessToken( long accessToken ) {
+    public void setAccessToken( String accessToken ) {
         this.accessToken = accessToken;
     }
 
-    public Long getAccessTokenSecret( ) {
+    public String getAccessTokenSecret( ) {
         return accessTokenSecret;
     }
 
-    public void setAccessTokenSecret( long accessTokenSecret ) {
+    public void setAccessTokenSecret( String accessTokenSecret ) {
         this.accessTokenSecret = accessTokenSecret;
     }
 
-    public static UserDao create( long id2, int i, String name2, Object object, Object object2 ) {
-        // TODO Auto-generated method stub
-        return null;
+    public static UserDao create( long id, int i, String name, String accessToken, String accessTokenSecret ) {
+        UserDao user = new UserDao();
+        user.setId(id);
+        user.setName(name);
+        user.setAccessToken(accessToken);
+        user.setAccessTokenSecret(accessTokenSecret);
+        return user;
     }
 
     public int getCustomerId( ) {
         // TODO Auto-generated method stub
+        // RT comment: what is this ?
         return 0;
     }
 
     public boolean isOAuthAvailable( ) {
-        // TODO Auto-generated method stub
-        return false;
+        if ( accessToken != null && accessTokenSecret != null )
+            return true;
+        else
+            return false;
     }
 
 }

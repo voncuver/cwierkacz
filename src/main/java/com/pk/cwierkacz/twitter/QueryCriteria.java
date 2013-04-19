@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.twitter;
+package com.pk.cwierkacz.twitter;
 
 import org.joda.time.LocalDate;
 

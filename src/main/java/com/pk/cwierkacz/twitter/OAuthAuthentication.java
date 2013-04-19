@@ -15,7 +15,7 @@ public class OAuthAuthentication
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuthAuthentication.class);
     private static final TwitterFactory FACTORY = new TwitterFactory();
-    private final UserDao user;
+    private UserDao user;
     private final Twitter twitter;
     private RequestToken requestToken;
 
@@ -72,11 +72,13 @@ public class OAuthAuthentication
 
         try {
             AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, pin);
-            return UserDao.create(user.getId(),
-                                  user.getCustomerId(),
-                                  user.getName(),
-                                  accessToken.getToken(),
-                                  accessToken.getTokenSecret());
+            UserDao authUser = UserDao.create(user.getId(),
+                                              user.getCustomerId(),
+                                              user.getName(),
+                                              accessToken.getToken(),
+                                              accessToken.getTokenSecret());
+            this.user = authUser;
+            return authUser;
         }
         catch ( TwitterException e ) {
             LOGGER.error(e.getMessage());

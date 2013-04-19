@@ -1,6 +1,6 @@
-package com.tguzik.cwierkacz.twitter;
+package com.pk.cwierkacz.twitter;
 
-import com.tguzik.cwierkacz.cache.dataobject.Tweet;
+import com.pk.cwierkacz.model.dao.Tweet;
 
 /**
  * 

@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.twitter.attachment;
+package com.pk.cwierkacz.twitter.attachment;
 
 import java.util.ArrayList;
 import java.util.List;

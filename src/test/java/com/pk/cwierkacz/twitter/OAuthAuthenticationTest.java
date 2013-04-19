@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.twitter;
+package com.pk.cwierkacz.twitter;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
+import com.pk.cwierkacz.model.dao.UserDao;
 
 // important! This class contain no-automatic tests, because to authenticate
 // user we must put PIN manually
@@ -19,12 +19,12 @@ public class OAuthAuthenticationTest
 {
 
     //external identifier of User is a FAKE
-    private FunctionalAccount user;
+    private UserDao user;
     private OAuthAuthentication userAuthentication;
 
     @Before
     public void setUp( ) throws Exception {
-        user = FunctionalAccount.create(22L, 0, "cwierkacz1", null, null);
+        user = UserDao.create(22L, 0, "cwierkacz1", null, null);
         userAuthentication = new OAuthAuthentication(user);
     }
 
@@ -62,7 +62,7 @@ public class OAuthAuthenticationTest
 
         System.out.println("Enter your twitter username: for example 'cwierkacz1'");
         String username = br.readLine();
-        user = FunctionalAccount.create(22L, 0, username, null, null);
+        user = UserDao.create(22L, 0, username, null, null);
         userAuthentication = new OAuthAuthentication(user);
 
         String url = userAuthentication.getAuthenticationURL();

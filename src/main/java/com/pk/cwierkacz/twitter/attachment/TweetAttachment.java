@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.twitter.attachment;
+package com.pk.cwierkacz.twitter.attachment;
 
 /**
  * Attachment which we can add to tweet: f.ex. picture or geo location etc.

@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.twitter;
+package com.pk.cwierkacz.twitter;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,13 +7,14 @@ import java.net.URISyntaxException;
 import java.util.Date;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
-import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
-import com.tguzik.cwierkacz.cache.dataobject.Tweet;
-import com.tguzik.cwierkacz.twitter.attachment.ImageAttachment;
-import com.tguzik.cwierkacz.twitter.attachment.TweetAttachments;
+import com.pk.cwierkacz.model.dao.Tweet;
+import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.twitter.attachment.ImageAttachment;
+import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
 
 public class TwitterAccountTest
 {
@@ -32,11 +33,7 @@ public class TwitterAccountTest
 
     @Before
     public void setUp( ) throws Exception {
-        FunctionalAccount user = FunctionalAccount.create(userId,
-                                                          -1,
-                                                          username,
-                                                          accessToken,
-                                                          accessTokenSecret);
+        UserDao user = UserDao.create(userId, -1, username, accessToken, accessTokenSecret);
         account = new TwitterAccount(user);
     }
 
@@ -47,7 +44,7 @@ public class TwitterAccountTest
 
     @Test
     public void testComposeNewTweetWithImg( ) throws TwitterActionException, URISyntaxException {
-        ImageAttachment image = new ImageAttachment(new File("resources/lena.PNG"));
+        ImageAttachment image = new ImageAttachment(new File("src/test/java/com/pk/cwierkacz/twitter/lena.PNG"));
         account.composeNewTweet("11 TEST CWIERKACZ TWEET " + ( new Date() ).getTime(),
                                 TweetAttachments.createImage(image));
     }
@@ -79,7 +76,7 @@ public class TwitterAccountTest
     @Test
     public void testComposeNewReplyTweetWithImg( ) throws TwitterActionException {
         Tweet tweet = account.composeNewTweet("TEST CWIERKACZ TWEET FOR REPLY" + ( new Date() ).getTime());
-        ImageAttachment image = new ImageAttachment(new File("resources/lena.PNG"));
+        ImageAttachment image = new ImageAttachment(new File("src/test/java/com/pk/cwierkacz/twitter/lena.PNG"));
         account.composeNewReplyTweet("QQ TEST CWIERKACZ REPLY TWEET FOR" + ( new Date() ).getTime(),
                                      tweet,
                                      TweetAttachments.createImage(image));
@@ -100,7 +97,23 @@ public class TwitterAccountTest
 
     @Test
     public void testGetTweetsFromHomeTimeline( ) throws TwitterActionException {
-        for ( int i = 0; i < 100; i++ ) {
+        for ( int i = 0; i < 20; i++ ) {
+            account.composeNewTweet("TEST CWIERKACZ TWEET " + ( new Date() ).getTime());
+        }
+
+        ImmutableList<Tweet> tweets10 = account.getTweetsFromHomeTimeline(10);
+        assertEquals(10, tweets10.size());
+
+        ImmutableList<Tweet> tweets20 = account.getTweetsFromHomeTimeline(20);
+        assertEquals(20, tweets20.size());
+
+    }
+
+    @Test
+    @Ignore
+    //save limits
+    public void testGetTweetsFromHomeTimeline2( ) throws TwitterActionException {
+        for ( int i = 0; i < 200; i++ ) {
             account.composeNewTweet("TEST CWIERKACZ TWEET " + ( new Date() ).getTime());
         }
 
@@ -112,6 +125,9 @@ public class TwitterAccountTest
 
         ImmutableList<Tweet> tweets100 = account.getTweetsFromHomeTimeline(100);
         assertEquals(100, tweets100.size());
+
+        ImmutableList<Tweet> tweets200 = account.getTweetsFromHomeTimeline(100);
+        assertEquals(200, tweets200.size());
 
     }
 }

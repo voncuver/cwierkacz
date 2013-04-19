@@ -10,9 +10,15 @@ class ToTweetConverter implements Function<Status, Tweet>
 {
     @Override
     public Tweet apply( Status status ) {
+
+        Long retweetId = null;
+        if ( status.getRetweetedStatus() != null )
+            retweetId = status.getRetweetedStatus().getId();
         return Tweet.create(status.getId(),
                             status.getUser().getId(),
+                            status.getUser().getScreenName(),
                             status.getInReplyToStatusId(),
+                            retweetId,
                             DateUtil.convertDateUTC(status.getCreatedAt()),
                             status.getText());
     }

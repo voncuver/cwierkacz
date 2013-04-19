@@ -1,10 +1,12 @@
 package com.pk.cwierkacz.twitter;
 
-import org.joda.time.LocalDate;
+import java.util.List;
+
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import twitter4j.Paging;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
@@ -17,6 +19,7 @@ import twitter4j.auth.AccessToken;
 import com.google.common.collect.ImmutableList;
 import com.pk.cwierkacz.model.dao.Tweet;
 import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
 import com.pk.cwierkacz.twitter.converters.TweetConverter;
 import com.pk.cwierkacz.utils.DateUtil;
 
@@ -27,7 +30,6 @@ import com.pk.cwierkacz.utils.DateUtil;
  * @author radek
  * 
  */
-//TODO(Tomek): Rewrite to a separate service that selected processors would be using.
 public class TwitterAccount
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(TwitterAccount.class);
@@ -58,7 +60,6 @@ public class TwitterAccount
      */
     public Tweet composeNewTweet( String msg ) throws TwitterActionException {
         try {
-            validateTweetMsg(msg);
             Status stat = twitter.updateStatus(msg);
             return tweetConverter.toTweet(stat);
         }
@@ -66,6 +67,19 @@ public class TwitterAccount
             LOGGER.error(e.getMessage());
             throw new TwitterActionException(e.getMessage());
         }
+    }
+
+    /**
+     * Method which compose new tweet in Tweeter account
+     * 
+     * @param msg
+     *            textual representation of tweet
+     * @param attachments
+     *            tweet attachments f.ex. image
+     * @throws TwitterActionException
+     */
+    public Tweet composeNewTweet( String msg, TweetAttachments attachments ) throws TwitterActionException {
+        return customComposeNewTweet(msg, null, attachments);
     }
 
     /**
@@ -78,10 +92,38 @@ public class TwitterAccount
      * @throws TwitterActionException
      */
     public Tweet composeNewReplyTweet( String msg, Tweet mainTweet ) throws TwitterActionException {
+        return customComposeNewTweet(msg, mainTweet, TweetAttachments.empty());
+    }
+
+    /**
+     * Method which compose new reply tweet in Tweeter account
+     * 
+     * @param msg
+     *            textual representation of tweet
+     * @param mainTweetId
+     *            identifier of tweet for which we reply
+     * @param attachments
+     *            tweet attachments f.ex. image
+     * @throws TwitterActionException
+     */
+    public Tweet composeNewReplyTweet( String msg, Tweet mainTweet, TweetAttachments attachments ) throws TwitterActionException {
+        return customComposeNewTweet(msg, mainTweet, attachments);
+    }
+
+    protected Tweet customComposeNewTweet( String msg, Tweet toReplyTweet, TweetAttachments attachments ) throws TwitterActionException {
         try {
-            validateTweetMsg(msg);
-            StatusUpdate update = new StatusUpdate(msg);
-            update.setInReplyToStatusId(mainTweet.getId());
+            StatusUpdate update;
+            if ( toReplyTweet == null ) {
+                update = new StatusUpdate(msg);
+            }
+            else {
+                String msgWithTarget = "@" + toReplyTweet.getCreatorName() + " " + msg;
+                update = new StatusUpdate(msgWithTarget);
+                update.setInReplyToStatusId(toReplyTweet.getId());
+            }
+            if ( attachments.haveImage() )
+                update.setMedia(attachments.getImage().getAttachment());
+
             Status stat = twitter.updateStatus(update);
             return tweetConverter.toTweet(stat);
         }
@@ -102,7 +144,7 @@ public class TwitterAccount
      */
     public Tweet composeNewReTweet( Tweet mainTweet ) throws TwitterActionException {
         try {
-            if ( mainTweet.getId() == user.getId() )
+            if ( mainTweet.getCreatorId() == user.getId() )
                 throw new TwitterActionException("You cannot retweet himself");
 
             Status stat = twitter.retweetStatus(mainTweet.getId());
@@ -131,19 +173,58 @@ public class TwitterAccount
         }
     }
 
-    /**
-     * Method which get all tweet since reference for Tweeter account
-     * 
-     * @param sinceDate
-     * @throws TwitterActionException
-     */
-    public ImmutableList<Tweet> getTweetsSince( LocalDate sinceDate ) throws TwitterActionException {
-        String queryString = String.format("from:%s", user.getName());
-        Query query = new Query(queryString).since(DATE_FORMATTER.print(sinceDate));
-        return queryToTweets(query);
+    public ImmutableList<Tweet> getTweetsFromHomeTimeline( int count ) throws TwitterActionException {
+        try {
+            List<Status> statuses = twitter.getHomeTimeline(new Paging().count(count));
+            ImmutableList.Builder<Tweet> builder = ImmutableList.builder();
+            for ( int i = 0; i < statuses.size(); i++ ) {
+                builder.add(tweetConverter.toTweet(statuses.get(i)));
+            }
+            return builder.build();
+        }
+        catch ( TwitterException e ) {
+            LOGGER.error(e.getMessage(), e);
+            throw new TwitterActionException(e.getMessage());
+        }
     }
 
-    protected ImmutableList<Tweet> queryToTweets( Query query ) throws TwitterActionException {
+    /**
+     * Method which get all tweet matching to criteria
+     * 
+     * @param criteria
+     * @throws TwitterActionException
+     */
+    @Deprecated
+    //not tested - probably unnecessary method
+    public ImmutableList<Tweet> searchTweets( QueryCriteria criteria ) throws TwitterActionException {
+
+        return searchTweets(prepereQuery(criteria));
+    }
+
+    protected Query prepereQuery( QueryCriteria criteria ) {
+
+        String fromString = "";
+        if ( criteria.getFrom() != null )
+            fromString = String.format("from:%s", criteria.getFrom().getAccountName().toValue());
+
+        String toString = "";
+        if ( criteria.getTo() != null )
+            toString = String.format("to:%s", criteria.getTo().getAccountName().toValue());
+
+        String sinceString = "";
+        if ( criteria.getSinceDate() != null )
+            sinceString = String.format("since:%s", DATE_FORMATTER.print(criteria.getSinceDate()));
+
+        String untilString = "";
+        if ( criteria.getUntilDate() != null )
+            untilString = String.format("until:%s", DATE_FORMATTER.print(criteria.getUntilDate()));
+
+        String queryString = fromString + " " + toString + " " + sinceString + " " + untilString;
+
+        return new Query(queryString);
+    }
+
+    protected ImmutableList<Tweet> searchTweets( Query query ) throws TwitterActionException {
         ImmutableList.Builder<Tweet> builder = ImmutableList.builder();
         QueryResult result;
 
@@ -168,8 +249,7 @@ public class TwitterAccount
         TwitterFactory factory = new TwitterFactory();
 
         if ( user.isOAuthAvailable() ) {
-            AccessToken token = new AccessToken(user.getAccessToken().toString(), user.getAccessTokenSecret()
-                                                                                      .toString());
+            AccessToken token = new AccessToken(user.getAccessToken(), user.getAccessTokenSecret());
             twitter = factory.getInstance(token);
         }
         else {
@@ -177,6 +257,8 @@ public class TwitterAccount
         }
     }
 
+    @Deprecated
+    //twitter validation is more sophisticated so we must rely on twitter response
     protected void validateTweetMsg( String msg ) throws TwitterActionException {
         if ( msg.length() > 140 )
             throw new TwitterActionException("Size of tweeter message can't be grather than 140");

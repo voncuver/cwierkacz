@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.twitter.converters;
+package com.pk.cwierkacz.twitter.converters;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import twitter4j.Status;
 
-import com.tguzik.cwierkacz.cache.dataobject.Tweet;
+import com.pk.cwierkacz.model.dao.Tweet;
 
 public class TweetConverterTest
 {
@@ -39,12 +39,12 @@ public class TweetConverterTest
         stub(tweetUser.getId()).toReturn(1234L);
 
         Tweet tweet = converter.toTweet(status);
-        assertEquals(tweet.getTweetId().toValue(), new Long(status.getId()));
-        assertEquals(tweet.getTweetId().toValue(), new Long(77));
+        assertEquals(tweet.getId().longValue(), status.getId());
+        assertEquals(tweet.getId().longValue(), 77L);
 
         assertEquals(tweet.getCratedDate(), date);
 
-        assertEquals((long) tweet.getAccountId().toValue(), 1234L);
+        assertEquals(tweet.getCreatorId().longValue(), 1234L);
 
         assertEquals(tweet.getText(), "test msg");
     }

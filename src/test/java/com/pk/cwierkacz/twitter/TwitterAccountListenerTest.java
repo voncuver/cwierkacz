@@ -1,4 +1,4 @@
-package com.tguzik.cwierkacz.twitter;
+package com.pk.cwierkacz.twitter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -13,8 +13,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
-import com.tguzik.cwierkacz.cache.dataobject.Tweet;
+import com.pk.cwierkacz.model.dao.Tweet;
+import com.pk.cwierkacz.model.dao.UserDao;
 
 public class TwitterAccountListenerTest
 {
@@ -32,13 +32,9 @@ public class TwitterAccountListenerTest
     private TwitterAccountListener listener;
     private MemoryTwitterStorage storage;
 
-    FunctionalAccount user = FunctionalAccount.create(userId, -1, username, accessToken, accessTokenSecret);
+    UserDao user = UserDao.create(userId, -1, username, accessToken, accessTokenSecret);
 
-    FunctionalAccount user2 = FunctionalAccount.create(userId2,
-                                                       -1,
-                                                       username2,
-                                                       accessToken2,
-                                                       accessTokenSecret2);
+    UserDao user2 = UserDao.create(userId2, -1, username2, accessToken2, accessTokenSecret2);
 
     TwitterAccount account1, account2;
 
@@ -48,7 +44,7 @@ public class TwitterAccountListenerTest
 
         @Override
         public void addUnclassifiedTweet( Tweet tweet ) {
-            tweets.put(tweet.getTweetId().toValue(), tweet);
+            tweets.put(tweet.getId(), tweet);
 
         }
 
@@ -111,7 +107,7 @@ public class TwitterAccountListenerTest
         Tweet tweet = account1.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
         Thread.sleep(1000);
         assertEquals(1, storage.size());
-        assertTrue(storage.contain(tweet.getTweetId().toValue()));
+        assertTrue(storage.contain(tweet.getId()));
     }
 
     @Test
@@ -123,8 +119,8 @@ public class TwitterAccountListenerTest
         Tweet replyTweet = account2.composeNewReplyTweet("reply " + new Date().getTime(), tweet);
         Thread.sleep(1000);
         assertEquals(2, storage.size());
-        assertTrue(storage.contain(tweet.getTweetId().toValue()));
-        assertTrue(storage.contain(replyTweet.getTweetId().toValue()));
+        assertTrue(storage.contain(tweet.getId()));
+        assertTrue(storage.contain(replyTweet.getId()));
     }
 
     @Test
@@ -136,7 +132,7 @@ public class TwitterAccountListenerTest
         Tweet replyTweet = account1.composeNewReplyTweet("reply " + new Date().getTime(), tweet);
         Thread.sleep(1000);
         assertEquals(1, storage.size());
-        assertTrue(storage.contain(replyTweet.getTweetId().toValue()));
+        assertTrue(storage.contain(replyTweet.getId()));
     }
 
     @Test
@@ -148,7 +144,7 @@ public class TwitterAccountListenerTest
         Tweet retweetTweet = account1.composeNewReTweet(tweet);
         Thread.sleep(1000);
         assertEquals(1, storage.size());
-        assertTrue(storage.contain(retweetTweet.getTweetId().toValue()));
+        assertTrue(storage.contain(retweetTweet.getId()));
     }
 
     @Test
@@ -160,13 +156,13 @@ public class TwitterAccountListenerTest
         Tweet retweetTweet = account2.composeNewReTweet(tweet);
         Thread.sleep(1000);
         assertEquals(2, storage.size());
-        assertTrue(storage.contain(tweet.getTweetId().toValue()));
-        assertTrue(storage.contain(retweetTweet.getTweetId().toValue()));
+        assertTrue(storage.contain(tweet.getId()));
+        assertTrue(storage.contain(retweetTweet.getId()));
     }
 
     @Test
     public void testDeleteTweetByOwner( ) throws TwitterActionException, InterruptedException {
-        Tweet tweet = account1.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
+        Tweet tweet = account1.composeNewTweet("QQQMSGAAAAAaa " + new Date().getTime());
         Thread.sleep(1000);
         assertEquals(1, storage.size());
 
@@ -187,7 +183,7 @@ public class TwitterAccountListenerTest
 
         Thread.sleep(1000);
         assertEquals(1, storage.size());
-        assertTrue(!storage.contain(replyTweet.getTweetId().toValue()));
+        assertTrue(!storage.contain(replyTweet.getId()));
     }
 
 }
