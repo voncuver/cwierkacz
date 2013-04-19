@@ -8,12 +8,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.pk.cwierkacz.model.http.Request;
-import com.pk.cwierkacz.model.http.Response;
+import com.pk.cwierkacz.exception.ProcessingException;
+import com.pk.cwierkacz.http.request.Request;
+import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.model.transformer.JsonTransformer;
 import com.pk.cwierkacz.model.transformer.RequestBuilder;
 import com.pk.cwierkacz.processor.MainProcessor;
-import com.tguzik.cwierkacz.common.processing.ProcessingException;
 
 public class EntryServlet extends HttpServlet
 {

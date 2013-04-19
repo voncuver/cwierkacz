@@ -1,4 +1,4 @@
-package com.pk.cwierkacz.model.http;
+package com.pk.cwierkacz.http;
 
 public enum Status {
     NOTRECOGNIZED( "NotRecognized" ),

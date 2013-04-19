@@ -1,8 +1,8 @@
 package com.pk.cwierkacz.processor;
 
+import com.pk.cwierkacz.http.request.Request;
+import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.model.ApplicationData;
-import com.pk.cwierkacz.model.http.Request;
-import com.pk.cwierkacz.model.http.Response;
 
 public class MainProcessor
 {

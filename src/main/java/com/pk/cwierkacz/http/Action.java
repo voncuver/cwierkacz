@@ -1,12 +1,14 @@
-package com.pk.cwierkacz.model.http;
+package com.pk.cwierkacz.http;
 
 public enum Action {
     NOTRECOGNIZED( "NotRecognized" ),
 
     LOGIN( "Login" ),
+    LOGOUT( "Logout" ),
     CREATEACCOUNT( "Create" ),
+    ADDTWEETACCOUNT( "AddTweetAccount" ),
     PUBLISHTWEET( "PublishTweet" ),
-    FETCHTEETS( "FetchTweets" );
+    FETCHTWEETS( "FetchTweets" );
 
     private String actionName;
 

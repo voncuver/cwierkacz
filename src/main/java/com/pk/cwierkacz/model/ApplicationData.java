@@ -1,7 +1,7 @@
 package com.pk.cwierkacz.model;
 
-import com.pk.cwierkacz.model.http.Request;
-import com.pk.cwierkacz.model.http.Response;
+import com.pk.cwierkacz.http.request.Request;
+import com.pk.cwierkacz.http.response.Response;
 
 public class ApplicationData
 {

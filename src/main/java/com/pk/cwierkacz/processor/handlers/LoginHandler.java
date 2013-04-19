@@ -4,10 +4,10 @@ import java.sql.Timestamp;
 
 import org.joda.time.DateTime;
 
+import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.dao.Session;
 import com.pk.cwierkacz.model.dao.UserDao;
-import com.pk.cwierkacz.model.http.Action;
 import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.UserService;
 

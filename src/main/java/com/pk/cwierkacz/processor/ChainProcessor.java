@@ -2,8 +2,9 @@ package com.pk.cwierkacz.processor;
 
 import java.util.List;
 
+import com.pk.cwierkacz.http.Status;
+import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.model.ApplicationData;
-import com.pk.cwierkacz.model.http.Response;
 import com.pk.cwierkacz.processor.handlers.Handler;
 
 public class ChainProcessor
@@ -23,7 +24,8 @@ public class ChainProcessor
             }
         }
 
-        applicationData.setResponse(Response.createFailResponse("No Handler for action found.",
-                                                                applicationData.getRequest().getTokenId()));
+        applicationData.setResponse(ResponseImpl.create(Status.ERROR,
+                                                        "Some Text",
+                                                        applicationData.getRequest().getTokenId()));
     }
 }

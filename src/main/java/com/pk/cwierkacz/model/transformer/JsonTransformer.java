@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.tguzik.cwierkacz.common.processing.ProcessingException;
+import com.pk.cwierkacz.exception.ProcessingException;
 
 public class JsonTransformer
 {
