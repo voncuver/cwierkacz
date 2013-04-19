@@ -1,10 +1,13 @@
 package com.tguzik.cwierkacz.twitter;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
 import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
 import com.tguzik.cwierkacz.cache.dataobject.Tweet;
 
@@ -73,5 +76,22 @@ public class TwitterAccountTest
     public void testDeleteTweet( ) throws TwitterActionException {
         Tweet tweet = account.composeNewTweet("TEST CWIERKACZ TWEET TO DELETE " + ( new Date() ).getTime());
         account.deleteTweet(tweet);
+    }
+
+    @Test
+    public void testGetTweetsFromHomeTimeline( ) throws TwitterActionException {
+        for ( int i = 0; i < 100; i++ ) {
+            account.composeNewTweet("TEST CWIERKACZ TWEET " + ( new Date() ).getTime());
+        }
+
+        ImmutableList<Tweet> tweets10 = account.getTweetsFromHomeTimeline(10);
+        assertEquals(10, tweets10.size());
+
+        ImmutableList<Tweet> tweets20 = account.getTweetsFromHomeTimeline(20);
+        assertEquals(20, tweets20.size());
+
+        ImmutableList<Tweet> tweets100 = account.getTweetsFromHomeTimeline(100);
+        assertEquals(100, tweets100.size());
+
     }
 }

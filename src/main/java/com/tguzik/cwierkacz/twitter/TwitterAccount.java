@@ -5,9 +5,21 @@ import main.java.com.tguzik.cwierkacz.twitter.converters.TweetConverter;
 import main.java.com.tguzik.cwierkacz.utils.DateUtil;
 
 import org.joda.time.LocalDate;
+import java.util.List;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
+import twitter4j.Paging;
+import twitter4j.Query;
+import twitter4j.QueryResult;
+import twitter4j.Status;
+import twitter4j.StatusUpdate;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.auth.AccessToken;
 
 import com.google.common.collect.ImmutableList;
 
@@ -123,21 +135,58 @@ public class TwitterAccount
         }
     }
 
+    public ImmutableList<Tweet> getTweetsFromHomeTimeline( int count ) throws TwitterActionException {
+        try {
+            List<Status> statuses = twitter.getHomeTimeline(new Paging().count(count));
+            ImmutableList.Builder<Tweet> builder = ImmutableList.builder();
+            for ( int i = 0; i < statuses.size(); i++ ) {
+                builder.add(tweetConverter.toTweet(statuses.get(i)));
+            }
+            return builder.build();
+        }
+        catch ( TwitterException e ) {
+            LOGGER.error(e.getMessage(), e);
+            throw new TwitterActionException(e.getMessage());
+        }
+    }
+
     /**
-     * Method which get all tweet since reference for Tweeter account
+     * Method which get all tweet matching to criteria
      * 
-     * @param sinceDate
+     * @param criteria
      * @throws TwitterActionException
      */
     @Deprecated
-    //probably to delete or rewrite since Twitter Account Listener was created
-    public ImmutableList<Tweet> getTweetsSince( LocalDate sinceDate ) throws TwitterActionException {
-        String queryString = String.format("from:%s", user.getAccountName().toValue());
-        Query query = new Query(queryString).since(DATE_FORMATTER.print(sinceDate));
-        return queryToTweets(query);
+    //not tested - probably unnecessary method
+    public ImmutableList<Tweet> searchTweets( QueryCriteria criteria ) throws TwitterActionException {
+
+        return searchTweets(prepereQuery(criteria));
     }
 
-    protected ImmutableList<Tweet> queryToTweets( Query query ) throws TwitterActionException {
+    protected Query prepereQuery( QueryCriteria criteria ) {
+
+        String fromString = "";
+        if ( criteria.getFrom() != null )
+            fromString = String.format("from:%s", criteria.getFrom().getAccountName().toValue());
+
+        String toString = "";
+        if ( criteria.getTo() != null )
+            toString = String.format("to:%s", criteria.getTo().getAccountName().toValue());
+
+        String sinceString = "";
+        if ( criteria.getSinceDate() != null )
+            sinceString = String.format("since:%s", DATE_FORMATTER.print(criteria.getSinceDate()));
+
+        String untilString = "";
+        if ( criteria.getUntilDate() != null )
+            untilString = String.format("until:%s", DATE_FORMATTER.print(criteria.getUntilDate()));
+
+        String queryString = fromString + " " + toString + " " + sinceString + " " + untilString;
+
+        return new Query(queryString);
+    }
+
+    protected ImmutableList<Tweet> searchTweets( Query query ) throws TwitterActionException {
         ImmutableList.Builder<Tweet> builder = ImmutableList.builder();
         QueryResult result;
 

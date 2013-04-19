@@ -22,12 +22,12 @@ public class UserConverterTest
 
         twitter4j.User tweetUser = mock(twitter4j.User.class);
         stub(tweetUser.getId()).toReturn(77L);
-        stub(tweetUser.getName()).toReturn("test name");
+        stub(tweetUser.getScreenName()).toReturn("test name");
 
         FunctionalAccount user = converter.toModelUser(tweetUser);
         assertEquals(user.getAccountId().toValue(), new Long(tweetUser.getId()));
         assertEquals(user.getAccountId().toValue(), new Long(77));
-        assertEquals(user.getAccountName().toValue(), tweetUser.getName());
+        assertEquals(user.getAccountName().toValue(), tweetUser.getScreenName());
         assertEquals(user.getAccountName().toValue(), "test name");
     }
 }
