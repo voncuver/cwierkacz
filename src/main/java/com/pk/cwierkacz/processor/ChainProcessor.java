@@ -2,8 +2,6 @@ package com.pk.cwierkacz.processor;
 
 import java.util.List;
 
-import com.pk.cwierkacz.http.Status;
-import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.processor.handlers.Handler;
 
@@ -23,9 +21,5 @@ public class ChainProcessor
                 return;
             }
         }
-
-        applicationData.setResponse(ResponseImpl.create(Status.ERROR,
-                                                        "Some Text",
-                                                        applicationData.getRequest().getTokenId()));
     }
 }
