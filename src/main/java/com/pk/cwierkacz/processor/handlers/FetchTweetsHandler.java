@@ -1,0 +1,24 @@
+package com.pk.cwierkacz.processor.handlers;
+
+import com.pk.cwierkacz.http.Action;
+import com.pk.cwierkacz.http.Status;
+import com.pk.cwierkacz.http.response.Response;
+import com.pk.cwierkacz.http.response.ResponseImpl;
+import com.pk.cwierkacz.model.ApplicationData;
+
+public class FetchTweetsHandler implements Handler
+{
+
+    @Override
+    public boolean isHandleable( ApplicationData applicationData ) {
+        return applicationData.getRequest().getAction().equals(Action.FETCHTWEETS);
+    }
+
+    @Override
+    public void handle( ApplicationData appData ) {
+        Response response = ResponseImpl.create(Status.ERROR, "Not implemented Action", appData.getRequest()
+                                                                                               .getTokenId());
+        appData.setResponse(response);
+    }
+
+}
