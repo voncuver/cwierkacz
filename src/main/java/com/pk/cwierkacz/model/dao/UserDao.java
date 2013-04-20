@@ -59,6 +59,14 @@ public class UserDao
 
     public void setAccounts( List<TwitterAccountDao> accounts ) {
         this.accounts = accounts;
+
+    }
+
+    public static UserDao create( long id, String name, String accessToken, String accessTokenSecret ) {
+        UserDao user = new UserDao();
+        user.setId(id);
+        user.setName(name);
+        return user;
     }
 
 }
