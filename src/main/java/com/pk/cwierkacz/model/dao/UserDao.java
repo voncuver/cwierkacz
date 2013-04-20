@@ -1,11 +1,15 @@
 package com.pk.cwierkacz.model.dao;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -14,20 +18,29 @@ import javax.persistence.Table;
  */
 @Entity
 @Table( name = "Users" )
-public class UserDao
+public class UserDao implements Serializable
 {
-    //TODO 1: dodać adnotacje do accounts i przetestowac
-    //TODO 2: szyfrowanie password
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5884676710697619214L;
+
+    //TODO 2: szyfrowanie password - na poziomie handlera raczej
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
-    private long id;
+    private Long id;
 
     private String name;
 
     private String password;
 
-    private List<TwitterAccountDao> accounts;
+    @OneToMany( fetch = FetchType.LAZY,
+                targetEntity = TwitterAccountDao.class,
+                mappedBy = "userId",
+                cascade = {CascadeType.ALL},
+                orphanRemoval = true )
+    private Set<TwitterAccountDao> accounts;
 
     public long getId( ) {
         return id;
@@ -53,11 +66,11 @@ public class UserDao
         this.password = password;
     }
 
-    public List<TwitterAccountDao> getAccounts( ) {
+    public Set<TwitterAccountDao> getAccounts( ) {
         return accounts;
     }
 
-    public void setAccounts( List<TwitterAccountDao> accounts ) {
+    public void setAccounts( Set<TwitterAccountDao> accounts ) {
         this.accounts = accounts;
 
     }

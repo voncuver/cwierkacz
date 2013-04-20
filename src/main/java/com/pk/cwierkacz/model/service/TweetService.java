@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 
 import com.pk.cwierkacz.model.dao.TweetDao;
 
@@ -20,4 +21,9 @@ public class TweetService extends AbstractService<TweetDao>
         return criteria.list();
     }
 
+    public TweetDao getTweetById( Long id ) {
+        Criteria criteria = getCriteria(TweetDao.class);
+        criteria.add(Restrictions.eq("Id", id));
+        return (TweetDao) criteria.list().get(0);
+    }
 }

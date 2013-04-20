@@ -44,7 +44,7 @@ public class TweetConverterTest
 
         assertEquals(tweet.getCratedDate(), date);
 
-        assertEquals(tweet.getCreatorId().longValue(), 1234L);
+        assertEquals(tweet.getCreatorId().getId().longValue(), 1234L);
 
         assertEquals(tweet.getText(), "test msg");
     }

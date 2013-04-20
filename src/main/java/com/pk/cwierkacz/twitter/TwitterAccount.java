@@ -144,7 +144,7 @@ public class TwitterAccount
      */
     public TweetDao composeNewReTweet( TweetDao mainTweet ) throws TwitterActionException {
         try {
-            if ( mainTweet.getCreatorId() == account.getId() )
+            if ( mainTweet.getCreatorId().getId() == account.getId() )
                 throw new TwitterActionException("You cannot retweet himself");
 
             Status stat = twitter.retweetStatus(mainTweet.getId());

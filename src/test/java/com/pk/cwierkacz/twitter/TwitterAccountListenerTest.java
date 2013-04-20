@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
+import com.pk.cwierkacz.model.dao.UserDao;
 
 public class TwitterAccountListenerTest
 {
@@ -32,15 +33,16 @@ public class TwitterAccountListenerTest
 
     private TwitterAccountListener listener;
     private MemoryTwitterStorage storage;
+    private final UserDao userDao = new UserDao();
 
     TwitterAccountDao accountDao = TwitterAccountDao.create(userId,
-                                                            -1,
+                                                            userDao,
                                                             username,
                                                             accessToken,
                                                             accessTokenSecret);
 
     TwitterAccountDao accountDao2 = TwitterAccountDao.create(userId2,
-                                                             -1,
+                                                             userDao,
                                                              username2,
                                                              accessToken2,
                                                              accessTokenSecret2);

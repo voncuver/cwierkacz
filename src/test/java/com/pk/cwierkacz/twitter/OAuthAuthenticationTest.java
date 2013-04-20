@@ -12,6 +12,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
+import com.pk.cwierkacz.model.dao.UserDao;
 
 // important! This class contain no-automatic tests, because to authenticate
 // user we must put PIN manually
@@ -21,10 +22,14 @@ public class OAuthAuthenticationTest
     //external identifier of User is a FAKE
     private TwitterAccountDao account;
     private OAuthAuthentication userAuthentication;
+    private UserDao userDao;
 
     @Before
     public void setUp( ) throws Exception {
-        account = TwitterAccountDao.create(22L, 0, "cwierkacz1", null, null);
+        userDao = new UserDao();
+        userDao.setId(0l);
+
+        account = TwitterAccountDao.create(22L, userDao, "cwierkacz1", null, null);
         userAuthentication = new OAuthAuthentication(account);
     }
 
@@ -62,7 +67,7 @@ public class OAuthAuthenticationTest
 
         System.out.println("Enter your twitter username: for example 'cwierkacz1'");
         String username = br.readLine();
-        account = TwitterAccountDao.create(22L, 0, username, null, null);
+        account = TwitterAccountDao.create(22L, userDao, username, null, null);
         userAuthentication = new OAuthAuthentication(account);
 
         String url = userAuthentication.getAuthenticationURL();
