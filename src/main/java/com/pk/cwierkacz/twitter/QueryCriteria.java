@@ -2,7 +2,7 @@ package com.pk.cwierkacz.twitter;
 
 import org.joda.time.LocalDate;
 
-import com.tguzik.cwierkacz.cache.dataobject.FunctionalAccount;
+import com.pk.cwierkacz.model.dao.FunctionalAccount;
 
 /**
  * @author radek

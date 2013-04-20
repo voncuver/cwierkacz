@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.pk.cwierkacz.exception.ProcessingException;
+import com.pk.cwierkacz.http.RequestBuilder;
 import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.model.transformer.JsonTransformer;
-import com.pk.cwierkacz.model.transformer.RequestBuilder;
 import com.pk.cwierkacz.processor.MainProcessor;
 
 public class EntryServlet extends HttpServlet

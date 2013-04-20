@@ -3,10 +3,12 @@ package com.pk.cwierkacz.http.response;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.pk.cwierkacz.http.Status;
-import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.model.dao.Tweet;
 
+@JsonSerialize( include = JsonSerialize.Inclusion.NON_NULL )
 public class ResponseImpl implements Response, LoginResponse, FetchTweetsResponse
 {
 
@@ -36,13 +38,13 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T buildLoginResponse( List<String> accounts ) {
+    public < T extends Response > T buildLoginResponse( List<String> accounts ) {
         this.accounts = accounts;
         return (T) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T buildFetchResponse( List<Tweet> tweets, Map<Long, String> users ) {
+    public < T extends Response > T buildFetchResponse( List<Tweet> tweets, Map<Long, String> users ) {
         this.tweets = tweets;
         this.usersTweeter = users;
         return (T) this;

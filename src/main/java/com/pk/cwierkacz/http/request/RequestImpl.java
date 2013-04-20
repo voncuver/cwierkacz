@@ -53,14 +53,14 @@ public class RequestImpl implements
         requestImpl.functionalUserName = request.getFunctionalUserName();
         requestImpl.timestamp = request.getTimestamp();
         requestImpl.tokenId = request.getTokenId();
-        return null;
+        return requestImpl;
     }
 
     public static RequestImpl create( PublishRequest request ) {
         RequestImpl requestImpl = create((Request) request);
         requestImpl.accounts = request.getAccounts();
         requestImpl.tweetText = request.getTweetText();
-        return null;
+        return requestImpl;
     }
 
     public static RequestImpl create( FetchTweetsRequest request ) {
@@ -69,7 +69,7 @@ public class RequestImpl implements
         requestImpl.size = request.getSize();
         requestImpl.dateFrom = request.getDateFrom();
         requestImpl.replayForId = request.getReplayForId();
-        return null;
+        return requestImpl;
     }
 
     @SuppressWarnings( "unchecked" )

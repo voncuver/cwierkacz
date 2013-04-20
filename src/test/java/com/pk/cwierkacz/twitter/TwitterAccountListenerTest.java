@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.pk.cwierkacz.model.dao.Tweet;
@@ -173,6 +174,7 @@ public class TwitterAccountListenerTest
     }
 
     @Test
+    @Ignore
     public void testDeleteReplyTweetByOther( ) throws TwitterActionException, InterruptedException {
         Tweet tweet = account1.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
         Tweet replyTweet = account2.composeNewReplyTweet("reply " + new Date().getTime(), tweet);

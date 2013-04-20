@@ -205,11 +205,11 @@ public class TwitterAccount
 
         String fromString = "";
         if ( criteria.getFrom() != null )
-            fromString = String.format("from:%s", criteria.getFrom().getAccountName().toValue());
+            fromString = String.format("from:%s", criteria.getFrom().getAccountName());
 
         String toString = "";
         if ( criteria.getTo() != null )
-            toString = String.format("to:%s", criteria.getTo().getAccountName().toValue());
+            toString = String.format("to:%s", criteria.getTo().getAccountName());
 
         String sinceString = "";
         if ( criteria.getSinceDate() != null )

@@ -1,4 +1,4 @@
-package com.pk.cwierkacz.model.transformer;
+package com.pk.cwierkacz.http;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 
-import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.request.RequestImpl;
 
@@ -29,7 +28,8 @@ public class RequestBuilder
     public static final String SIZE = "Size";
     public static final String DATEFROM = "DateFrom";
 
-    public static Request buildRequest( Map<String, String[]> params ) {
+    @SuppressWarnings( "unchecked" )
+    public static < T > T buildRequest( Map<String, String[]> params ) {
 
         String actionName = params.get(ACTIONPARAM)[ 0 ];
         Action action = Action.getActionByName(actionName);
@@ -52,12 +52,12 @@ public class RequestBuilder
 
             if ( params.get(SIZE) != null && params.get(SIZE).length > 0 ) {
                 int size = Integer.parseInt(params.get(SIZE)[ 0 ]);
-                RequestImpl.create(request).withSize(size);
+                request = RequestImpl.create(request).withSize(size);
             }
 
             if ( params.get(DATEFROM) != null && params.get(DATEFROM).length > 0 ) {
                 DateTime dateFrom = DateTime.parse(params.get(DATEFROM)[ 0 ]);
-                RequestImpl.create(request).withDateFrom(dateFrom);
+                request = RequestImpl.create(request).withDateFrom(dateFrom);
             }
 
         }
@@ -69,11 +69,11 @@ public class RequestBuilder
 
             if ( params.get(REPLAYFORID) != null && params.get(REPLAYFORID).length > 0 ) {
                 Long replayForId = Long.parseLong(params.get(REPLAYFORID)[ 0 ]);
-                RequestImpl.create(request).withReplayForID(replayForId);
+                request = RequestImpl.create(request).withReplayForID(replayForId);
             }
         }
 
-        return request;
+        return (T) request;
     }
 
     private static Request buildBasicRequest( Map<String, String[]> params, Action action ) {
@@ -81,7 +81,7 @@ public class RequestBuilder
 
         if ( params.get(TOKENID) != null && params.get(TOKENID).length > 0 ) {
             Long tokenId = Long.parseLong(params.get(TOKENID)[ 0 ]);
-            RequestImpl.create(request).withTokenId(tokenId);
+            request = RequestImpl.create(request).withTokenId(tokenId);
         }
         return request;
     }
