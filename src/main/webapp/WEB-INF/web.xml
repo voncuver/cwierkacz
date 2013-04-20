@@ -4,7 +4,6 @@
          http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	version="3.0">
 
-	<display-name>cwierkacz</display-name>
 	<servlet>
 		<servlet-name>EntryServlet</servlet-name>
 		<servlet-class>com.pk.cwierkacz.controller.EntryServlet</servlet-class>

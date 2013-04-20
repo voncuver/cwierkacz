@@ -33,9 +33,9 @@ public class TwitterAccountListenerTest
     private TwitterAccountListener listener;
     private MemoryTwitterStorage storage;
 
-    UserDao user = UserDao.create(userId, -1, username, accessToken, accessTokenSecret);
+    UserDao user = UserDao.create(userId, username, accessToken, accessTokenSecret);
 
-    UserDao user2 = UserDao.create(userId2, -1, username2, accessToken2, accessTokenSecret2);
+    UserDao user2 = UserDao.create(userId2, username2, accessToken2, accessTokenSecret2);
 
     TwitterAccount account1, account2;
 

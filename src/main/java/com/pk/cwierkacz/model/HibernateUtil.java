@@ -6,16 +6,25 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
 import com.pk.cwierkacz.Startable;
-import com.pk.cwierkacz.exception.StartException;
 
 public class HibernateUtil implements Startable
 {
     private SessionFactory factory;
 
+    private static class InstanceHolder
+    {
+        public static HibernateUtil hibernateUtil = new HibernateUtil();
+    }
+
+    public static HibernateUtil getInstance( ) {
+        return InstanceHolder.hibernateUtil;
+    }
+
     @Override
-    public void start( ) throws StartException {
+    public void start( ) {
+
         Configuration configuration = new Configuration();
-        configuration.configure();
+        configuration.configure("main/resources/hibernate.cfg.xml");
         ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties())
                                                                       .buildServiceRegistry();
 

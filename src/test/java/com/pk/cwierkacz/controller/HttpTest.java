@@ -18,7 +18,8 @@ public class HttpTest
     public static void main( String[] args ) throws URISyntaxException, ClientProtocolException, IOException {
         HttpClient client = new DefaultHttpClient();
 
-        HttpPost request = new HttpPost("http://localhost:8080/cwierkacz/welcom.do?json=test");
+        //HttpPost request = new HttpPost("http://localhost:8080/cwierkacz-0.0.1-SNAPSHOT/welcom.do?Action=Logout&FunctionalUserName=test");
+        HttpPost request = new HttpPost("http://localhost:8080/cwierkacz-0.0.1-SNAPSHOT/welcom.do?Action=Create&FunctionalUserName=test&Password=test");
 
         HttpResponse response = client.execute(request);
 
@@ -29,6 +30,7 @@ public class HttpTest
         while ( ( line = rd.readLine() ) != null ) {
             res.append(line);
         }
-        System.out.println(res);
+
+        System.out.println(res.toString());
     }
 }

@@ -5,12 +5,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.request.RequestImpl;
 
 public class RequestBuilder
 {
+    private static Logger logger = LoggerFactory.getLogger(RequestBuilder.class);
+
     public static final String ACTIONPARAM = "Action";
     public static final String FUNUSERNAME = "FunctionalUserName";
     public static final String TOKENID = "TokenID";
@@ -30,7 +34,7 @@ public class RequestBuilder
 
     @SuppressWarnings( "unchecked" )
     public static < T > T buildRequest( Map<String, String[]> params ) {
-
+        logger.debug(params.toString());
         String actionName = params.get(ACTIONPARAM)[ 0 ];
         Action action = Action.getActionByName(actionName);
         Request request = buildBasicRequest(params, action);
@@ -38,8 +42,11 @@ public class RequestBuilder
         if ( action.equals(Action.LOGIN) ||
              action.equals(Action.LOGOUT) ||
              action.equals(Action.CREATEACCOUNT) ) {
-            String password = params.get(PASSWORD)[ 0 ];
-            request = RequestImpl.create(request).buildLoginRequest(password);
+
+            if ( params.get(PASSWORD) != null && params.get(PASSWORD).length > 0 ) {
+                String password = params.get(PASSWORD)[ 0 ];
+                request = RequestImpl.create(request).buildLoginRequest(password);
+            }
         }
         else if ( action.equals(Action.ADDTWEETACCOUNT) ) {
             String tweetAccount = params.get(TWEETACCOUNT)[ 0 ];

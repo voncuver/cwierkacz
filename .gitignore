@@ -4,3 +4,4 @@ tools/
 protobuf-generated/
 .classpath
 /target
+/target

@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.pk.cwierkacz.exception.ProcessingException;
 import com.pk.cwierkacz.http.RequestBuilder;
 import com.pk.cwierkacz.http.request.Request;
@@ -17,6 +20,9 @@ import com.pk.cwierkacz.processor.MainProcessor;
 
 public class EntryServlet extends HttpServlet
 {
+
+    private final Logger logger = LoggerFactory.getLogger(EntryServlet.class);
+
     MainProcessor mainProcessor;
 
     public EntryServlet() {
@@ -26,9 +32,18 @@ public class EntryServlet extends HttpServlet
     private static final long serialVersionUID = 1310933093609408261L;
 
     @Override
+    public void doPost( HttpServletRequest req, HttpServletResponse resp ) throws javax.servlet.ServletException,
+                                                                          IOException {
+        doGet(req, resp);
+    }
+
+    @Override
     public void doGet( HttpServletRequest request, HttpServletResponse response ) throws IOException {
 
         Map<String, String[]> parameters = request.getParameterMap();
+
+        logger.debug(parameters.toString());
+
         Request requestAction = RequestBuilder.buildRequest(parameters);
         Response responseResult = mainProcessor.process(requestAction);
 

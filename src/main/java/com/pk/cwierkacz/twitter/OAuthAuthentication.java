@@ -73,7 +73,6 @@ public class OAuthAuthentication
         try {
             AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, pin);
             UserDao authUser = UserDao.create(user.getId(),
-                                              user.getCustomerId(),
                                               user.getName(),
                                               accessToken.getToken(),
                                               accessToken.getTokenSecret());

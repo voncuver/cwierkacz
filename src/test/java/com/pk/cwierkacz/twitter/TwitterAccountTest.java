@@ -33,7 +33,7 @@ public class TwitterAccountTest
 
     @Before
     public void setUp( ) throws Exception {
-        UserDao user = UserDao.create(userId, -1, username, accessToken, accessTokenSecret);
+        UserDao user = UserDao.create(userId, username, accessToken, accessTokenSecret);
         account = new TwitterAccount(user);
     }
 

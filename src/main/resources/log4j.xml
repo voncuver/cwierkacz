@@ -4,7 +4,7 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 	<appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
 		<param name="Threshold" value="INFO" />
-		<param name="File" value="c:/myLogFile.log" />
+		<param name="File" value="/home/voncuver/cwierkacz.log" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d  %-5p  [%c{1}] %m %n" />
 		</layout>

@@ -63,19 +63,13 @@ public class UserDao
         this.accessTokenSecret = accessTokenSecret;
     }
 
-    public static UserDao create( long id, int i, String name, String accessToken, String accessTokenSecret ) {
+    public static UserDao create( long id, String name, String accessToken, String accessTokenSecret ) {
         UserDao user = new UserDao();
         user.setId(id);
         user.setName(name);
         user.setAccessToken(accessToken);
         user.setAccessTokenSecret(accessTokenSecret);
         return user;
-    }
-
-    public int getCustomerId( ) {
-        // TODO Auto-generated method stub
-        // RT comment: what is this ?
-        return 0;
     }
 
     public boolean isOAuthAvailable( ) {
