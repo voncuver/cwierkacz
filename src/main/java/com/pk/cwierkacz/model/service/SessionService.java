@@ -1,18 +1,22 @@
 package com.pk.cwierkacz.model.service;
 
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 
-import com.pk.cwierkacz.model.dao.Session;
+import com.pk.cwierkacz.model.dao.SessionDao;
 
-public class SessionService extends AbstractService<Session>
+public class SessionService extends AbstractService<SessionDao>
 {
 
     public SessionService( SessionFactory sessionFactory ) {
         super(sessionFactory);
     }
 
-    public Session getByUserId( long id ) {
-        return getByQuery("From Session where Session.userid = " + Long.toString(id));
+    public SessionDao getByUserId( long id ) {
+        Criteria criteria = getCriteria(SessionDao.class);
+        criteria.add(Restrictions.eq("userId", id));
+        return (SessionDao) criteria.list().get(0);
     }
 
 }

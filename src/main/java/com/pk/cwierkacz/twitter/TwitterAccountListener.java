@@ -12,7 +12,7 @@ import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.auth.AccessToken;
 
-import com.pk.cwierkacz.model.dao.Tweet;
+import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.UserDao;
 import com.pk.cwierkacz.twitter.converters.TweetConverter;
 
@@ -48,7 +48,7 @@ public class TwitterAccountListener
             @Override
             public void onStatus( Status status ) {
                 LOGGER.info("@" + status.getUser().getScreenName() + " - " + status.getText());
-                Tweet newTweet = tweetConverter.toTweet(status);
+                TweetDao newTweet = tweetConverter.toTweet(status);
                 storage.addUnclassifiedTweet(newTweet);
             }
 

@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import twitter4j.Status;
 
-import com.pk.cwierkacz.model.dao.Tweet;
+import com.pk.cwierkacz.model.dao.TweetDao;
 
 public class TweetConverterTest
 {
@@ -38,7 +38,7 @@ public class TweetConverterTest
         stub(status.getText()).toReturn("test msg");
         stub(tweetUser.getId()).toReturn(1234L);
 
-        Tweet tweet = converter.toTweet(status);
+        TweetDao tweet = converter.toTweet(status);
         assertEquals(tweet.getId().longValue(), status.getId());
         assertEquals(tweet.getId().longValue(), 77L);
 

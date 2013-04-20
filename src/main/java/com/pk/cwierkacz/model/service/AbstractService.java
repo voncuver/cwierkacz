@@ -2,12 +2,13 @@ package com.pk.cwierkacz.model.service;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 public class AbstractService< T >
 {
-    private final SessionFactory sessionFactory;
+    protected final SessionFactory sessionFactory;
 
     public AbstractService( SessionFactory sessionFactory ) {
         this.sessionFactory = sessionFactory;
@@ -55,4 +56,10 @@ public class AbstractService< T >
         session.close();
         return result;
     }
+
+    @SuppressWarnings( "rawtypes" )
+    public Criteria getCriteria( Class className ) {
+        return sessionFactory.openSession().createCriteria(className);
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.pk.cwierkacz.twitter;
 
-import com.pk.cwierkacz.model.dao.Tweet;
+import com.pk.cwierkacz.model.dao.TweetDao;
 
 /**
  * 
@@ -17,7 +17,7 @@ interface TwitterStorage
      * 
      * @param tweet
      */
-    public void addUnclassifiedTweet( Tweet tweet );
+    public void addUnclassifiedTweet( TweetDao tweet );
 
     /**
      * Mark tweet as deleted. Tweet may be marked before. Ignore this situation

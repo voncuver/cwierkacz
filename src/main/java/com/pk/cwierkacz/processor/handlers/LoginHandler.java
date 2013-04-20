@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 
 import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.model.ApplicationData;
-import com.pk.cwierkacz.model.dao.Session;
+import com.pk.cwierkacz.model.dao.SessionDao;
 import com.pk.cwierkacz.model.dao.UserDao;
 import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.UserService;
@@ -26,7 +26,7 @@ public class LoginHandler implements Handler
         String name = appData.getRequest().getFunctionalUserName();
         UserDao user = userService.getByUserId(name);
 
-        Session session = new Session();
+        SessionDao session = new SessionDao();
         DateTime dateTime = new DateTime();
         session.setLastActive(new Timestamp(dateTime.getMillis()));
         session.setUserId(user.getId());

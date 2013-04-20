@@ -17,7 +17,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 
 import com.google.common.collect.ImmutableList;
-import com.pk.cwierkacz.model.dao.Tweet;
+import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.UserDao;
 import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
 import com.pk.cwierkacz.twitter.converters.TweetConverter;
@@ -58,7 +58,7 @@ public class TwitterAccount
      *            textual representation of tweet
      * @throws TwitterActionException
      */
-    public Tweet composeNewTweet( String msg ) throws TwitterActionException {
+    public TweetDao composeNewTweet( String msg ) throws TwitterActionException {
         try {
             Status stat = twitter.updateStatus(msg);
             return tweetConverter.toTweet(stat);
@@ -78,7 +78,7 @@ public class TwitterAccount
      *            tweet attachments f.ex. image
      * @throws TwitterActionException
      */
-    public Tweet composeNewTweet( String msg, TweetAttachments attachments ) throws TwitterActionException {
+    public TweetDao composeNewTweet( String msg, TweetAttachments attachments ) throws TwitterActionException {
         return customComposeNewTweet(msg, null, attachments);
     }
 
@@ -91,7 +91,7 @@ public class TwitterAccount
      *            identifier of tweet for which we reply
      * @throws TwitterActionException
      */
-    public Tweet composeNewReplyTweet( String msg, Tweet mainTweet ) throws TwitterActionException {
+    public TweetDao composeNewReplyTweet( String msg, TweetDao mainTweet ) throws TwitterActionException {
         return customComposeNewTweet(msg, mainTweet, TweetAttachments.empty());
     }
 
@@ -106,11 +106,11 @@ public class TwitterAccount
      *            tweet attachments f.ex. image
      * @throws TwitterActionException
      */
-    public Tweet composeNewReplyTweet( String msg, Tweet mainTweet, TweetAttachments attachments ) throws TwitterActionException {
+    public TweetDao composeNewReplyTweet( String msg, TweetDao mainTweet, TweetAttachments attachments ) throws TwitterActionException {
         return customComposeNewTweet(msg, mainTweet, attachments);
     }
 
-    protected Tweet customComposeNewTweet( String msg, Tweet toReplyTweet, TweetAttachments attachments ) throws TwitterActionException {
+    protected TweetDao customComposeNewTweet( String msg, TweetDao toReplyTweet, TweetAttachments attachments ) throws TwitterActionException {
         try {
             StatusUpdate update;
             if ( toReplyTweet == null ) {
@@ -142,7 +142,7 @@ public class TwitterAccount
      *            identifier of tweet for which we create reTweet
      * @throws TwitterActionException
      */
-    public Tweet composeNewReTweet( Tweet mainTweet ) throws TwitterActionException {
+    public TweetDao composeNewReTweet( TweetDao mainTweet ) throws TwitterActionException {
         try {
             if ( mainTweet.getCreatorId() == user.getId() )
                 throw new TwitterActionException("You cannot retweet himself");
@@ -163,7 +163,7 @@ public class TwitterAccount
      *            which will be deleted
      * @throws TwitterActionException
      */
-    public void deleteTweet( Tweet tweet ) throws TwitterActionException {
+    public void deleteTweet( TweetDao tweet ) throws TwitterActionException {
         try {
             twitter.destroyStatus(tweet.getId());
         }
@@ -173,10 +173,10 @@ public class TwitterAccount
         }
     }
 
-    public ImmutableList<Tweet> getTweetsFromHomeTimeline( int count ) throws TwitterActionException {
+    public ImmutableList<TweetDao> getTweetsFromHomeTimeline( int count ) throws TwitterActionException {
         try {
             List<Status> statuses = twitter.getHomeTimeline(new Paging().count(count));
-            ImmutableList.Builder<Tweet> builder = ImmutableList.builder();
+            ImmutableList.Builder<TweetDao> builder = ImmutableList.builder();
             for ( int i = 0; i < statuses.size(); i++ ) {
                 builder.add(tweetConverter.toTweet(statuses.get(i)));
             }
@@ -196,7 +196,7 @@ public class TwitterAccount
      */
     @Deprecated
     //not tested - probably unnecessary method
-    public ImmutableList<Tweet> searchTweets( QueryCriteria criteria ) throws TwitterActionException {
+    public ImmutableList<TweetDao> searchTweets( QueryCriteria criteria ) throws TwitterActionException {
 
         return searchTweets(prepereQuery(criteria));
     }
@@ -224,8 +224,8 @@ public class TwitterAccount
         return new Query(queryString);
     }
 
-    protected ImmutableList<Tweet> searchTweets( Query query ) throws TwitterActionException {
-        ImmutableList.Builder<Tweet> builder = ImmutableList.builder();
+    protected ImmutableList<TweetDao> searchTweets( Query query ) throws TwitterActionException {
+        ImmutableList.Builder<TweetDao> builder = ImmutableList.builder();
         QueryResult result;
 
         try {

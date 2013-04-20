@@ -1,5 +1,7 @@
 package com.pk.cwierkacz.model;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -9,11 +11,13 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.pk.cwierkacz.exception.StartException;
+import com.pk.cwierkacz.model.dao.SessionDao;
 import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.UserService;
 
 @FixMethodOrder( MethodSorters.NAME_ASCENDING )
-public class ComplexServiceTest
+public class UserComplexServiceTest
 {
 
     static HibernateUtil hibernateUtil;
@@ -38,6 +42,17 @@ public class ComplexServiceTest
         Assert.assertEquals(1, users.size());
         Assert.assertEquals("11", users.get(0).getName());
         Assert.assertEquals("Test", users.get(0).getPassword());
+    }
+
+    @Test
+    public void saveLoadSessionAddTest( ) {
+        SessionDao sessionDao = new SessionDao();
+        sessionDao.setCurrentToken(1234l);
+        sessionDao.setLastActive(new Timestamp(new Date().getTime()));
+        sessionDao.setUserId(1234l);
+
+        SessionService sessionService = new SessionService(hibernateUtil.getSessionFactory());
+        sessionService.save(sessionDao);
     }
 
     @Test

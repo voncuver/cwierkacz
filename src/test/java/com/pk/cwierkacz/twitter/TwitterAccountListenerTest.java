@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.pk.cwierkacz.model.dao.Tweet;
+import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.UserDao;
 
 public class TwitterAccountListenerTest
@@ -41,10 +41,10 @@ public class TwitterAccountListenerTest
 
     class MemoryTwitterStorage implements TwitterStorage
     {
-        private final Map<Long, Tweet> tweets = new HashMap<Long, Tweet>();
+        private final Map<Long, TweetDao> tweets = new HashMap<Long, TweetDao>();
 
         @Override
-        public void addUnclassifiedTweet( Tweet tweet ) {
+        public void addUnclassifiedTweet( TweetDao tweet ) {
             tweets.put(tweet.getId(), tweet);
 
         }
@@ -62,16 +62,16 @@ public class TwitterAccountListenerTest
             return tweets.containsKey(tweetId);
         }
 
-        public boolean contain( Tweet tweet ) {
+        public boolean contain( TweetDao tweet ) {
             return tweets.containsValue(tweet);
         }
 
         @Override
         public String toString( ) {
-            Iterator<Entry<Long, Tweet>> it = tweets.entrySet().iterator();
+            Iterator<Entry<Long, TweetDao>> it = tweets.entrySet().iterator();
             String msg = "";
             while ( it.hasNext() ) {
-                Entry<Long, Tweet> pairs = it.next();
+                Entry<Long, TweetDao> pairs = it.next();
                 msg += ( pairs.getKey() + " = " + pairs.getValue() + "\n" );
                 it.remove();
             }
@@ -105,7 +105,7 @@ public class TwitterAccountListenerTest
                                       InterruptedException,
                                       TwitterAuthenticationException {
 
-        Tweet tweet = account1.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
+        TweetDao tweet = account1.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
         Thread.sleep(1000);
         assertEquals(1, storage.size());
         assertTrue(storage.contain(tweet.getId()));
@@ -116,8 +116,8 @@ public class TwitterAccountListenerTest
                                              InterruptedException,
                                              TwitterAuthenticationException {
 
-        Tweet tweet = account1.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
-        Tweet replyTweet = account2.composeNewReplyTweet("reply " + new Date().getTime(), tweet);
+        TweetDao tweet = account1.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
+        TweetDao replyTweet = account2.composeNewReplyTweet("reply " + new Date().getTime(), tweet);
         Thread.sleep(1000);
         assertEquals(2, storage.size());
         assertTrue(storage.contain(tweet.getId()));
@@ -129,8 +129,8 @@ public class TwitterAccountListenerTest
                                             InterruptedException,
                                             TwitterAuthenticationException {
 
-        Tweet tweet = account2.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
-        Tweet replyTweet = account1.composeNewReplyTweet("reply " + new Date().getTime(), tweet);
+        TweetDao tweet = account2.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
+        TweetDao replyTweet = account1.composeNewReplyTweet("reply " + new Date().getTime(), tweet);
         Thread.sleep(1000);
         assertEquals(1, storage.size());
         assertTrue(storage.contain(replyTweet.getId()));
@@ -141,8 +141,8 @@ public class TwitterAccountListenerTest
                                       InterruptedException,
                                       TwitterAuthenticationException {
 
-        Tweet tweet = account2.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
-        Tweet retweetTweet = account1.composeNewReTweet(tweet);
+        TweetDao tweet = account2.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
+        TweetDao retweetTweet = account1.composeNewReTweet(tweet);
         Thread.sleep(1000);
         assertEquals(1, storage.size());
         assertTrue(storage.contain(retweetTweet.getId()));
@@ -153,8 +153,8 @@ public class TwitterAccountListenerTest
                                       InterruptedException,
                                       TwitterAuthenticationException {
 
-        Tweet tweet = account1.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
-        Tweet retweetTweet = account2.composeNewReTweet(tweet);
+        TweetDao tweet = account1.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
+        TweetDao retweetTweet = account2.composeNewReTweet(tweet);
         Thread.sleep(1000);
         assertEquals(2, storage.size());
         assertTrue(storage.contain(tweet.getId()));
@@ -163,7 +163,7 @@ public class TwitterAccountListenerTest
 
     @Test
     public void testDeleteTweetByOwner( ) throws TwitterActionException, InterruptedException {
-        Tweet tweet = account1.composeNewTweet("QQQMSGAAAAAaa " + new Date().getTime());
+        TweetDao tweet = account1.composeNewTweet("QQQMSGAAAAAaa " + new Date().getTime());
         Thread.sleep(1000);
         assertEquals(1, storage.size());
 
@@ -176,8 +176,8 @@ public class TwitterAccountListenerTest
     @Test
     @Ignore
     public void testDeleteReplyTweetByOther( ) throws TwitterActionException, InterruptedException {
-        Tweet tweet = account1.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
-        Tweet replyTweet = account2.composeNewReplyTweet("reply " + new Date().getTime(), tweet);
+        TweetDao tweet = account1.composeNewTweet("2MSGAAAAAaa " + new Date().getTime());
+        TweetDao replyTweet = account2.composeNewReplyTweet("reply " + new Date().getTime(), tweet);
         Thread.sleep(1000);
         assertEquals(2, storage.size());
 

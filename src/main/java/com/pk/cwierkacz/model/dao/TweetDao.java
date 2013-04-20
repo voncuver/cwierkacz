@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table( name = "Tweets" )
-public class Tweet
+public class TweetDao
 {
 
     @Id
@@ -79,14 +79,14 @@ public class Tweet
         this.retweetedId = retweetedId;
     }
 
-    public static Tweet create( Long id,
-                                Long userId,
-                                String username,
-                                Long inReplyToStatusId,
-                                Long retweetedId,
-                                DateTime convertDateUTC,
-                                String text ) {
-        Tweet t = new Tweet();
+    public static TweetDao create( Long id,
+                                   Long userId,
+                                   String username,
+                                   Long inReplyToStatusId,
+                                   Long retweetedId,
+                                   DateTime convertDateUTC,
+                                   String text ) {
+        TweetDao t = new TweetDao();
         t.setCratedDate(convertDateUTC);
         t.setCreatorId(userId);
         t.setCreatorName(username);

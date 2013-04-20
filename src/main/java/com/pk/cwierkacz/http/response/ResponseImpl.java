@@ -6,7 +6,7 @@ import java.util.Map;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.pk.cwierkacz.http.Status;
-import com.pk.cwierkacz.model.dao.Tweet;
+import com.pk.cwierkacz.model.dao.TweetDao;
 
 @JsonSerialize( include = JsonSerialize.Inclusion.NON_NULL )
 public class ResponseImpl implements Response, LoginResponse, FetchTweetsResponse
@@ -20,7 +20,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
 
     private List<String> accounts;
 
-    private List<Tweet> tweets;
+    private List<TweetDao> tweets;
 
     private Map<Long, String> usersTweeter;
 
@@ -44,7 +44,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Response > T buildFetchResponse( List<Tweet> tweets, Map<Long, String> users ) {
+    public < T extends Response > T buildFetchResponse( List<TweetDao> tweets, Map<Long, String> users ) {
         this.tweets = tweets;
         this.usersTweeter = users;
         return (T) this;
@@ -71,7 +71,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
     }
 
     @Override
-    public List<Tweet> getTweets( ) {
+    public List<TweetDao> getTweets( ) {
         return tweets;
     }
 

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table( name = "Session" )
-public class Session
+public class SessionDao
 {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )

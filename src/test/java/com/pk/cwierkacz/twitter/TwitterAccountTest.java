@@ -11,7 +11,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
-import com.pk.cwierkacz.model.dao.Tweet;
+import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.UserDao;
 import com.pk.cwierkacz.twitter.attachment.ImageAttachment;
 import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
@@ -69,13 +69,13 @@ public class TwitterAccountTest
 
     @Test
     public void testComposeNewReplyTweet( ) throws TwitterActionException {
-        Tweet tweet = account.composeNewTweet("TEST CWIERKACZ TWEET FOR REPLY" + ( new Date() ).getTime());
+        TweetDao tweet = account.composeNewTweet("TEST CWIERKACZ TWEET FOR REPLY" + ( new Date() ).getTime());
         account.composeNewReplyTweet("TEST CWIERKACZ REPLY TWEET FOR" + ( new Date() ).getTime(), tweet);
     }
 
     @Test
     public void testComposeNewReplyTweetWithImg( ) throws TwitterActionException {
-        Tweet tweet = account.composeNewTweet("TEST CWIERKACZ TWEET FOR REPLY" + ( new Date() ).getTime());
+        TweetDao tweet = account.composeNewTweet("TEST CWIERKACZ TWEET FOR REPLY" + ( new Date() ).getTime());
         ImageAttachment image = new ImageAttachment(new File("src/test/java/com/pk/cwierkacz/twitter/lena.PNG"));
         account.composeNewReplyTweet("QQ TEST CWIERKACZ REPLY TWEET FOR" + ( new Date() ).getTime(),
                                      tweet,
@@ -84,14 +84,14 @@ public class TwitterAccountTest
 
     @Test( expected = TwitterActionException.class )
     public void testComposeNewReTweet( ) throws TwitterActionException {
-        Tweet tweet = account.composeNewTweet("TEST CWIERKACZ TWEET WHICH WILL BE RETWEETED" +
-                                              ( new Date() ).getTime());
+        TweetDao tweet = account.composeNewTweet("TEST CWIERKACZ TWEET WHICH WILL BE RETWEETED" +
+                                                 ( new Date() ).getTime());
         account.composeNewReTweet(tweet);
     }
 
     @Test
     public void testDeleteTweet( ) throws TwitterActionException {
-        Tweet tweet = account.composeNewTweet("TEST CWIERKACZ TWEET TO DELETE " + ( new Date() ).getTime());
+        TweetDao tweet = account.composeNewTweet("TEST CWIERKACZ TWEET TO DELETE " + ( new Date() ).getTime());
         account.deleteTweet(tweet);
     }
 
@@ -101,10 +101,10 @@ public class TwitterAccountTest
             account.composeNewTweet("TEST CWIERKACZ TWEET " + ( new Date() ).getTime());
         }
 
-        ImmutableList<Tweet> tweets10 = account.getTweetsFromHomeTimeline(10);
+        ImmutableList<TweetDao> tweets10 = account.getTweetsFromHomeTimeline(10);
         assertEquals(10, tweets10.size());
 
-        ImmutableList<Tweet> tweets20 = account.getTweetsFromHomeTimeline(20);
+        ImmutableList<TweetDao> tweets20 = account.getTweetsFromHomeTimeline(20);
         assertEquals(20, tweets20.size());
 
     }
@@ -117,16 +117,16 @@ public class TwitterAccountTest
             account.composeNewTweet("TEST CWIERKACZ TWEET " + ( new Date() ).getTime());
         }
 
-        ImmutableList<Tweet> tweets10 = account.getTweetsFromHomeTimeline(10);
+        ImmutableList<TweetDao> tweets10 = account.getTweetsFromHomeTimeline(10);
         assertEquals(10, tweets10.size());
 
-        ImmutableList<Tweet> tweets20 = account.getTweetsFromHomeTimeline(20);
+        ImmutableList<TweetDao> tweets20 = account.getTweetsFromHomeTimeline(20);
         assertEquals(20, tweets20.size());
 
-        ImmutableList<Tweet> tweets100 = account.getTweetsFromHomeTimeline(100);
+        ImmutableList<TweetDao> tweets100 = account.getTweetsFromHomeTimeline(100);
         assertEquals(100, tweets100.size());
 
-        ImmutableList<Tweet> tweets200 = account.getTweetsFromHomeTimeline(100);
+        ImmutableList<TweetDao> tweets200 = account.getTweetsFromHomeTimeline(100);
         assertEquals(200, tweets200.size());
 
     }
