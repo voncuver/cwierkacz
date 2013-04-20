@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 
 // important! This class contain no-automatic tests, because to authenticate
 // user we must put PIN manually
@@ -19,13 +19,13 @@ public class OAuthAuthenticationTest
 {
 
     //external identifier of User is a FAKE
-    private UserDao user;
+    private TwitterAccountDao account;
     private OAuthAuthentication userAuthentication;
 
     @Before
     public void setUp( ) throws Exception {
-        user = UserDao.create(22L, 0, "cwierkacz1", null, null);
-        userAuthentication = new OAuthAuthentication(user);
+        account = TwitterAccountDao.create(22L, 0, "cwierkacz1", null, null);
+        userAuthentication = new OAuthAuthentication(account);
     }
 
     @Test
@@ -62,8 +62,8 @@ public class OAuthAuthenticationTest
 
         System.out.println("Enter your twitter username: for example 'cwierkacz1'");
         String username = br.readLine();
-        user = UserDao.create(22L, 0, username, null, null);
-        userAuthentication = new OAuthAuthentication(user);
+        account = TwitterAccountDao.create(22L, 0, username, null, null);
+        userAuthentication = new OAuthAuthentication(account);
 
         String url = userAuthentication.getAuthenticationURL();
         System.out.println("Belows you see a OAuth URL - copy it to your browser, next login to your twitter account and next grant access for this application to manage your account");
@@ -71,10 +71,10 @@ public class OAuthAuthenticationTest
 
         System.out.print("Enter the PIN:");
         String pin = br.readLine();
-        user = userAuthentication.authenticate(pin, true);
+        account = userAuthentication.authenticate(pin, true);
 
-        System.out.println("Access Token : " + user.getAccessToken());
-        System.out.println("Access Token Secret: " + user.getAccessTokenSecret());
+        System.out.println("Access Token : " + account.getAccessToken());
+        System.out.println("Access Token Secret: " + account.getAccessTokenSecret());
 
         assertTrue(userAuthentication.isAuthenticate());
     }

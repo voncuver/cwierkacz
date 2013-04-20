@@ -18,7 +18,7 @@ import twitter4j.auth.AccessToken;
 
 import com.google.common.collect.ImmutableList;
 import com.pk.cwierkacz.model.dao.TweetDao;
-import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
 import com.pk.cwierkacz.twitter.converters.TweetConverter;
 import com.pk.cwierkacz.utils.DateUtil;
@@ -35,7 +35,7 @@ public class TwitterAccount
     private static final Logger LOGGER = LoggerFactory.getLogger(TwitterAccount.class);
     private static final DateTimeFormatter DATE_FORMATTER = DateUtil.formatterYyyyMMddUTC();
 
-    protected final UserDao user;
+    protected final TwitterAccountDao account;
     protected Twitter twitter;
     protected TweetConverter tweetConverter = new TweetConverter();
 
@@ -46,9 +46,9 @@ public class TwitterAccount
      *            owner of this account
      * @throws TwitterAuthenticationException
      */
-    public TwitterAccount( UserDao user ) throws TwitterAuthenticationException {
-        authenticate(user);
-        this.user = user;
+    public TwitterAccount( TwitterAccountDao account ) throws TwitterAuthenticationException {
+        authenticate(account);
+        this.account = account;
     }
 
     /**
@@ -144,7 +144,7 @@ public class TwitterAccount
      */
     public TweetDao composeNewReTweet( TweetDao mainTweet ) throws TwitterActionException {
         try {
-            if ( mainTweet.getCreatorId() == user.getId() )
+            if ( mainTweet.getCreatorId() == account.getId() )
                 throw new TwitterActionException("You cannot retweet himself");
 
             Status stat = twitter.retweetStatus(mainTweet.getId());
@@ -245,11 +245,11 @@ public class TwitterAccount
         }
     }
 
-    protected void authenticate( UserDao user ) throws TwitterAuthenticationException {
+    protected void authenticate( TwitterAccountDao account ) throws TwitterAuthenticationException {
         TwitterFactory factory = new TwitterFactory();
 
-        if ( user.isOAuthAvailable() ) {
-            AccessToken token = new AccessToken(user.getAccessToken(), user.getAccessTokenSecret());
+        if ( account.isOAuthAvailable() ) {
+            AccessToken token = new AccessToken(account.getAccessToken(), account.getAccessTokenSecret());
             twitter = factory.getInstance(token);
         }
         else {

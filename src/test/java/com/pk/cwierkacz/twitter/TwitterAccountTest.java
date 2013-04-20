@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.pk.cwierkacz.model.dao.TweetDao;
-import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.twitter.attachment.ImageAttachment;
 import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
 
@@ -33,7 +33,11 @@ public class TwitterAccountTest
 
     @Before
     public void setUp( ) throws Exception {
-        UserDao user = UserDao.create(userId, -1, username, accessToken, accessTokenSecret);
+        TwitterAccountDao user = TwitterAccountDao.create(userId,
+                                                          -1,
+                                                          username,
+                                                          accessToken,
+                                                          accessTokenSecret);
         account = new TwitterAccount(user);
     }
 

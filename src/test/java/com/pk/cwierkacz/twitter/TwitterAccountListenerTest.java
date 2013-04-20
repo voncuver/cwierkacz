@@ -15,7 +15,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.pk.cwierkacz.model.dao.TweetDao;
-import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 
 public class TwitterAccountListenerTest
 {
@@ -33,9 +33,17 @@ public class TwitterAccountListenerTest
     private TwitterAccountListener listener;
     private MemoryTwitterStorage storage;
 
-    UserDao user = UserDao.create(userId, -1, username, accessToken, accessTokenSecret);
+    TwitterAccountDao accountDao = TwitterAccountDao.create(userId,
+                                                            -1,
+                                                            username,
+                                                            accessToken,
+                                                            accessTokenSecret);
 
-    UserDao user2 = UserDao.create(userId2, -1, username2, accessToken2, accessTokenSecret2);
+    TwitterAccountDao accountDao2 = TwitterAccountDao.create(userId2,
+                                                             -1,
+                                                             username2,
+                                                             accessToken2,
+                                                             accessTokenSecret2);
 
     TwitterAccount account1, account2;
 
@@ -83,10 +91,10 @@ public class TwitterAccountListenerTest
     @Before
     public void setUp( ) throws Exception {
 
-        account1 = new TwitterAccount(user);
-        account2 = new TwitterAccount(user2);
+        account1 = new TwitterAccount(accountDao);
+        account2 = new TwitterAccount(accountDao2);
 
-        listener = new TwitterAccountListener(user);
+        listener = new TwitterAccountListener(accountDao);
 
         storage = new MemoryTwitterStorage();
 

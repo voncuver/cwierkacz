@@ -7,7 +7,7 @@ import static org.mockito.Mockito.stub;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 
 public class UserConverterTest
 {
@@ -18,16 +18,16 @@ public class UserConverterTest
 
     @Test
     public void toModelUserTest( ) {
-        UserConverter converter = new UserConverter();
+        TwitterAcountConverter converter = new TwitterAcountConverter();
 
         twitter4j.User tweetUser = mock(twitter4j.User.class);
         stub(tweetUser.getId()).toReturn(77L);
         stub(tweetUser.getScreenName()).toReturn("test name");
 
-        UserDao user = converter.toModelUser(tweetUser);
-        assertEquals(user.getId(), tweetUser.getId());
-        assertEquals(user.getId(), 77);
-        assertEquals(user.getName(), tweetUser.getScreenName());
-        assertEquals(user.getName(), "test name");
+        TwitterAccountDao account = converter.toAccount(tweetUser);
+        assertEquals(account.getId().longValue(), tweetUser.getId());
+        assertEquals(account.getId().longValue(), 77);
+        assertEquals(account.getAccountName(), tweetUser.getScreenName());
+        assertEquals(account.getAccountName(), "test name");
     }
 }

@@ -1,15 +1,23 @@
 package com.pk.cwierkacz.model.dao;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * Data access object of system user - contain many twitter account
+ * 
+ */
 @Entity
 @Table( name = "Users" )
 public class UserDao
 {
+    //TODO 1: dodać adnotacje do accounts i przetestowac
+    //TODO 2: szyfrowanie password
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -19,9 +27,7 @@ public class UserDao
 
     private String password;
 
-    private String accessToken;
-
-    private String accessTokenSecret;
+    private List<TwitterAccountDao> accounts;
 
     public long getId( ) {
         return id;
@@ -47,42 +53,12 @@ public class UserDao
         this.password = password;
     }
 
-    public String getAccessToken( ) {
-        return accessToken;
+    public List<TwitterAccountDao> getAccounts( ) {
+        return accounts;
     }
 
-    public void setAccessToken( String accessToken ) {
-        this.accessToken = accessToken;
-    }
-
-    public String getAccessTokenSecret( ) {
-        return accessTokenSecret;
-    }
-
-    public void setAccessTokenSecret( String accessTokenSecret ) {
-        this.accessTokenSecret = accessTokenSecret;
-    }
-
-    public static UserDao create( long id, int i, String name, String accessToken, String accessTokenSecret ) {
-        UserDao user = new UserDao();
-        user.setId(id);
-        user.setName(name);
-        user.setAccessToken(accessToken);
-        user.setAccessTokenSecret(accessTokenSecret);
-        return user;
-    }
-
-    public int getCustomerId( ) {
-        // TODO Auto-generated method stub
-        // RT comment: what is this ?
-        return 0;
-    }
-
-    public boolean isOAuthAvailable( ) {
-        if ( accessToken != null && accessTokenSecret != null )
-            return true;
-        else
-            return false;
+    public void setAccounts( List<TwitterAccountDao> accounts ) {
+        this.accounts = accounts;
     }
 
 }

@@ -19,5 +19,6 @@
     <mapping class="com.pk.cwierkacz.model.dao.UserDao" />
     <mapping class="com.pk.cwierkacz.model.dao.TweetDao" />
     <mapping class="com.pk.cwierkacz.model.dao.SessionDao" />
+    <mapping class="com.pk.cwierkacz.model.dao.TwitterAccountDao" />
 </session-factory>
 </hibernate-configuration>

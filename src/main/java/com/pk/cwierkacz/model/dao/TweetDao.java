@@ -8,10 +8,23 @@ import javax.persistence.Table;
 
 import org.joda.time.DateTime;
 
+/**
+ * Data access object of Tweet (no matter if is reTweet, replyTweet or new
+ * no-reply Tweet or no-replyTweet)
+ * 
+ */
 @Entity
 @Table( name = "Tweets" )
 public class TweetDao
 {
+    //TODO 8: wyrzucić inReplyTo oraz retweetedId zamiast tego wprowadzic referencje do Tweet
+    //TODO 9: wyrzucić creatorId - zmiast referencja do User
+    //TODO 10: zamiast pol inReplyTo, retweetedId, creatorId dodac takie metody zwracajace to z referencji
+    //TODO 11: wyrzucić creatorName - zamiast tego stworzyc funkcje ktora zwraca name z Usera
+    //TODO 12: zmodyfikować ciało metody create tak aby nadal przyjmowala idki (bez username) - ale zapisywala znalezione referencje - zapisywalo w baze i zwracalo
+    //TODO 13: dodać do tej klasy Liste retweetów, Liste replyTweetow
+    //TODO 14: dodać odpowiednie adnotacje
+    //TODO 15: dodać odpowiednie metody moze zamiast publicznych setterow aby robily od razu wiazanie w dwie strony? - jak uwazasz 
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )

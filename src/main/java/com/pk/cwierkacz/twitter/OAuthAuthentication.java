@@ -9,13 +9,13 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
-import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 
 public class OAuthAuthentication
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuthAuthentication.class);
     private static final TwitterFactory FACTORY = new TwitterFactory();
-    private UserDao user;
+    private TwitterAccountDao account;
     private final Twitter twitter;
     private RequestToken requestToken;
 
@@ -25,8 +25,8 @@ public class OAuthAuthentication
      * @param user
      *            user which we wont authenticate
      */
-    public OAuthAuthentication( UserDao user ) {
-        this.user = user;
+    public OAuthAuthentication( TwitterAccountDao account ) {
+        this.account = account;
         this.twitter = FACTORY.getInstance();
     }
 
@@ -35,7 +35,7 @@ public class OAuthAuthentication
      * if user have saved access token and secret
      */
     public boolean isAuthenticate( ) {
-        return user.getAccessToken() != null && user.getAccessTokenSecret() != null;
+        return account.getAccessToken() != null && account.getAccessTokenSecret() != null;
     }
 
     /**
@@ -66,18 +66,18 @@ public class OAuthAuthentication
      * @return user with access token and access token secret
      * @throws TwitterAuthenticationException
      */
-    public UserDao authenticate( String pin, boolean forceAuthorizations ) throws TwitterAuthenticationException {
+    public TwitterAccountDao authenticate( String pin, boolean forceAuthorizations ) throws TwitterAuthenticationException {
         if ( isAuthenticate() && !forceAuthorizations )
-            return user;
+            return account;
 
         try {
             AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, pin);
-            UserDao authUser = UserDao.create(user.getId(),
-                                              user.getCustomerId(),
-                                              user.getName(),
-                                              accessToken.getToken(),
-                                              accessToken.getTokenSecret());
-            this.user = authUser;
+            TwitterAccountDao authUser = TwitterAccountDao.create(account.getId(),
+                                                                  account.getUserId(),
+                                                                  account.getAccountName(),
+                                                                  accessToken.getToken(),
+                                                                  accessToken.getTokenSecret());
+            this.account = authUser;
             return authUser;
         }
         catch ( TwitterException e ) {
@@ -100,7 +100,7 @@ public class OAuthAuthentication
      * @return user with access token and access token secret
      * @throws TwitterAuthenticationException
      */
-    public UserDao authenticate( String pin ) throws TwitterAuthenticationException {
+    public TwitterAccountDao authenticate( String pin ) throws TwitterAuthenticationException {
         return authenticate(pin, false);
     }
 }

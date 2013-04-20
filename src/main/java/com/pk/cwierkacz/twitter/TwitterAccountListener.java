@@ -13,14 +13,14 @@ import twitter4j.TwitterStreamFactory;
 import twitter4j.auth.AccessToken;
 
 import com.pk.cwierkacz.model.dao.TweetDao;
-import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.twitter.converters.TweetConverter;
 
 public class TwitterAccountListener
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(TwitterAccountListener.class);
 
-    protected final UserDao user;
+    protected final TwitterAccountDao account;
     protected TweetConverter tweetConverter = new TweetConverter();
     protected TwitterStream twitterStream;
 
@@ -31,9 +31,9 @@ public class TwitterAccountListener
      *            owner of this account
      * @throws TwitterAuthenticationException
      */
-    public TwitterAccountListener( UserDao user ) throws TwitterAuthenticationException {
-        authenticate(user);
-        this.user = user;
+    public TwitterAccountListener( TwitterAccountDao account ) throws TwitterAuthenticationException {
+        authenticate(account);
+        this.account = account;
     }
 
     /**
@@ -89,7 +89,7 @@ public class TwitterAccountListener
      * listen o twitter status on current user account
      */
     public void listen( ) {
-        long[] followers = {user.getId()};
+        long[] followers = {account.getId()};
         FilterQuery query = new FilterQuery(0, followers);
         twitterStream.filter(query);
     }
@@ -101,11 +101,11 @@ public class TwitterAccountListener
         twitterStream.cleanUp();
     }
 
-    protected void authenticate( UserDao user ) throws TwitterAuthenticationException {
+    protected void authenticate( TwitterAccountDao account ) throws TwitterAuthenticationException {
         TwitterStreamFactory factory = new TwitterStreamFactory();
 
-        if ( user.isOAuthAvailable() ) {
-            AccessToken token = new AccessToken(user.getAccessToken(), user.getAccessTokenSecret());
+        if ( account.isOAuthAvailable() ) {
+            AccessToken token = new AccessToken(account.getAccessToken(), account.getAccessTokenSecret());
             twitterStream = factory.getInstance(token);
         }
         else {
@@ -115,7 +115,7 @@ public class TwitterAccountListener
 
     @Override
     public String toString( ) {
-        return "Twitter Acount Listener on " + user.getName() + " (" + user.getId() + ")";
+        return "Twitter Acount Listener on " + account.getAccountName() + " (" + account.getId() + ")";
     }
 
 }

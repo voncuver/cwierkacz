@@ -2,7 +2,7 @@ package com.pk.cwierkacz.twitter;
 
 import org.joda.time.LocalDate;
 
-import com.pk.cwierkacz.model.dao.FunctionalAccount;
+import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 
 /**
  * @author radek
@@ -16,12 +16,12 @@ public class QueryCriteria
 
     private final LocalDate untilDate;
 
-    private final FunctionalAccount from;
+    private final TwitterAccountDao from;
 
-    private final FunctionalAccount to;
+    private final TwitterAccountDao to;
 
-    private QueryCriteria( FunctionalAccount from,
-                           FunctionalAccount to,
+    private QueryCriteria( TwitterAccountDao from,
+                           TwitterAccountDao to,
                            LocalDate sinceDate,
                            LocalDate untilDate ) {
         this.from = from;
@@ -47,29 +47,29 @@ public class QueryCriteria
     /**
      * tweet sender
      */
-    public FunctionalAccount getFrom( ) {
+    public TwitterAccountDao getFrom( ) {
         return from;
     }
 
     /**
      * tweet recipient
      */
-    public FunctionalAccount getTo( ) {
+    public TwitterAccountDao getTo( ) {
         return to;
     }
 
-    public static QueryCriteria full( FunctionalAccount from,
-                                      FunctionalAccount to,
+    public static QueryCriteria full( TwitterAccountDao from,
+                                      TwitterAccountDao to,
                                       LocalDate sinceDate,
                                       LocalDate untilDate ) {
         return new QueryCriteria(from, to, sinceDate, untilDate);
     }
 
-    public static QueryCriteria from( FunctionalAccount from ) {
+    public static QueryCriteria from( TwitterAccountDao from ) {
         return new QueryCriteria(from, null, null, null);
     }
 
-    public static QueryCriteria to( FunctionalAccount to ) {
+    public static QueryCriteria to( TwitterAccountDao to ) {
         return new QueryCriteria(null, to, null, null);
     }
 
@@ -81,7 +81,7 @@ public class QueryCriteria
         return new QueryCriteria(null, null, null, until);
     }
 
-    public static QueryCriteria participants( FunctionalAccount from, FunctionalAccount to ) {
+    public static QueryCriteria participants( TwitterAccountDao from, TwitterAccountDao to ) {
         return new QueryCriteria(from, to, null, null);
     }
 

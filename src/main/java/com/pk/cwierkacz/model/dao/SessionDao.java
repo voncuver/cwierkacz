@@ -12,6 +12,8 @@ import javax.persistence.Table;
 @Table( name = "Session" )
 public class SessionDao
 {
+    //TODO 16: zamiast idka userId referencja
+
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private long id;
