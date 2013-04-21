@@ -2,11 +2,14 @@ package com.pk.cwierkacz.model.dao;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table( name = "Session" )
@@ -20,6 +23,8 @@ public class SessionDao
 
     private long userId;
 
+    @Column
+    @Type( type = "org.jadira.usertype.dateandtime.legacyjdk.PersistentTimestamp" )
     private Timestamp lastActive;
 
     private long currentToken;
