@@ -25,8 +25,8 @@ public class UserConverterTest
         stub(tweetUser.getScreenName()).toReturn("test name");
 
         TwitterAccountDao account = converter.toAccount(tweetUser);
-        assertEquals(account.getId().longValue(), tweetUser.getId());
-        assertEquals(account.getId().longValue(), 77);
+        assertEquals(account.getExternalId().longValue(), tweetUser.getId());
+        assertEquals(account.getExternalId().longValue(), 77);
         assertEquals(account.getAccountName(), tweetUser.getScreenName());
         assertEquals(account.getAccountName(), "test name");
     }

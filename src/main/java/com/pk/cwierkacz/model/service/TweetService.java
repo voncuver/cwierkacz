@@ -21,9 +21,19 @@ public class TweetService extends AbstractService<TweetDao>
         return criteria.list();
     }
 
+    public List<TweetDao> getActualTweets( ) {
+        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("isDeleted", false));
+        return criteria.list();
+    }
+
     public TweetDao getTweetById( Long id ) {
         Criteria criteria = getCriteria(TweetDao.class);
         criteria.add(Restrictions.eq("Id", id));
-        return (TweetDao) criteria.list().get(0);
+        return (TweetDao) criteria.uniqueResult();
+    }
+
+    public TweetDao getByExternalId( Long id ) {
+        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("externalId", id));
+        return (TweetDao) criteria.uniqueResult();
     }
 }

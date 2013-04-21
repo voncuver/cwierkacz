@@ -20,9 +20,15 @@ public class UserService extends AbstractService<UserDao>
         return criteria.list();
     }
 
+    @SuppressWarnings( "unchecked" )
+    public List<UserDao> getActualUsers( ) {
+        Criteria criteria = getCriteria(UserDao.class).add(Restrictions.eq("isDeleted", false));
+        return criteria.list();
+    }
+
     public UserDao getByUserId( String name ) {
         Criteria criteria = getCriteria(UserDao.class);
         criteria.add(Restrictions.eq("name", name));
-        return (UserDao) criteria.list().get(0);
+        return (UserDao) criteria.uniqueResult();
     }
 }

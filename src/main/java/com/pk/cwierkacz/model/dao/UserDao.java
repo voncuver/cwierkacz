@@ -37,10 +37,11 @@ public class UserDao implements Serializable
 
     @OneToMany( fetch = FetchType.LAZY,
                 targetEntity = TwitterAccountDao.class,
-                mappedBy = "userId",
-                cascade = {CascadeType.ALL},
-                orphanRemoval = true )
+                mappedBy = "user",
+                cascade = {CascadeType.ALL} )
     private Set<TwitterAccountDao> accounts;
+
+    private boolean isDeleted;
 
     public long getId( ) {
         return id;
@@ -80,6 +81,14 @@ public class UserDao implements Serializable
         user.setId(id);
         user.setName(name);
         return user;
+    }
+
+    public boolean isDeleted( ) {
+        return isDeleted;
+    }
+
+    public void setDeleted( boolean isDeleted ) {
+        this.isDeleted = isDeleted;
     }
 
 }

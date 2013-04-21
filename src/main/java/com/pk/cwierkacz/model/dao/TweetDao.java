@@ -1,6 +1,10 @@
 package com.pk.cwierkacz.model.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,10 +12,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 /**
@@ -23,29 +28,63 @@ import org.joda.time.DateTime;
 @Table( name = "Tweets" )
 public class TweetDao
 {
-    //TODO 8: wyrzucić inReplyTo oraz retweetedId zamiast tego wprowadzic referencje do Tweet - zostawiłem bez asocjacji bo nie wiem jaką chcemy, chyba ONE TO ONE będzie ok
-
-    //TODO 12: zmodyfikować ciało metody create tak aby nadal przyjmowala idki (bez username) - ale zapisywala znalezione referencje - zapisywalo w baze i zwracalo - na bazie operuje się przez pakiet service
-
-    //TODO 13: dodać do tej klasy Liste retweetów, Liste replyTweetow - hmm, ciekawe jak to zamodelowac w hibernacie
-
     //TODO 15: dodać odpowiednie metody moze zamiast publicznych setterow aby robily od razu wiazanie w dwie strony? - jak uwazasz  - mozna stworzyc jakies buildery, ale moze nie w dao tylko poza
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Long Id;
 
-    @OneToOne( cascade = CascadeType.ALL )
+    @Column( unique = true, nullable = false )
+    private Long externalId;
+
+    @ManyToOne( fetch = FetchType.EAGER )
+    @JoinColumn( nullable = true, name = "inReplyTo", referencedColumnName = "id" )
     private TweetDao inReplyTo;
 
-    @OneToOne( cascade = CascadeType.ALL )
-    private TweetDao retweetedId;
+    @ManyToOne( fetch = FetchType.EAGER )
+    @JoinColumn( nullable = true, name = "retweeted", referencedColumnName = "id" )
+    private TweetDao retweeted;
 
-    @ManyToOne( fetch = FetchType.EAGER, cascade = {CascadeType.ALL} )
-    @JoinColumn( nullable = false, name = "creatorId", referencedColumnName = "id" )
-    private TwitterAccountDao creatorId;
+    @OneToMany( fetch = FetchType.LAZY,
+                targetEntity = TweetDao.class,
+                mappedBy = "inReplyTo",
+                cascade = {CascadeType.ALL} )
+    private List<TweetDao> replies;
+
+    @OneToMany( fetch = FetchType.LAZY,
+                targetEntity = TweetDao.class,
+                mappedBy = "retweeted",
+                cascade = {CascadeType.ALL} )
+    private List<TweetDao> retweets;
+
+    @ManyToOne( fetch = FetchType.EAGER )
+    @JoinColumn( nullable = false, name = "creator", referencedColumnName = "id" )
+    private TwitterAccountDao creator;
+
+    @Column
+    @Type( type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime" )
     private DateTime cratedDate;
     private String text;
+
+    private boolean isDeleted;
+
+    @Transient
+    public List<TweetDao> getActualReplies( ) {
+        List<TweetDao> actual = new ArrayList<TweetDao>();
+        for ( TweetDao r : getReplies() ) {
+            actual.add(r);
+        }
+        return actual;
+    }
+
+    @Transient
+    public List<TweetDao> getActualRetweets( ) {
+        List<TweetDao> actual = new ArrayList<TweetDao>();
+        for ( TweetDao r : getRetweets() ) {
+            actual.add(r);
+        }
+        return actual;
+    }
 
     public Long getId( ) {
         return Id;
@@ -63,12 +102,12 @@ public class TweetDao
         this.inReplyTo = inReplyTo;
     }
 
-    public TwitterAccountDao getCreatorId( ) {
-        return creatorId;
+    public TwitterAccountDao getCreator( ) {
+        return creator;
     }
 
-    public void setCreatorId( TwitterAccountDao creatorId ) {
-        this.creatorId = creatorId;
+    public void setCreator( TwitterAccountDao creator ) {
+        this.creator = creator;
     }
 
     public DateTime getCratedDate( ) {
@@ -87,12 +126,12 @@ public class TweetDao
         this.text = text;
     }
 
-    public TweetDao getRetweetedId( ) {
-        return retweetedId;
+    public TweetDao getRetweeted( ) {
+        return retweeted;
     }
 
-    public void setRetweetedId( TweetDao retweetedId ) {
-        this.retweetedId = retweetedId;
+    public void setRetweeted( TweetDao retweeted ) {
+        this.retweeted = retweeted;
     }
 
     @Transient
@@ -102,34 +141,66 @@ public class TweetDao
 
     @Transient
     public Long getRetweetedIdValue( ) {
-        return retweetedId.getId();
+        return retweeted.getId();
     }
 
     @Transient
     public Long getCreatorIdValue( ) {
-        return creatorId.getId();
+        return creator.getId();
     }
 
     @Transient
     public String getCreatorName( ) {
-        return creatorId.getAccountName();
+        return creator.getAccountName();
     }
 
-    public static TweetDao create( Long id,
-                                   TwitterAccountDao userId,
-                                   TweetDao inReplyToStatusId,
-                                   TweetDao retweetedId,
+    public static TweetDao create( Long externalId,
+                                   TwitterAccountDao creator,
+                                   TweetDao inReplyToStatus,
+                                   TweetDao retweeted,
                                    DateTime convertDateUTC,
                                    String text ) {
         TweetDao t = new TweetDao();
         t.setCratedDate(convertDateUTC);
-        t.setCreatorId(userId);
-        t.setId(id);
-        t.setInReplyTo(inReplyToStatusId);
+        t.setCreator(creator);
+        t.setExternalId(externalId);
+        t.setInReplyTo(inReplyToStatus);
         t.setText(text);
-        t.setRetweetedId(retweetedId);
+        t.setRetweeted(retweeted);
 
         return t;
+    }
+
+    public List<TweetDao> getReplies( ) {
+        return replies;
+    }
+
+    public void setReplies( List<TweetDao> replies ) {
+        this.replies = replies;
+    }
+
+    public List<TweetDao> getRetweets( ) {
+        return retweets;
+    }
+
+    public void setRetweets( List<TweetDao> retweets ) {
+        this.retweets = retweets;
+    }
+
+    public boolean isDeleted( ) {
+        return isDeleted;
+    }
+
+    public void setDeleted( boolean isDeleted ) {
+        this.isDeleted = isDeleted;
+    }
+
+    public Long getExternalId( ) {
+        return externalId;
+    }
+
+    public void setExternalId( Long externalId ) {
+        this.externalId = externalId;
     }
 
 }

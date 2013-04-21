@@ -36,23 +36,27 @@ public final class TwitterAccountDao implements Serializable
     //TODO 6: szyfrowania accessToken i accessTokenSecret - na poziomie handlera
 
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY )
     @Column( length = 255 )
+    @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Long id;
 
-    @ManyToOne( fetch = FetchType.EAGER, cascade = {CascadeType.ALL} )
-    @JoinColumn( nullable = false, name = "userId", referencedColumnName = "id" )
-    private UserDao userId;
+    @Column( unique = true, nullable = false )
+    private Long externalId;
+
+    @ManyToOne( fetch = FetchType.EAGER )
+    @JoinColumn( nullable = false, name = "user", referencedColumnName = "id" )
+    private UserDao user;
     private String accountName;
     private String accessToken;
     private String accessTokenSecret;
 
     @OneToMany( fetch = FetchType.LAZY,
                 targetEntity = TweetDao.class,
-                mappedBy = "creatorId",
-                cascade = {CascadeType.ALL},
-                orphanRemoval = true )
+                mappedBy = "creator",
+                cascade = {CascadeType.ALL} )
     private Set<TweetDao> tweets;
+
+    private boolean isDeleted;
 
     public Long getId( ) {
         return id;
@@ -62,12 +66,12 @@ public final class TwitterAccountDao implements Serializable
         this.id = id;
     }
 
-    public UserDao getUserId( ) {
-        return userId;
+    public UserDao getUser( ) {
+        return user;
     }
 
-    public void setUserId( UserDao userId ) {
-        this.userId = userId;
+    public void setUser( UserDao userId ) {
+        this.user = userId;
     }
 
     public String getAccountName( ) {
@@ -104,7 +108,7 @@ public final class TwitterAccountDao implements Serializable
 
     @Transient
     public long getUserIdByValue( ) {
-        return this.userId.getId();
+        return this.user.getId();
     }
 
     @Transient
@@ -113,17 +117,33 @@ public final class TwitterAccountDao implements Serializable
     }
 
     public static TwitterAccountDao create( long externalId,
-                                            UserDao userId,
+                                            UserDao user,
                                             String accountName,
                                             String accessToken,
                                             String accessTokenSecret ) {
         TwitterAccountDao dao = new TwitterAccountDao();
-        dao.setId(externalId);
-        dao.setUserId(userId);
+        dao.setExternalId(externalId);
+        dao.setUser(user);
         dao.setAccountName(accountName);
         dao.setAccessToken(accessToken);
         dao.setAccessTokenSecret(accessTokenSecret);
 
         return dao;
+    }
+
+    public boolean isDeleted( ) {
+        return isDeleted;
+    }
+
+    public void setDeleted( boolean isDeleted ) {
+        this.isDeleted = isDeleted;
+    }
+
+    public Long getExternalId( ) {
+        return externalId;
+    }
+
+    public void setExternalId( Long externalId ) {
+        this.externalId = externalId;
     }
 }

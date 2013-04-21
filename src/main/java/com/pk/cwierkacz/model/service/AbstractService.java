@@ -23,6 +23,15 @@ public class AbstractService< T >
         session.close();
     }
 
+    public void merge( T t ) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        session.merge(t);
+        session.getTransaction().commit();
+        session.close();
+    }
+
     public void saveOrUpdate( T t ) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -32,6 +41,8 @@ public class AbstractService< T >
         session.close();
     }
 
+    @Deprecated
+    //rather marked that entity was deleted
     public void delete( T t ) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();

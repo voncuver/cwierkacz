@@ -1,14 +1,16 @@
 package com.pk.cwierkacz.model;
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.Session;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -18,44 +20,57 @@ import com.pk.cwierkacz.model.dao.SessionDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.dao.UserDao;
 import com.pk.cwierkacz.model.service.SessionService;
+import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.model.service.UserService;
 
 @FixMethodOrder( MethodSorters.NAME_ASCENDING )
 public class UserComplexServiceTest
 {
 
-    static HibernateUtil hibernateUtil;
+    HibernateUtil hibernateUtil;
 
-    @BeforeClass
-    public static void setup( ) throws StartException {
+    @Before
+    public void setup( ) throws StartException {
         hibernateUtil = new HibernateUtil();
         hibernateUtil.start();
     }
 
+    @After
+    public void close( ) throws StartException {
+        hibernateUtil.stop();
+    }
+
     @Test
-    public void saveLoadAddTest( ) throws StartException {
-        HibernateUtil hibernateUtil = new HibernateUtil();
-        hibernateUtil.start();
+    public void createUserWithAccountsAndDelete( ) throws StartException {
         UserDao userDao = new UserDao();
         userDao.setName("111");
         userDao.setPassword("Test");
-        TwitterAccountDao twitterAccountDao = new TwitterAccountDao();
-        twitterAccountDao.setAccessToken("1234");
-        twitterAccountDao.setAccessTokenSecret("secret1234");
-        twitterAccountDao.setAccountName("Twitter");
-        twitterAccountDao.setUserId(userDao);
+        TwitterAccountDao twitterAccountDao = TwitterAccountDao.create(22,
+                                                                       userDao,
+                                                                       "Twitter",
+                                                                       "1234",
+                                                                       "secret1234");
         Set<TwitterAccountDao> accounts = new HashSet<>();
         accounts.add(twitterAccountDao);
         userDao.setAccounts(accounts);
 
-        Session session = hibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-        session.save(userDao);
-        session.getTransaction().commit();
+        UserService service = new UserService(hibernateUtil.getSessionFactory());
+        TwitterAccountService serviceAccount = new TwitterAccountService(hibernateUtil.getSessionFactory());
+        service.save(userDao);
 
-        session.beginTransaction();
-        session.delete(twitterAccountDao);
-        session.getTransaction().commit();
+        assertEquals(1L, service.getAllUsers().size());
+        assertEquals(1L, serviceAccount.getAccounts().size());
+        assertEquals(22L, serviceAccount.getAccounts().get(0).getExternalId().longValue());
+        assertEquals("Test", service.getAllUsers().get(0).getPassword());
+        assertEquals("1234", serviceAccount.getAccounts().get(0).getAccessToken());
+        assertEquals("secret1234", serviceAccount.getAccounts().get(0).getAccessTokenSecret());
+
+        twitterAccountDao.setDeleted(true);
+        userDao.setDeleted(true);
+        service.saveOrUpdate(userDao);
+        assertEquals(0L, service.getActualUsers().size());
+        assertEquals(0L, serviceAccount.getActualAccounts().size());
+
     }
 
     //@Test
