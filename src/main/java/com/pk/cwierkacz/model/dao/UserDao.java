@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -43,11 +44,14 @@ public class UserDao implements Serializable
 
     private boolean isDeleted;
 
-    public long getId( ) {
+    @OneToOne( cascade = CascadeType.ALL )
+    private SessionDao session;
+
+    public Long getId( ) {
         return id;
     }
 
-    public void setId( long id ) {
+    public void setId( Long id ) {
         this.id = id;
     }
 
@@ -76,6 +80,14 @@ public class UserDao implements Serializable
 
     }
 
+    public SessionDao getSession( ) {
+        return session;
+    }
+
+    public void setSession( SessionDao session ) {
+        this.session = session;
+    }
+
     public static UserDao create( long id, String name, String accessToken, String accessTokenSecret ) {
         UserDao user = new UserDao();
         user.setId(id);
@@ -89,6 +101,63 @@ public class UserDao implements Serializable
 
     public void setDeleted( boolean isDeleted ) {
         this.isDeleted = isDeleted;
+    }
+
+    @Override
+    public int hashCode( ) {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ( ( accounts == null ) ? 0 : accounts.hashCode() );
+        result = prime * result + ( ( id == null ) ? 0 : id.hashCode() );
+        result = prime * result + ( isDeleted ? 1231 : 1237 );
+        result = prime * result + ( ( name == null ) ? 0 : name.hashCode() );
+        result = prime * result + ( ( password == null ) ? 0 : password.hashCode() );
+        result = prime * result + ( ( session == null ) ? 0 : session.hashCode() );
+        return result;
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        UserDao other = (UserDao) obj;
+        if ( accounts == null ) {
+            if ( other.accounts != null )
+                return false;
+        }
+        else if ( !accounts.equals(other.accounts) )
+            return false;
+        if ( id == null ) {
+            if ( other.id != null )
+                return false;
+        }
+        else if ( !id.equals(other.id) )
+            return false;
+        if ( isDeleted != other.isDeleted )
+            return false;
+        if ( name == null ) {
+            if ( other.name != null )
+                return false;
+        }
+        else if ( !name.equals(other.name) )
+            return false;
+        if ( password == null ) {
+            if ( other.password != null )
+                return false;
+        }
+        else if ( !password.equals(other.password) )
+            return false;
+        if ( session == null ) {
+            if ( other.session != null )
+                return false;
+        }
+        else if ( !session.equals(other.session) )
+            return false;
+        return true;
     }
 
 }

@@ -45,13 +45,13 @@ public class TweetDao
     @JoinColumn( nullable = true, name = "retweeted", referencedColumnName = "id" )
     private TweetDao retweeted;
 
-    @OneToMany( fetch = FetchType.LAZY,
+    @OneToMany( fetch = FetchType.EAGER,
                 targetEntity = TweetDao.class,
                 mappedBy = "inReplyTo",
                 cascade = {CascadeType.ALL} )
     private List<TweetDao> replies;
 
-    @OneToMany( fetch = FetchType.LAZY,
+    @OneToMany( fetch = FetchType.EAGER,
                 targetEntity = TweetDao.class,
                 mappedBy = "retweeted",
                 cascade = {CascadeType.ALL} )

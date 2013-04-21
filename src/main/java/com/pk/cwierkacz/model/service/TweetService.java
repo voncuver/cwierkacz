@@ -18,22 +18,31 @@ public class TweetService extends AbstractService<TweetDao>
     @SuppressWarnings( "unchecked" )
     public List<TweetDao> getTweets( ) {
         Criteria criteria = getCriteria(TweetDao.class);
-        return criteria.list();
+        List<TweetDao> result = criteria.list();
+        commit();
+        return result;
     }
 
+    @SuppressWarnings( "unchecked" )
     public List<TweetDao> getActualTweets( ) {
         Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("isDeleted", false));
-        return criteria.list();
+        List<TweetDao> result = criteria.list();
+        commit();
+        return result;
     }
 
     public TweetDao getTweetById( Long id ) {
         Criteria criteria = getCriteria(TweetDao.class);
         criteria.add(Restrictions.eq("Id", id));
-        return (TweetDao) criteria.uniqueResult();
+        TweetDao result = (TweetDao) criteria.uniqueResult();
+        commit();
+        return result;
     }
 
     public TweetDao getByExternalId( Long id ) {
         Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("externalId", id));
-        return (TweetDao) criteria.uniqueResult();
+        TweetDao result = (TweetDao) criteria.uniqueResult();
+        commit();
+        return result;
     }
 }

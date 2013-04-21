@@ -1,10 +1,14 @@
 package com.pk.cwierkacz.model.service;
 
+import java.util.List;
+
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
 import com.pk.cwierkacz.model.dao.SessionDao;
+import com.pk.cwierkacz.model.dao.UserDao;
 
 public class SessionService extends AbstractService<SessionDao>
 {
@@ -13,10 +17,25 @@ public class SessionService extends AbstractService<SessionDao>
         super(sessionFactory);
     }
 
-    public SessionDao getByUserId( long id ) {
+    public SessionDao getByUser( UserDao userDao ) {
+        Criteria criteria = getCriteria(UserDao.class);
+        criteria.add(Restrictions.eq("id", userDao.getId()));
+        UserDao dao = (UserDao) criteria.uniqueResult();
+        return dao.getSession();
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public List<SessionDao> getAll( ) {
         Criteria criteria = getCriteria(SessionDao.class);
-        criteria.add(Restrictions.eq("userId", id));
-        return (SessionDao) criteria.list().get(0);
+        return criteria.list();
+    }
+
+    public void deleteSession( SessionDao sessionDao ) {
+        Session session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
+
+        session.delete(sessionDao);
+        session.getTransaction().commit();
     }
 
 }

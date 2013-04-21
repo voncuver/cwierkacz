@@ -18,24 +18,32 @@ public class TwitterAccountService extends AbstractService<TwitterAccountDao>
     @SuppressWarnings( "unchecked" )
     public List<TwitterAccountDao> getAccounts( ) {
         Criteria criteria = getCriteria(TwitterAccountDao.class);
-        return criteria.list();
+        List<TwitterAccountDao> result = criteria.list();
+        commit();
+        return result;
     }
 
     @SuppressWarnings( "unchecked" )
     public List<TwitterAccountDao> getActualAccounts( ) {
         Criteria criteria = getCriteria(TwitterAccountDao.class).add(Restrictions.eq("isDeleted", false));
-        return criteria.list();
+        List<TwitterAccountDao> result = criteria.list();
+        commit();
+        return result;
     }
 
     public TwitterAccountDao getAccountById( Long id ) {
         Criteria criteria = getCriteria(TwitterAccountDao.class);
         criteria.add(Restrictions.eq("Id", id));
-        return (TwitterAccountDao) criteria.uniqueResult();
+        TwitterAccountDao result = (TwitterAccountDao) criteria.uniqueResult();
+        commit();
+        return result;
     }
 
     public TwitterAccountDao getAccountByExternalId( Long id ) {
         Criteria criteria = getCriteria(TwitterAccountDao.class);
         criteria.add(Restrictions.eq("externalId", id));
-        return (TwitterAccountDao) criteria.uniqueResult();
+        TwitterAccountDao result = (TwitterAccountDao) criteria.uniqueResult();
+        commit();
+        return result;
     }
 }

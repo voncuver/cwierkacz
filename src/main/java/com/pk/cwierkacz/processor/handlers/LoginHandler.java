@@ -24,12 +24,11 @@ public class LoginHandler implements Handler
     @Override
     public void handle( ApplicationData appData ) {
         String name = appData.getRequest().getFunctionalUserName();
-        UserDao user = userService.getByUserId(name);
+        UserDao user = userService.getByUserName(name);
 
         SessionDao session = new SessionDao();
         DateTime dateTime = new DateTime();
         session.setLastActive(new Timestamp(dateTime.getMillis()));
-        session.setUserId(user.getId());
         session.setCurrentToken(appData.getRequest().getTokenId());
         sessionService.save(session);
         //check pass

@@ -2,8 +2,6 @@ package com.pk.cwierkacz.model;
 
 import static org.junit.Assert.assertEquals;
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,10 +14,8 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.pk.cwierkacz.exception.StartException;
-import com.pk.cwierkacz.model.dao.SessionDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.dao.UserDao;
-import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.model.service.UserService;
 
@@ -71,17 +67,6 @@ public class UserComplexServiceTest
         assertEquals(0L, service.getActualUsers().size());
         assertEquals(0L, serviceAccount.getActualAccounts().size());
 
-    }
-
-    //@Test
-    public void saveLoadSessionAddTest( ) {
-        SessionDao sessionDao = new SessionDao();
-        sessionDao.setCurrentToken(1234l);
-        sessionDao.setLastActive(new Timestamp(new Date().getTime()));
-        sessionDao.setUserId(1234l);
-
-        SessionService sessionService = new SessionService(hibernateUtil.getSessionFactory());
-        sessionService.save(sessionDao);
     }
 
     //@Test

@@ -8,8 +8,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.pk.cwierkacz.model.dao.SessionDao;
+import com.pk.cwierkacz.model.dao.UserDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.SessionService;
+import com.pk.cwierkacz.model.service.UserService;
 
 public class ServiceRepoTest
 {
@@ -22,17 +24,21 @@ public class ServiceRepoTest
 
     @Test
     public void createInstanceTest( ) {
-        SessionService service = serviceRepo.getService(SessionService.class);
+        UserService service = serviceRepo.getService(UserService.class);
+        SessionService sessionService = serviceRepo.getService(SessionService.class);
 
         //check is working properly
+        UserDao userDao = new UserDao();
+        userDao.setName("Test");
+        userDao.setPassword("Test");
+
         SessionDao sessionDao = new SessionDao();
         sessionDao.setCurrentToken(1234L);
         sessionDao.setLastActive(new Timestamp(1));
-        sessionDao.setUserId(124);
+        userDao.setSession(sessionDao);
+        service.save(userDao);
 
-        service.save(sessionDao);
-
-        SessionDao persis = service.getByUserId(124);
+        SessionDao persis = sessionService.getAll().get(0);
 
         assertEquals(1234, persis.getCurrentToken());
 

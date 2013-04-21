@@ -15,13 +15,10 @@ import org.hibernate.annotations.Type;
 @Table( name = "Session" )
 public class SessionDao
 {
-    //TODO 16: zamiast idka userId referencja
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
-    private long id;
-
-    private long userId;
+    private Long id;
 
     @Column
     @Type( type = "org.jadira.usertype.dateandtime.legacyjdk.PersistentTimestamp" )
@@ -29,16 +26,16 @@ public class SessionDao
 
     private long currentToken;
 
-    public long getUserId( ) {
-        return userId;
+    public Long getId( ) {
+        return id;
+    }
+
+    public void setId( Long id ) {
+        this.id = id;
     }
 
     public Timestamp getLastActive( ) {
         return lastActive;
-    }
-
-    public void setUserId( long userId ) {
-        this.userId = userId;
     }
 
     public void setLastActive( Timestamp lastActive ) {

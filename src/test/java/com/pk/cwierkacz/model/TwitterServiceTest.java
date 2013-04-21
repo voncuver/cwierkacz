@@ -7,34 +7,20 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.pk.cwierkacz.exception.StartException;
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.UserService;
 
 @FixMethodOrder( MethodSorters.NAME_ASCENDING )
 public class TwitterServiceTest
 {
-    HibernateUtil hibernateUtil;
-
-    @Before
-    public void setup( ) throws StartException {
-        hibernateUtil = new HibernateUtil();
-        hibernateUtil.start();
-    }
-
-    @After
-    public void close( ) throws StartException {
-        hibernateUtil.stop();
-    }
 
     @Test
     public void simulateTweeting( ) {
@@ -52,7 +38,7 @@ public class TwitterServiceTest
         accounts.add(twitterAccountDao);
         userDao.setAccounts(accounts);
 
-        UserService service = new UserService(hibernateUtil.getSessionFactory());
+        UserService service = ServiceRepo.getInstance().getService(UserService.class);
         service.save(userDao);
 
         //create next user with one account
@@ -69,13 +55,13 @@ public class TwitterServiceTest
         accounts2.add(twitterAccountDao2);
         userDao2.setAccounts(accounts2);
 
-        service = new UserService(hibernateUtil.getSessionFactory());
+        service = ServiceRepo.getInstance().getService(UserService.class);
         service.save(userDao2);
 
         //create new tweet for account1
 
         TweetDao tweet = TweetDao.create(10L, twitterAccountDao, null, null, new DateTime(), "TEST1");
-        TweetService tweetService = new TweetService(( hibernateUtil.getSessionFactory() ));
+        TweetService tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         tweetService.save(tweet);
         List<TweetDao> actual = tweetService.getActualTweets();
         assertEquals(1L, actual.size());

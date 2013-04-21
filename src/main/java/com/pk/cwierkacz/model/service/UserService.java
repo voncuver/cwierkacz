@@ -17,18 +17,24 @@ public class UserService extends AbstractService<UserDao>
     @SuppressWarnings( "unchecked" )
     public List<UserDao> getAllUsers( ) {
         Criteria criteria = getCriteria(UserDao.class);
-        return criteria.list();
+        List<UserDao> userDao = criteria.list();
+        commit();
+        return userDao;
     }
 
     @SuppressWarnings( "unchecked" )
     public List<UserDao> getActualUsers( ) {
         Criteria criteria = getCriteria(UserDao.class).add(Restrictions.eq("isDeleted", false));
-        return criteria.list();
+        List<UserDao> userDao = criteria.list();
+        commit();
+        return userDao;
     }
 
-    public UserDao getByUserId( String name ) {
+    public UserDao getByUserName( String name ) {
         Criteria criteria = getCriteria(UserDao.class);
         criteria.add(Restrictions.eq("name", name));
-        return (UserDao) criteria.uniqueResult();
+        UserDao userDao = (UserDao) criteria.uniqueResult();
+        commit();
+        return userDao;
     }
 }
