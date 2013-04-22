@@ -26,6 +26,12 @@ public class EntryServlet extends HttpServlet
     private static final long serialVersionUID = 1310933093609408261L;
 
     @Override
+    protected void doPost( HttpServletRequest req, HttpServletResponse resp ) throws javax.servlet.ServletException,
+                                                                             IOException {
+        doGet(req, resp);
+    }
+
+    @Override
     public void doGet( HttpServletRequest request, HttpServletResponse response ) throws IOException {
 
         Map<String, String[]> parameters = request.getParameterMap();
