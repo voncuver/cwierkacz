@@ -44,7 +44,8 @@ public final class TwitterAccountDao implements Serializable
     private Long externalId;
 
     @ManyToOne( fetch = FetchType.EAGER )
-    @JoinColumn( nullable = false, name = "user", referencedColumnName = "id" )
+    @JoinColumn( nullable = true, name = "user", referencedColumnName = "id" )
+    //moze byc account bez usera - takiego nie śledzimy, ale może mieć tweety
     private UserDao user;
     private String accountName;
     private String accessToken;

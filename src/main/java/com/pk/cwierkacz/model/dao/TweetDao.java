@@ -41,9 +41,15 @@ public class TweetDao
     @JoinColumn( nullable = true, name = "inReplyTo", referencedColumnName = "id" )
     private TweetDao inReplyTo;
 
+    @Transient
+    private Long inReplyToExtId;
+
     @ManyToOne( fetch = FetchType.EAGER )
     @JoinColumn( nullable = true, name = "retweeted", referencedColumnName = "id" )
     private TweetDao retweeted;
+
+    @Transient
+    private Long retweetedExtId;
 
     @OneToMany( fetch = FetchType.EAGER,
                 targetEntity = TweetDao.class,
@@ -201,6 +207,46 @@ public class TweetDao
 
     public void setExternalId( Long externalId ) {
         this.externalId = externalId;
+    }
+
+    @Transient
+    public Long getInReplyToExtId( ) {
+        if ( inReplyTo != null )
+            return inReplyTo.getExternalId();
+        else
+            return inReplyToExtId;
+    }
+
+    public void setInReplyToExtId( Long inReplyToId ) {
+        this.inReplyToExtId = inReplyToId;
+    }
+
+    @Transient
+    public Long getRetweetedExtId( ) {
+        if ( retweeted != null )
+            return retweeted.getExternalId();
+        else
+            return retweetedExtId;
+    }
+
+    public void setRetweetedExtId( Long retweetedId ) {
+        this.retweetedExtId = retweetedId;
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+        if ( this == obj )
+            return true;
+        if ( ( obj == null ) || ( obj.getClass() != this.getClass() ) )
+            return false;
+        // object must be Test at this point
+        TweetDao tweetDao = (TweetDao) obj;
+        return tweetDao.getExternalId().equals(externalId);
+    }
+
+    @Override
+    public int hashCode( ) {
+        return externalId.intValue();
     }
 
 }

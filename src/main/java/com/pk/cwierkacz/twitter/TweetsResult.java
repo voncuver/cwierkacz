@@ -2,6 +2,7 @@ package com.pk.cwierkacz.twitter;
 
 import com.google.common.collect.ImmutableList;
 import com.pk.cwierkacz.model.dao.TweetDao;
+import com.pk.cwierkacz.twitter.converters.ToTweetConverter;
 
 /**
  * Tweeter results of tweeter home timeline
@@ -11,6 +12,8 @@ import com.pk.cwierkacz.model.dao.TweetDao;
  */
 public class TweetsResult
 {
+    private static final ToTweetConverter CONVERTER = new ToTweetConverter();
+
     /**
      * if false that mens that result is not full. Probably we get all tweets
      * from home timeline or twitter result is too big, so twitter don't return
@@ -18,15 +21,58 @@ public class TweetsResult
      */
     private final boolean fullResult;
 
-    private final ImmutableList<TweetDao> tweets;
+    /**
+     * Tweets already exist ing DB
+     */
+    private final ImmutableList<TweetDao> existingTweets;
+
+    /**
+     * Tweets which we can store in db in this moment
+     */
+    private final ImmutableList<TweetDao> readyTweets;
+
+    /**
+     * Tweets which we can't store in fb in this moment - f. ex. reference
+     * retweetId is not store yet
+     */
+    private final ImmutableList<TweetDao> notReadyTweets;
 
     public int size( ) {
         return getTweets().size();
     }
 
+    private boolean notReady( TweetDao t ) {
+        return ( ( t.getInReplyTo() == null && t.getInReplyToExtId() != null ) || ( t.getRetweeted() == null && t.getRetweetedExtId() != null ) );
+    }
+
+    public TweetsResult( boolean fullResult,
+                         ImmutableList<TweetDao> existingTweets,
+                         ImmutableList<TweetDao> readyTweets,
+                         ImmutableList<TweetDao> notReadyTweets ) {
+        this.fullResult = fullResult;
+        this.existingTweets = existingTweets;
+        this.readyTweets = readyTweets;
+        this.notReadyTweets = notReadyTweets;
+    }
+
     public TweetsResult( boolean fullResult, ImmutableList<TweetDao> tweets ) {
         this.fullResult = fullResult;
-        this.tweets = tweets;
+        ImmutableList.Builder<TweetDao> existingTweetsB = ImmutableList.builder();
+        ImmutableList.Builder<TweetDao> readyTweetsB = ImmutableList.builder();
+        ImmutableList.Builder<TweetDao> notReadyTweetsB = ImmutableList.builder();
+        for ( int i = 0; i < tweets.size(); i++ ) {
+            TweetDao t = tweets.get(i);
+            if ( t.getId() != null )
+                existingTweetsB.add(t);
+            else if ( notReady(t) )
+                readyTweetsB.add(t);
+            else
+                notReadyTweetsB.add(t);
+        }
+        existingTweets = existingTweetsB.build();
+        readyTweets = readyTweetsB.build();
+        notReadyTweets = notReadyTweetsB.build();
+
     }
 
     public static TweetsResult full( ImmutableList<TweetDao> tweets ) {
@@ -42,6 +88,68 @@ public class TweetsResult
     }
 
     public ImmutableList<TweetDao> getTweets( ) {
-        return tweets;
+        ImmutableList.Builder<TweetDao> builder = ImmutableList.builder();
+        builder.addAll(existingTweets);
+        builder.addAll(readyTweets);
+        builder.addAll(notReadyTweets);
+
+        return builder.build();
     }
+
+    public ImmutableList<TweetDao> getExistingTweets( ) {
+        return existingTweets;
+    }
+
+    public ImmutableList<TweetDao> getReadyTweets( ) {
+        return readyTweets;
+    }
+
+    public ImmutableList<TweetDao> getNotReadyTweets( ) {
+        return notReadyTweets;
+    }
+
+    public ImmutableList<TweetDao> fulfilledNoReady( ) {
+        ImmutableList.Builder<TweetDao> notReadyTweetsB = ImmutableList.builder();
+        for ( int i = 0; i < notReadyTweets.size(); i++ ) {
+            TweetDao t = CONVERTER.fulfill(notReadyTweets.get(i));
+            if ( notReady(t) )
+                throw new RuntimeException("You try force tweet fulfill but dependencies is not done");
+            notReadyTweetsB.add(t);
+        }
+        return notReadyTweetsB.build();
+    }
+
+    public TweetsResult add( TweetsResult in ) {
+        ImmutableList.Builder<TweetDao> existingTweetsB = ImmutableList.builder();
+        ImmutableList.Builder<TweetDao> readyTweetsB = ImmutableList.builder();
+        ImmutableList.Builder<TweetDao> notReadyTweetsB = ImmutableList.builder();
+
+        existingTweetsB.addAll(existingTweets);
+        readyTweetsB.addAll(readyTweets);
+        notReadyTweetsB.addAll(notReadyTweets);
+
+        for ( int i = 0; i < in.existingTweets.size(); i++ ) {
+            TweetDao t = in.existingTweets.get(i);
+            if ( !existingTweets.contains(t) )
+                existingTweetsB.add(t);
+        }
+
+        for ( int i = 0; i < in.readyTweets.size(); i++ ) {
+            TweetDao t = in.readyTweets.get(i);
+            if ( !readyTweets.contains(t) )
+                readyTweetsB.add(t);
+        }
+
+        for ( int i = 0; i < in.notReadyTweets.size(); i++ ) {
+            TweetDao t = in.notReadyTweets.get(i);
+            if ( !notReadyTweets.contains(t) )
+                notReadyTweetsB.add(t);
+        }
+
+        return new TweetsResult(in.fullResult && fullResult,
+                                existingTweetsB.build(),
+                                readyTweetsB.build(),
+                                notReadyTweetsB.build());
+    }
+
 }

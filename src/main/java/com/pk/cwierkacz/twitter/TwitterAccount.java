@@ -300,8 +300,40 @@ public class TwitterAccount
         }
     }
 
+    /**
+     * Method which get all tweets from home time line
+     * 
+     * @param sinceTweet
+     *            last tweet since which we try get tweets
+     * @return
+     * @throws TwitterActionException
+     */
+    public TweetsResult getTweetsFromHomeTimeline( TweetDao sinceTweet ) throws TwitterActionException {
+        return getTweetsFromTimeline(sinceTweet, TimeLine.Home);
+    }
+
+    /**
+     * Method which get all tweets from user time line
+     * 
+     * @param sinceTweet
+     *            last tweet since which we try get tweets
+     * @return
+     * @throws TwitterActionException
+     */
     public TweetsResult getTweetsFromUserTimeline( TweetDao sinceTweet ) throws TwitterActionException {
         return getTweetsFromTimeline(sinceTweet, TimeLine.User);
+    }
+
+    /**
+     * Method which get all tweets from mentions time line
+     * 
+     * @param sinceTweet
+     *            last tweet since which we try get tweets
+     * @return
+     * @throws TwitterActionException
+     */
+    public TweetsResult getTweetsFromMentionsTimeline( TweetDao sinceTweet ) throws TwitterActionException {
+        return getTweetsFromTimeline(sinceTweet, TimeLine.Mentions);
     }
 
     protected TweetsResult getTweetsFromTimeline( TweetDao sinceTweet, TimeLine timeLine ) throws TwitterActionException {
@@ -327,6 +359,36 @@ public class TwitterAccount
             LOGGER.error(e.getMessage(), e);
             throw new TwitterActionException(e.getMessage());
         }
+    }
+
+    /**
+     * Method which get all tweets from mentions and user timeline
+     * 
+     * @param sinceTweet
+     *            last tweet since which we try get tweets
+     * @return
+     * @throws TwitterActionException
+     */
+    public TweetsResult getTweetsFromMentionsAndUserTimeline( TweetDao sinceTweet ) throws TwitterActionException {
+        TweetsResult res1 = getTweetsFromTimeline(sinceTweet, TimeLine.Mentions);
+        TweetsResult res2 = getTweetsFromTimeline(sinceTweet, TimeLine.User);
+
+        return res1.add(res2);
+    }
+
+    /**
+     * Method which get all tweets from mentions and user timeline
+     * 
+     * @param since
+     *            date since which we try get tweets
+     * @return
+     * @throws TwitterActionException
+     */
+    public TweetsResult getTweetsFromMentionsAndUserTimeline( DateTime since ) throws TwitterActionException {
+        TweetsResult res1 = getTweetsFromTimeline(since, TimeLine.Mentions);
+        TweetsResult res2 = getTweetsFromTimeline(since, TimeLine.User);
+
+        return res1.add(res2);
     }
 
     /**
