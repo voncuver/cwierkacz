@@ -1,7 +1,10 @@
 package com.pk.cwierkacz.twitter;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,14 +176,152 @@ public class TwitterAccount
         }
     }
 
-    public ImmutableList<TweetDao> getTweetsFromHomeTimeline( int count ) throws TwitterActionException {
+    private ImmutableList<TweetDao> statusesToTweets( List<Status> statuses, int size ) {
+        ImmutableList.Builder<TweetDao> builder = ImmutableList.builder();
+        for ( int i = 0; i < size; i++ ) {
+            builder.add(tweetConverter.toTweet(statuses.get(i)));
+        }
+        ImmutableList<TweetDao> tweets = builder.build();
+        return tweets;
+    }
+
+    /**
+     * Method which get all tweets from home time line
+     * 
+     * @param count
+     *            number of tweets which we try get tweets
+     * @throws TwitterActionException
+     */
+    public TweetsResult getTweetsFromHomeTimeline( int count ) throws TwitterActionException {
+        return getTweetsFromTimeline(count, TimeLine.Home);
+    }
+
+    /**
+     * Method which get all tweets from home user line
+     * 
+     * @param count
+     *            number of tweets which we try get tweets
+     * @throws TwitterActionException
+     */
+    public TweetsResult getTweetsFromUserTimeline( int count ) throws TwitterActionException {
+        return getTweetsFromTimeline(count, TimeLine.User);
+    }
+
+    /**
+     * Method which get all tweets from mentions line
+     * 
+     * @param count
+     *            number of tweets which we try get tweets
+     * @throws TwitterActionException
+     */
+    public TweetsResult getTweetsFromMentionsTimeline( int count ) throws TwitterActionException {
+        return getTweetsFromTimeline(count, TimeLine.Mentions);
+    }
+
+    protected TweetsResult getTweetsFromTimeline( int count, TimeLine timeLine ) throws TwitterActionException {
         try {
-            List<Status> statuses = twitter.getHomeTimeline(new Paging().count(count));
-            ImmutableList.Builder<TweetDao> builder = ImmutableList.builder();
-            for ( int i = 0; i < statuses.size(); i++ ) {
-                builder.add(tweetConverter.toTweet(statuses.get(i)));
+            int c = count / 20 + 1;
+            List<Status> statuses = new ArrayList<Status>();
+            List<Status> partialStatuses = null;
+            for ( int i = 0; i < c && ( partialStatuses == null || partialStatuses.size() == 20 ); i++ ) {
+                partialStatuses = getStatuses(timeLine, new Paging(i + 1, 20));
+                statuses.addAll(partialStatuses);
             }
-            return builder.build();
+            return new TweetsResult(partialStatuses.size() == 20, statusesToTweets(statuses, count));
+        }
+        catch ( TwitterException e ) {
+            LOGGER.error(e.getMessage(), e);
+            throw new TwitterActionException(e.getMessage());
+        }
+    }
+
+    private boolean currentDateBefore( Date created, DateTime since ) {
+        DateTime current = DateUtil.convertDateUTC(created);
+        return current.isBefore(since);
+    }
+
+    /**
+     * Method which get all tweets from home time line
+     * 
+     * @param since
+     *            date since which we try get tweets
+     * @return
+     * @throws TwitterActionException
+     */
+    protected TweetsResult getTweetsFromHomeTimeline( DateTime since ) throws TwitterActionException {
+        return getTweetsFromTimeline(since, TimeLine.Home);
+    }
+
+    /**
+     * Method which get all tweets from home user line
+     * 
+     * @param since
+     *            date since which we try get tweets
+     * @return
+     * @throws TwitterActionException
+     */
+    protected TweetsResult getTweetsFromUserTimeline( DateTime since ) throws TwitterActionException {
+        return getTweetsFromTimeline(since, TimeLine.User);
+    }
+
+    /**
+     * Method which get all tweets from mentions time line
+     * 
+     * @param since
+     *            date since which we try get tweets
+     * @return
+     * @throws TwitterActionException
+     */
+    protected TweetsResult getTweetsFromMentionsTimeline( DateTime since ) throws TwitterActionException {
+        return getTweetsFromTimeline(since, TimeLine.Mentions);
+    }
+
+    protected TweetsResult getTweetsFromTimeline( DateTime since, TimeLine timeLine ) throws TwitterActionException {
+        try {
+            List<Status> statuses = new ArrayList<Status>();
+            List<Status> partialStatuses = null;
+            for ( int i = 0; ( partialStatuses == null || partialStatuses.size() == 20 ) &&
+                             ( statuses.size() == 0 || !currentDateBefore(statuses.get(statuses.size() - 1)
+                                                                                  .getCreatedAt(), since) ); i++ ) {
+                partialStatuses = getStatuses(timeLine, new Paging(i + 1, 20));
+                statuses.addAll(partialStatuses);
+            }
+            int count = statuses.size();
+            for ( int i = statuses.size() - 1; i >= 0 &&
+                                               currentDateBefore(statuses.get(i).getCreatedAt(), since); i-- ) {
+                count--;
+            }
+
+            return new TweetsResult(partialStatuses.size() == 20, statusesToTweets(statuses, count));
+        }
+        catch ( TwitterException e ) {
+            LOGGER.error(e.getMessage(), e);
+            throw new TwitterActionException(e.getMessage());
+        }
+    }
+
+    public TweetsResult getTweetsFromUserTimeline( TweetDao sinceTweet ) throws TwitterActionException {
+        return getTweetsFromTimeline(sinceTweet, TimeLine.User);
+    }
+
+    protected TweetsResult getTweetsFromTimeline( TweetDao sinceTweet, TimeLine timeLine ) throws TwitterActionException {
+        try {
+            List<Status> statuses = new ArrayList<Status>();
+            List<Status> partialStatuses = null;
+
+            for ( int i = 0; ( partialStatuses == null || partialStatuses.size() == 20 ); i++ ) {
+                partialStatuses = getStatuses(timeLine, new Paging(i + 1, 20, sinceTweet.getExternalId()));
+                statuses.addAll(partialStatuses);
+            }
+
+            int count = statuses.size();
+            for ( int i = statuses.size() - 1; i >= 0 &&
+                                               currentDateBefore(statuses.get(i).getCreatedAt(),
+                                                                 sinceTweet.getCratedDate()); i-- ) {
+                count--;
+            }
+
+            return new TweetsResult(partialStatuses.size() == 20, statusesToTweets(statuses, count));
         }
         catch ( TwitterException e ) {
             LOGGER.error(e.getMessage(), e);
@@ -262,5 +403,26 @@ public class TwitterAccount
     protected void validateTweetMsg( String msg ) throws TwitterActionException {
         if ( msg.length() > 140 )
             throw new TwitterActionException("Size of tweeter message can't be grather than 140");
+    }
+
+    //TODO refactor this method : if-else
+    private List<Status> getStatuses( TimeLine timeLine, Paging page ) throws TwitterException {
+        List<Status> partialStatuses = null;
+        if ( timeLine == TimeLine.Home )
+            partialStatuses = twitter.getHomeTimeline(page);
+        else if ( timeLine == TimeLine.User )
+            partialStatuses = twitter.getUserTimeline(page);
+        else if ( timeLine == TimeLine.Mentions )
+            partialStatuses = twitter.getMentionsTimeline(page);
+        else
+            throw new UnsupportedOperationException("Time Line " + timeLine + " not supported");
+
+        return partialStatuses;
+    }
+
+    enum TimeLine {
+        Home,
+        User,
+        Mentions
     }
 }

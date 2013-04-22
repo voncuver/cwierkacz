@@ -1,11 +1,13 @@
 package com.pk.cwierkacz.twitter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Date;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -109,11 +111,11 @@ public class TwitterAccountTest
             account.composeNewTweet("TEST CWIERKACZ TWEET " + ( new Date() ).getTime());
         }
 
-        ImmutableList<TweetDao> tweets10 = account.getTweetsFromHomeTimeline(10);
+        ImmutableList<TweetDao> tweets10 = account.getTweetsFromHomeTimeline(10).getTweets();
         assertEquals(10, tweets10.size());
 
-        ImmutableList<TweetDao> tweets20 = account.getTweetsFromHomeTimeline(20);
-        assertEquals(20, tweets20.size());
+        ImmutableList<TweetDao> tweets30 = account.getTweetsFromHomeTimeline(30).getTweets();
+        assertEquals(30, tweets30.size());
 
     }
 
@@ -125,17 +127,85 @@ public class TwitterAccountTest
             account.composeNewTweet("TEST CWIERKACZ TWEET " + ( new Date() ).getTime());
         }
 
-        ImmutableList<TweetDao> tweets10 = account.getTweetsFromHomeTimeline(10);
+        ImmutableList<TweetDao> tweets10 = account.getTweetsFromHomeTimeline(10).getTweets();
         assertEquals(10, tweets10.size());
 
-        ImmutableList<TweetDao> tweets20 = account.getTweetsFromHomeTimeline(20);
+        ImmutableList<TweetDao> tweets20 = account.getTweetsFromHomeTimeline(20).getTweets();
         assertEquals(20, tweets20.size());
 
-        ImmutableList<TweetDao> tweets100 = account.getTweetsFromHomeTimeline(100);
+        ImmutableList<TweetDao> tweets100 = account.getTweetsFromHomeTimeline(100).getTweets();
         assertEquals(100, tweets100.size());
 
-        ImmutableList<TweetDao> tweets200 = account.getTweetsFromHomeTimeline(100);
+        ImmutableList<TweetDao> tweets200 = account.getTweetsFromHomeTimeline(100).getTweets();
         assertEquals(200, tweets200.size());
 
     }
+
+    @Test
+    public void testGetTweetsFromHomeTimelineSinceDate( ) throws TwitterActionException {
+
+        DateTime d = new DateTime();
+        DateTime d1 = d.minusHours(1);
+        TweetsResult res = account.getTweetsFromHomeTimeline(d1);
+        assertTrue(res.isFullResult());
+        TweetsResult res2 = account.getTweetsFromHomeTimeline(res.getTweets().size() + 1);
+        assertTrue(res2.isFullResult());
+        for ( int i = 0; i < res.getTweets().size(); i++ ) {
+            assertTrue(res.getTweets().get(i).getCratedDate().isAfter(d1) ||
+                       res.getTweets().get(i).getCratedDate().isEqual(d1));
+        }
+
+        if ( res2.getTweets().size() == res.getTweets().size() + 1 )
+            assertTrue(res2.getTweets().get(res.getTweets().size()).getCratedDate().isBefore(d1));
+
+    }
+
+    @Test
+    public void testGetTweetsFromMentionsTimelineSinceDate( ) throws TwitterActionException {
+
+        DateTime d = new DateTime();
+        DateTime d1 = d.minusHours(1);
+        TweetsResult res = account.getTweetsFromMentionsTimeline(d1);
+        assertTrue(res.isFullResult());
+        TweetsResult res2 = account.getTweetsFromMentionsTimeline(res.getTweets().size() + 1);
+        assertTrue(res2.isFullResult());
+        for ( int i = 0; i < res.getTweets().size(); i++ ) {
+            assertTrue(res.getTweets().get(i).getCratedDate().isAfter(d1) ||
+                       res.getTweets().get(i).getCratedDate().isEqual(d1));
+        }
+
+        if ( res2.getTweets().size() == res.getTweets().size() + 1 )
+            assertTrue(res2.getTweets().get(res.getTweets().size()).getCratedDate().isBefore(d1));
+
+    }
+
+    @Test
+    public void testGetTweetsFromUserTimelineSinceTweet( ) throws TwitterActionException {
+        ImmutableList<TweetDao> tweets30 = account.getTweetsFromHomeTimeline(30).getTweets();
+        assertEquals(30, tweets30.size());
+        TweetDao since = tweets30.get(29);
+
+        TweetsResult res = account.getTweetsFromUserTimeline(since);
+        assertEquals(29, res.size());
+    }
+
+    @Test
+    public void testGetTweetsFromUserTimelineSinceDate( ) throws TwitterActionException {
+
+        DateTime d = new DateTime();
+        DateTime d1 = d.minusHours(1);
+        TweetsResult res = account.getTweetsFromUserTimeline(d1);
+        assertTrue(res.isFullResult());
+        TweetsResult res2 = account.getTweetsFromUserTimeline(res.getTweets().size() + 1);
+        assertTrue(res2.isFullResult());
+        for ( int i = 0; i < res.getTweets().size(); i++ ) {
+            assertTrue(res.getTweets().get(i).getCratedDate().isAfter(d1) ||
+                       res.getTweets().get(i).getCratedDate().isEqual(d1));
+        }
+
+        if ( res2.getTweets().size() == res.getTweets().size() + 1 )
+            assertTrue(res2.getTweets().get(res.getTweets().size()).getCratedDate().isBefore(d1));
+
+    }
+
 }
