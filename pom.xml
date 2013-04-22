@@ -66,13 +66,13 @@
 			<artifactId>twitter4j-core</artifactId>
 			<version>[3.0,)</version>
 		</dependency>
-       	<dependency>
-           <groupId>org.twitter4j</groupId>
-           <artifactId>twitter4j-stream</artifactId>
-           <version>[3.0,)</version>
-       </dependency>
-  
-       <dependency>
+		<dependency>
+			<groupId>org.twitter4j</groupId>
+			<artifactId>twitter4j-stream</artifactId>
+			<version>[3.0,)</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<version>1.8.4</version>
@@ -138,7 +138,7 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.2.3</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
@@ -152,14 +152,15 @@
 
 	<build>
 		<defaultGoal>package</defaultGoal>
-		<resources>
-			<resource>
-				<includes>
-					<include>**/*.xml</include>
-				</includes>
-				<directory>src</directory>
-			</resource>
-		</resources>
+		<resources>             
+            <resource>
+                <directory>${basedir}/src/main/resources</directory> 
+                <includes> 
+                    <include>**.xml</include> 
+                </includes> 
+                <filtering>false</filtering> 
+            </resource> 
+        </resources> 
 
 		<plugins>
 			<plugin>
@@ -211,6 +212,7 @@
 					<outputFile>dist/reports/checkstyle/checkstyle.xml</outputFile>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 </project>

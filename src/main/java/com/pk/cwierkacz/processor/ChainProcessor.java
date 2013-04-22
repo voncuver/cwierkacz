@@ -17,7 +17,7 @@ public class ChainProcessor
     public void handle( ApplicationData applicationData ) {
         for ( Handler handler : handlers ) {
             if ( handler.isHandleable(applicationData) ) {
-                handle(applicationData);
+                handler.handle(applicationData);
                 return;
             }
         }
