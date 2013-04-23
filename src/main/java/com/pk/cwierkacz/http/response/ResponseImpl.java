@@ -15,7 +15,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
 
     private Status status;
 
-    private String message;
+    private String message; //TODO moze lepsza by była lista stringow?
 
     private long tokenId;
 

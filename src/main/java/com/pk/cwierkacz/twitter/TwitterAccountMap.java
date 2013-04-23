@@ -11,21 +11,21 @@ import com.pk.cwierkacz.model.dao.TwitterAccountDao;
  * @author radek
  * 
  */
-public class TwitterListenerMap
+public class TwitterAccountMap
 {
-    private static volatile TwitterListenerMap instance;
+    private static volatile TwitterAccountMap instance;
 
     private final Map<TwitterAccountDao, DatedTwitterAccount> accounts;
 
-    private TwitterListenerMap() {
+    private TwitterAccountMap() {
         accounts = new HashMap<TwitterAccountDao, DatedTwitterAccount>();
     }
 
-    private static TwitterListenerMap getInstance( ) {
+    private static TwitterAccountMap getInstance( ) {
         if ( instance == null ) {
-            synchronized ( TwitterListenerMap.class ) {
+            synchronized ( TwitterAccountMap.class ) {
                 if ( instance == null ) {
-                    instance = new TwitterListenerMap();
+                    instance = new TwitterAccountMap();
                 }
             }
         }
