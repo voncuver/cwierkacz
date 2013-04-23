@@ -42,6 +42,10 @@ public class TwitterAccount
     protected Twitter twitter;
     protected TweetConverter tweetConverter = new TweetConverter();
 
+    public TwitterAccountDao getAccount( ) {
+        return account;
+    }
+
     /**
      * Initialize a twitter account
      * 
