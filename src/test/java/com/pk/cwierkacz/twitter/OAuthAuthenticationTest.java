@@ -18,7 +18,6 @@ import com.pk.cwierkacz.model.dao.UserDao;
 // user we must put PIN manually
 public class OAuthAuthenticationTest
 {
-
     //external identifier of User is a FAKE
     private TwitterAccountDao account;
     private OAuthAuthentication userAuthentication;
