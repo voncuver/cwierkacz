@@ -201,6 +201,7 @@ public class TweetDao
         this.isDeleted = isDeleted;
     }
 
+    @Column( unique = true, nullable = false )
     public Long getExternalId( ) {
         return externalId;
     }
