@@ -2,8 +2,8 @@ package com.pk.cwierkacz.model.transformer;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -18,7 +18,10 @@ public class JsonTransformerTest
     @Test
     public void LoginResponseTest( ) throws ProcessingException {
 
-        List<String> accounts = Arrays.asList("First", "Second");
+        Set<String> accounts = new HashSet<>();
+        accounts.add("First");
+        accounts.add("Second");
+
         LoginResponse response = ResponseImpl.create(Status.OK, "ok", 1234l).buildLoginResponse(accounts);
 
         String responseJson = JsonTransformer.responseToJson(response);

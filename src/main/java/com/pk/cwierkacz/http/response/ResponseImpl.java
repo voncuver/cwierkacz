@@ -2,6 +2,7 @@ package com.pk.cwierkacz.http.response;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -18,7 +19,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
 
     private long tokenId;
 
-    private List<String> accounts;
+    private Set<String> accounts;
 
     private List<TweetDao> tweets;
 
@@ -38,7 +39,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Response > T buildLoginResponse( List<String> accounts ) {
+    public < T extends Response > T buildLoginResponse( Set<String> accounts ) {
         this.accounts = accounts;
         return (T) this;
     }
@@ -66,7 +67,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
     }
 
     @Override
-    public List<String> getAccounts( ) {
+    public Set<String> getAccounts( ) {
         return accounts;
     }
 

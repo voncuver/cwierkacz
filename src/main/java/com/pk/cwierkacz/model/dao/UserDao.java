@@ -36,7 +36,7 @@ public class UserDao implements Serializable
 
     private String password;
 
-    @OneToMany( fetch = FetchType.LAZY,
+    @OneToMany( fetch = FetchType.EAGER,
                 targetEntity = TwitterAccountDao.class,
                 mappedBy = "user",
                 cascade = {CascadeType.ALL} )

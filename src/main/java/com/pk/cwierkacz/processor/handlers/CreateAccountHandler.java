@@ -1,7 +1,5 @@
 package com.pk.cwierkacz.processor.handlers;
 
-import java.security.NoSuchAlgorithmException;
-
 import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.LoginRequest;
@@ -31,13 +29,16 @@ public class CreateAccountHandler implements Handler
 
         LoginRequest loginRequest = (LoginRequest) appData.getRequest();
 
+        UserDao check = userService.getByUserName(loginRequest.getFunctionalUserName());
+        if ( check != null ) {
+            appData.setResponse(ResponseImpl.create(Status.ERROR, "Current User exist", 0));
+            return;
+        }
+
         UserDao userDao = new UserDao();
         userDao.setName(loginRequest.getFunctionalUserName());
-        String hashedPassowrd = null;
-        try {
-            hashedPassowrd = HashUtil.hashString(loginRequest.getPassword());
-        }
-        catch ( NoSuchAlgorithmException e ) {
+        String hashedPassowrd = HashUtil.hashString(loginRequest.getPassword());
+        if ( hashedPassowrd == "" ) {
             appData.setResponse(ResponseImpl.create(Status.ERROR, "Exception while hashing Password", 0));
         }
 

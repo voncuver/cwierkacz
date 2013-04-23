@@ -3,10 +3,22 @@ package com.pk.cwierkacz.utils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class HashUtil
 {
-    public static String hashString( String string ) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
+    private static Logger logger = LoggerFactory.getLogger(HashUtil.class);
+
+    public static String hashString( String string ) {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+        }
+        catch ( NoSuchAlgorithmException e ) {
+            e.printStackTrace();
+            return "";
+        }
         md.update(string.getBytes());
 
         byte byteData[] = md.digest();
@@ -15,6 +27,7 @@ public class HashUtil
         for ( int i = 0; i < byteData.length; i++ ) {
             sb.append(Integer.toString(( byteData[ i ] & 0xff ) + 0x100, 16).substring(1));
         }
+        logger.debug(string + " " + sb.toString());
         return sb.toString();
     }
 }

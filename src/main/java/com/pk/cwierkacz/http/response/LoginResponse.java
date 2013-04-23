@@ -1,9 +1,9 @@
 package com.pk.cwierkacz.http.response;
 
-import java.util.List;
+import java.util.Set;
 
 public interface LoginResponse extends Response
 {
-    List<String> getAccounts( );
+    Set<String> getAccounts( );
 
 }

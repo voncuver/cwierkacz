@@ -1,20 +1,30 @@
 package com.pk.cwierkacz.processor.handlers;
 
 import java.sql.Timestamp;
-
-import org.joda.time.DateTime;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.pk.cwierkacz.http.Action;
+import com.pk.cwierkacz.http.Status;
+import com.pk.cwierkacz.http.request.LoginRequest;
+import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.dao.SessionDao;
+import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.dao.UserDao;
-import com.pk.cwierkacz.model.service.SessionService;
+import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.UserService;
+import com.pk.cwierkacz.utils.HashUtil;
+import com.pk.cwierkacz.utils.TokenUtil;
 
 public class LoginHandler implements Handler
 {
-    private final UserService userService = null;
-    private final SessionService sessionService = null;
+    private final UserService userService;
+
+    public LoginHandler() {
+        userService = ServiceRepo.getInstance().getService(UserService.class);
+    }
 
     @Override
     public boolean isHandleable( ApplicationData applicationData ) {
@@ -23,15 +33,50 @@ public class LoginHandler implements Handler
 
     @Override
     public void handle( ApplicationData appData ) {
-        String name = appData.getRequest().getFunctionalUserName();
+        LoginRequest loginRequest = (LoginRequest) appData.getRequest();
+
+        String name = loginRequest.getFunctionalUserName();
         UserDao user = userService.getByUserName(name);
 
-        SessionDao session = new SessionDao();
-        DateTime dateTime = new DateTime();
-        session.setLastActive(new Timestamp(dateTime.getMillis()));
-        session.setCurrentToken(appData.getRequest().getTokenId());
-        sessionService.save(session);
-        //check pass
+        if ( user == null ) {
+            appData.setResponse(ResponseImpl.create(Status.DENY, "No such user", 0));
+            return;
+        }
+
+        String password = user.getPassword();
+        String cadidatePass = HashUtil.hashString(loginRequest.getPassword());
+
+        if ( !password.equals(cadidatePass) ) {
+            appData.setResponse(ResponseImpl.create(Status.DENY, "Wrong password", 0));
+            return;
+        }
+
+        Set<String> accounts = new HashSet<>();
+
+        for ( TwitterAccountDao accountDao : user.getAccounts() ) {
+            accounts.add(accountDao.getAccountName());
+        }
+
+        if ( user.getSession() != null ) {
+            appData.setResponse(ResponseImpl.create(Status.OK,
+                                                    "Authenticated correct",
+                                                    user.getSession().getCurrentToken())
+                                            .buildLoginResponse(accounts));
+            return;
+        }
+
+        SessionDao sessionDao = new SessionDao();
+        sessionDao.setLastActive(new Timestamp(new Date().getTime()));
+        sessionDao.setCurrentToken(TokenUtil.getToken());
+        user.setSession(sessionDao);
+
+        userService.saveOrUpdate(user);
+
+        appData.setResponse(ResponseImpl.create(Status.OK,
+                                                "Authenticated correct",
+                                                user.getSession().getCurrentToken())
+                                        .buildLoginResponse(accounts));
+        return;
 
     }
 }
