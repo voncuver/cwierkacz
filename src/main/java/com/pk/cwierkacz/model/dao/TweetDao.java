@@ -240,7 +240,6 @@ public class TweetDao
             return true;
         if ( ( obj == null ) || ( obj.getClass() != this.getClass() ) )
             return false;
-        // object must be Test at this point
         TweetDao tweetDao = (TweetDao) obj;
         return tweetDao.getExternalId().equals(externalId);
     }

@@ -150,4 +150,19 @@ public final class TwitterAccountDao implements Serializable
     public void setExternalId( Long externalId ) {
         this.externalId = externalId;
     }
+
+    @Override
+    public boolean equals( Object obj ) {
+        if ( this == obj )
+            return true;
+        if ( ( obj == null ) || ( obj.getClass() != this.getClass() ) )
+            return false;
+        TwitterAccountDao twitterAccountDao = (TwitterAccountDao) obj;
+        return twitterAccountDao.getExternalId().equals(externalId);
+    }
+
+    @Override
+    public int hashCode( ) {
+        return externalId.intValue();
+    }
 }
