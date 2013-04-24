@@ -43,13 +43,14 @@ public class PublishTweetAccount implements Handler
         PublishRequest publishRequest = (PublishRequest) appData.getRequest();
 
         StringBuilder errorBuilder = new StringBuilder();
-        for ( String accountName : publishRequest.getAccounts() ) { //tranzakcyjność per jedno konto - a może inaczej?
-            TwitterAccountDao accountDao = accountService.getAccountByName(accountName);
-            if ( accountDao == null ) {
-                errorBuilder.append(accountName + " not exist in system ; ");
-            }
-            else {
-                try {
+        for ( String accountName : publishRequest.getAccounts() ) {
+            try {
+                //tranzakcyjność per jedno konto - a może inaczej?
+                TwitterAccountDao accountDao = accountService.getAccountByName(accountName);
+                if ( accountDao == null ) {
+                    errorBuilder.append(accountName + " not exist in system ; ");
+                }
+                else {
                     TweetDao newTweet;
                     TwitterAccount account = TwitterAccountMap.getTwitterAccount(accountDao);
                     if ( publishRequest.getReplayForId() > 0 ) {
@@ -64,21 +65,21 @@ public class PublishTweetAccount implements Handler
                     //TODO add retweet handling
 
                     tweetService.save(newTweet);
-                }
-                catch ( TwitterAuthenticationException e ) {
-                    LOGGER.error(e.getMessage());
-                    errorBuilder.append("fail while authenticate for " + accountName + " ; ");
-                }
-                catch ( TwitterActionException e ) {
-                    LOGGER.error(e.getMessage());
-                    errorBuilder.append("fail while add tweet for " + accountName + " ; ");
-                }
-                catch ( Throwable e ) {
-                    LOGGER.error(e.getMessage());
-                    errorBuilder.append("internal error for " + accountName + " ; ");
+
                 }
             }
-
+            catch ( TwitterAuthenticationException e ) {
+                LOGGER.error(e.getMessage());
+                errorBuilder.append("fail while authenticate for " + accountName + " ; ");
+            }
+            catch ( TwitterActionException e ) {
+                LOGGER.error(e.getMessage());
+                errorBuilder.append("fail while add tweet for " + accountName + " ; ");
+            }
+            catch ( Throwable e ) {
+                LOGGER.error(e.getMessage());
+                errorBuilder.append("internal error for " + accountName + " ; ");
+            }
         }
 
         Response response;

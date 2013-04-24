@@ -46,7 +46,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
 
     @SuppressWarnings( "unchecked" )
     public < T extends Response > T buildFetchResponse( List<TweetDao> tweets, Map<Long, String> users ) {
-        this.tweets = tweets;
+        this.tweets = tweets; //TODO może lepiej przechowywać odpowiedz jak mape list?
         this.usersTweeter = users;
         return (T) this;
     }

@@ -12,5 +12,7 @@ public interface FetchTweetsRequest extends Request
 
     long getReplayForId( );
 
+    //TODO obsługa pobieranie re-tweetów
+
     DateTime getDateFrom( );
 }
