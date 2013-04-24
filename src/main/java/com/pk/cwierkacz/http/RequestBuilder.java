@@ -27,6 +27,7 @@ public class RequestBuilder
 
     public static final String SIZE = "Size";
     public static final String DATEFROM = "DateFrom";
+    public static final String PIN = "Pin";
 
     @SuppressWarnings( "unchecked" )
     public static < T > T buildRequest( Map<String, String[]> params ) {
@@ -44,7 +45,14 @@ public class RequestBuilder
         else if ( action.equals(Action.ADDTWEETACCOUNT) ) {
             String tweetAccount = params.get(TWEETACCOUNT)[ 0 ];
             String tweetPassword = params.get(TWEETPASSWORD)[ 0 ];
+
             request = RequestImpl.create(request).buildAddAccountTweetRequest(tweetAccount, tweetPassword);
+
+            if ( params.get(PIN) != null && params.get(PIN).length > 0 ) {
+                Long pin = Long.parseLong(params.get(PIN)[ 0 ]);
+                request = RequestImpl.create(request).withPin(pin);
+            }
+
         }
         else if ( action.equals(Action.FETCHTWEETS) ) {
             List<String> accounts = Arrays.asList(params.get(ACCOUNTS));

@@ -25,6 +25,7 @@ public class RequestImpl implements
     //Wire TweetAccount
     private String accountTweet;
     private String passTweet;
+    private Long pin;
 
     //FetchTweetsRequest, LoginResponse, PublishRequest
     private List<String> accounts;
@@ -69,6 +70,14 @@ public class RequestImpl implements
         requestImpl.size = request.getSize();
         requestImpl.dateFrom = request.getDateFrom();
         requestImpl.replayForId = request.getReplayForId();
+        return requestImpl;
+    }
+
+    public static RequestImpl create( AddTweeAccRequest request ) {
+        RequestImpl requestImpl = create((Request) request);
+        requestImpl.accountTweet = request.getAccountTweet();
+        requestImpl.passTweet = request.getPassTweet();
+        requestImpl.pin = request.getPin();
         return requestImpl;
     }
 
@@ -126,6 +135,12 @@ public class RequestImpl implements
     @SuppressWarnings( "unchecked" )
     public < T extends Request > T withSize( int size ) {
         this.size = size;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public < T extends Request > T withPin( Long pin ) {
+        this.pin = pin;
         return (T) this;
     }
 
@@ -193,5 +208,10 @@ public class RequestImpl implements
     @Override
     public String getTweetText( ) {
         return tweetText;
+    }
+
+    @Override
+    public Long getPin( ) {
+        return pin;
     }
 }

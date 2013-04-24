@@ -19,8 +19,8 @@ public class JsonTransformerTest
     public void LoginResponseTest( ) throws ProcessingException {
 
         Set<String> accounts = new HashSet<>();
-        accounts.add("First");
         accounts.add("Second");
+        accounts.add("First");
 
         LoginResponse response = ResponseImpl.create(Status.OK, "ok", 1234l).buildLoginResponse(accounts);
 
