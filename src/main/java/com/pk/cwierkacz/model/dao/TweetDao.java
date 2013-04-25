@@ -65,7 +65,7 @@ public class TweetDao
 
     @ManyToOne( fetch = FetchType.EAGER )
     @JoinColumn( nullable = false, name = "creator", referencedColumnName = "id" )
-    private TwitterAccountDao creator;
+    private TwitterAccountDao creator; //TODO zmienic nazwe na owner - bo to niekoniecznie musi byc creator - zmiana musi dotyczyc tez nazw pol w serwisie
 
     @Column
     @Type( type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime" )
@@ -116,6 +116,8 @@ public class TweetDao
         this.creator = creator;
     }
 
+    @Column
+    @Type( type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime" )
     public DateTime getCratedDate( ) {
         return cratedDate;
     }
@@ -201,6 +203,7 @@ public class TweetDao
         this.isDeleted = isDeleted;
     }
 
+    @Column( unique = true, nullable = false )
     public Long getExternalId( ) {
         return externalId;
     }
@@ -239,7 +242,6 @@ public class TweetDao
             return true;
         if ( ( obj == null ) || ( obj.getClass() != this.getClass() ) )
             return false;
-        // object must be Test at this point
         TweetDao tweetDao = (TweetDao) obj;
         return tweetDao.getExternalId().equals(externalId);
     }

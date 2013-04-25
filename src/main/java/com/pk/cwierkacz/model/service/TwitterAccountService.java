@@ -46,4 +46,12 @@ public class TwitterAccountService extends AbstractService<TwitterAccountDao>
         commit();
         return result;
     }
+
+    public TwitterAccountDao getAccountByName( String name ) {
+        Criteria criteria = getCriteria(TwitterAccountDao.class);
+        criteria.add(Restrictions.eq("accountName", name));
+        TwitterAccountDao result = (TwitterAccountDao) criteria.uniqueResult();
+        commit();
+        return result;
+    }
 }

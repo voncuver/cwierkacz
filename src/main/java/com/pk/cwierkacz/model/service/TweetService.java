@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.joda.time.DateTime;
 
 import com.pk.cwierkacz.model.dao.TweetDao;
+import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 
 public class TweetService extends AbstractService<TweetDao>
 {
@@ -45,4 +48,31 @@ public class TweetService extends AbstractService<TweetDao>
         commit();
         return result;
     }
+
+    @SuppressWarnings( "unchecked" )
+    public List<TweetDao> getActualTweetForAccount( TwitterAccountDao account, DateTime since ) {
+        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("creator", account))
+                                                       .add(Restrictions.gt("cratedDate", since))
+                                                       .add(Restrictions.eq("isDeleted", false))
+                                                       .addOrder(Order.asc("cratedDate"));
+        ;
+        List<TweetDao> result = criteria.list();
+        commit();
+        return result;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public List<TweetDao> getActualRepliesForAccount( TwitterAccountDao account,
+                                                      TweetDao inReplyTo,
+                                                      DateTime since ) {
+        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("creator", account))
+                                                       .add(Restrictions.eq("inReplyTo", inReplyTo))
+                                                       .add(Restrictions.gt("cratedDate", since))
+                                                       .add(Restrictions.eq("isDeleted", false))
+                                                       .addOrder(Order.asc("cratedDate"));
+        List<TweetDao> result = criteria.list();
+        commit();
+        return result;
+    }
+
 }

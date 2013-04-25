@@ -79,6 +79,7 @@ public class RequestBuilder
                 Long replayForId = Long.parseLong(params.get(REPLAYFORID)[ 0 ]);
                 request = RequestImpl.create(request).withReplayForID(replayForId);
             }
+            //TODO dopisać id potencjalnego reteeta
         }
 
         return (T) request;

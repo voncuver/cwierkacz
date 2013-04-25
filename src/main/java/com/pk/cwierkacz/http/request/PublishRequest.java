@@ -6,6 +6,8 @@ public interface PublishRequest extends Request
 {
     long getReplayForId( );
 
+    //TODO dopisać id potencjalnego reteeta
+
     String getTweetText( );
 
     List<String> getAccounts( );

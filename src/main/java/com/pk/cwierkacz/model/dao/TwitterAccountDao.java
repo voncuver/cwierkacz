@@ -47,6 +47,7 @@ public final class TwitterAccountDao implements Serializable
     @JoinColumn( nullable = true, name = "user", referencedColumnName = "id" )
     //moze byc account bez usera - takiego nie śledzimy, ale może mieć tweety
     private UserDao user;
+    @Column( unique = true, nullable = false )
     private String accountName;
     private String accessToken;
     private String accessTokenSecret;
@@ -75,6 +76,7 @@ public final class TwitterAccountDao implements Serializable
         this.user = userId;
     }
 
+    @Column( unique = true, nullable = false )
     public String getAccountName( ) {
         return accountName;
     }
@@ -140,11 +142,27 @@ public final class TwitterAccountDao implements Serializable
         this.isDeleted = isDeleted;
     }
 
+    @Column( unique = true, nullable = false )
     public Long getExternalId( ) {
         return externalId;
     }
 
     public void setExternalId( Long externalId ) {
         this.externalId = externalId;
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+        if ( this == obj )
+            return true;
+        if ( ( obj == null ) || ( obj.getClass() != this.getClass() ) )
+            return false;
+        TwitterAccountDao twitterAccountDao = (TwitterAccountDao) obj;
+        return twitterAccountDao.getExternalId().equals(externalId);
+    }
+
+    @Override
+    public int hashCode( ) {
+        return externalId.intValue();
     }
 }
