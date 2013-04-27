@@ -29,6 +29,7 @@ public class ToTweetConverter implements Function<Status, TweetDao>
             tweet.setText(status.getText());
             tweet.setCratedDate(DateUtil.convertDateUTC(status.getCreatedAt()));
             tweet.setCreator(accountService.getAccountByExternalId(status.getUser().getId()));
+            tweet.setExternalId(status.getId());
             if ( status.getInReplyToStatusId() > 0 )
                 tweet.setInReplyToExtId(status.getInReplyToStatusId());
             if ( status.getRetweetedStatus() != null )

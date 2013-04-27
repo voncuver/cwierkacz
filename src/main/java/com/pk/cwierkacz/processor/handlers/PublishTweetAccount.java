@@ -22,7 +22,7 @@ import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
 
 public class PublishTweetAccount implements Handler
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PublishTweetAccount.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PublishTweetAccountTest.class);
 
     private final TweetService tweetService;
 

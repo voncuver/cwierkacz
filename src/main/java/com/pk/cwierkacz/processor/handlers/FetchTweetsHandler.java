@@ -83,12 +83,14 @@ public class FetchTweetsHandler implements Handler
                         TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
                         for ( TweetDao tweet : result.getReadyTweets() ) {
                             tweetService.save(tweet);
+                            currentTweets.add(tweet);
                         }
                         for ( TweetDao tweet : result.fulfilledNoReady() ) {
                             tweetService.save(tweet);
+                            currentTweets.add(tweet);
                         }
 
-                        List<TweetDao> newTweets = null;
+                        /*List<TweetDao> newTweets = null;
                         if ( fetchRequest.getReplayForId() > 0 ) { // TODO refaktorawac!!!! wydzielic do innej funkcji albo wymusic zeby był idk
                             TweetDao replyTweet = tweetService.getTweetById(fetchRequest.getReplayForId());
                             if ( replyTweet == null )
@@ -102,7 +104,7 @@ public class FetchTweetsHandler implements Handler
                             newTweets = tweetService.getActualTweetForAccount(accountDao,
                                                                               last.getCratedDate());
                         }
-                        currentTweets.addAll(newTweets);
+                        currentTweets.addAll(newTweets);*/
 
                     }
                     catch ( TwitterAuthenticationException e ) {

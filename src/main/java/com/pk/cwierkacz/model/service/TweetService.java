@@ -52,7 +52,7 @@ public class TweetService extends AbstractService<TweetDao>
     @SuppressWarnings( "unchecked" )
     public List<TweetDao> getActualTweetForAccount( TwitterAccountDao account, DateTime since ) {
         Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("creator", account))
-                                                       .add(Restrictions.gt("cratedDate", since))
+                                                       .add(Restrictions.ge("cratedDate", since))
                                                        .add(Restrictions.eq("isDeleted", false))
                                                        .addOrder(Order.asc("cratedDate"));
         ;
@@ -67,7 +67,7 @@ public class TweetService extends AbstractService<TweetDao>
                                                       DateTime since ) {
         Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("creator", account))
                                                        .add(Restrictions.eq("inReplyTo", inReplyTo))
-                                                       .add(Restrictions.gt("cratedDate", since))
+                                                       .add(Restrictions.ge("cratedDate", since))
                                                        .add(Restrictions.eq("isDeleted", false))
                                                        .addOrder(Order.asc("cratedDate"));
         List<TweetDao> result = criteria.list();

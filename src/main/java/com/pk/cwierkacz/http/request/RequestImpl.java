@@ -121,6 +121,16 @@ public class RequestImpl implements
     }
 
     @SuppressWarnings( "unchecked" )
+    public < T extends Request > T buildPublishRequest( String tweetText,
+                                                        List<String> accounts,
+                                                        long replayForId ) {
+        this.tweetText = tweetText;
+        this.accounts = accounts;
+        this.replayForId = replayForId;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
     public < T extends Request > T withReplayForID( Long replayForID ) {
         this.replayForId = replayForID;
         return (T) this;
