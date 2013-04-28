@@ -15,13 +15,13 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
 
     private Status status;
 
-    private String message; //TODO moze lepsza by była lista stringow?
+    private String message; //TODO moze lepsza by była lista stringow? (może być wiecej iformacji o błędzie)
 
     private long tokenId;
 
     private Set<String> accounts;
 
-    private List<TweetDao> tweets;
+    private List<TweetDao> tweets; //TODO może lepsza by była mapa przechowująca account name na liste tweetów? - ale jeśli tak to co miało by oznaczać wtedy size w requescie? - proponował bym wtedy zeby to był size per konto
 
     private Map<Long, String> usersTweeter;
 

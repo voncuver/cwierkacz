@@ -143,6 +143,18 @@ public class RequestImpl implements
     }
 
     @SuppressWarnings( "unchecked" )
+    public < T extends Request > T buildFetchRequest( List<String> accounts,
+                                                      int size,
+                                                      DateTime dateFrom,
+                                                      long replayForId ) {
+        this.accounts = accounts;
+        this.size = size;
+        this.dateFrom = dateFrom;
+        this.replayForId = replayForId;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
     public < T extends Request > T withSize( int size ) {
         this.size = size;
         return (T) this;
