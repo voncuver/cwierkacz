@@ -136,6 +136,15 @@ public class RequestImpl implements
     }
 
     @SuppressWarnings( "unchecked" )
+    public < T extends Request > T buildPublishRequest( String tweetText,
+                                                        List<String> accounts,
+                                                        long replayForId ) {
+        this.tweetText = tweetText;
+        this.accounts = accounts;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
     public < T extends RequestImpl > T withRetweetForId( Long retweetForId ) {
         this.retweetFor = retweetForId;
         return (T) this;
@@ -148,7 +157,18 @@ public class RequestImpl implements
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends RequestImpl > T withSize( int size ) {
+    public < T extends Request > T buildFetchRequest( List<String> accounts,
+                                                      int size,
+                                                      DateTime dateFrom,
+                                                      long replayForId ) {
+        this.accounts = accounts;
+        this.size = size;
+        this.dateFrom = dateFrom;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public < T extends Request > T withSize( int size ) {
         this.size = size;
         return (T) this;
     }

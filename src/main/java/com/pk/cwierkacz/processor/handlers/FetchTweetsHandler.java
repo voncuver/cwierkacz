@@ -50,82 +50,93 @@ public class FetchTweetsHandler implements Handler
         //TODO może lepiej przechowywać odpowiedz jak mape list?
         FetchTweetsRequest fetchRequest = (FetchTweetsRequest) appData.getRequest();
         Map<Long, String> users = new HashMap<Long, String>();
+        List<TwitterAccountDao> acs = new ArrayList<TwitterAccountDao>();
 
         StringBuilder errorBuilder = new StringBuilder();
-        Map<TwitterAccountDao, List<TweetDao>> groupedTweets = new HashMap<TwitterAccountDao, List<TweetDao>>();
+        //Map<TwitterAccountDao, List<TweetDao>> groupedTweets = new HashMap<TwitterAccountDao, List<TweetDao>>();
         List<TweetDao> mergedTweets = new ArrayList<TweetDao>();
-        for ( String accountName : fetchRequest.getAccounts() ) { //tranzakcyjność per jedno konto - a może inaczej?
-            try {
-                TwitterAccountDao accountDao = accountService.getAccountByName(accountName);
-                List<TweetDao> currentTweets = null;
-                if ( accountDao == null )
-                    errorBuilder.append("cannot find account name " + accountName + " : ");
-                else {
-                    TwitterAccount account;
-
-                    if ( fetchRequest.getReplayFor() > 0 ) {
-                        TweetDao replyTweet = tweetService.getTweetById(fetchRequest.getReplayFor());
-                        if ( replyTweet == null )
-                            errorBuilder.append("cannot find in reply to tweet ; ");
-                        else
-                            currentTweets = tweetService.getActualRepliesForAccount(accountDao,
-                                                                                    replyTweet,
-                                                                                    fetchRequest.getDateFrom());
-                    }
-                    else {
-                        currentTweets = tweetService.getActualTweetForAccount(accountDao,
-                                                                              fetchRequest.getDateFrom());
-                    }
-                    TweetDao last = currentTweets.get(currentTweets.size());
-
-                    try {
-                        account = TwitterAccountMap.getTwitterAccount(accountDao);
-                        TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
-                        for ( TweetDao tweet : result.getReadyTweets() ) {
-                            tweetService.save(tweet);
-                        }
-                        for ( TweetDao tweet : result.fulfilledNoReady() ) {
-                            tweetService.save(tweet);
-                        }
-
-                        List<TweetDao> newTweets = null;
-                        if ( fetchRequest.getReplayFor() > 0 ) { // TODO refaktorawac!!!! wydzielic do innej funkcji albo wymusic zeby był idk
-                            TweetDao replyTweet = tweetService.getTweetById(fetchRequest.getReplayFor());
-                            if ( replyTweet == null )
-                                errorBuilder.append("cannot find in reply to tweet ; ");
-                            else
-                                newTweets = tweetService.getActualRepliesForAccount(accountDao,
-                                                                                    replyTweet,
-                                                                                    last.getCratedDate());
-                        }
-                        else {
-                            newTweets = tweetService.getActualTweetForAccount(accountDao,
-                                                                              last.getCratedDate());
-                        }
-                        currentTweets.addAll(newTweets);
-
-                    }
-                    catch ( TwitterAuthenticationException e ) {
-                        LOGGER.error(e.getMessage());
-                        errorBuilder.append("fail while authenticate for " + accountName + " ; ");
-                    }
-                    catch ( TwitterActionException e ) {
-                        LOGGER.error(e.getMessage());
-                        errorBuilder.append("propably not all tweets are fetched for " + accountName + " ; ");
-                    }
-                    groupedTweets.put(accountDao, currentTweets);
-                    mergedTweets.addAll(currentTweets);
-
-                }
+        try {
+            TweetDao replyTweet = null;
+            if ( fetchRequest.getReplayFor() > 0 ) {
+                replyTweet = tweetService.getTweetById(fetchRequest.getReplayFor());
             }
-            catch ( Throwable e ) {
-                LOGGER.error(e.getMessage());
-                errorBuilder.append("internal error for " + accountName + " ; ");
+            if ( fetchRequest.getReplayFor() > 0 && replyTweet == null ) {
+                errorBuilder.append("cannot find in reply to tweet ; ");
+            }
+            else {
+                for ( String accountName : fetchRequest.getAccounts() ) { //tranzakcyjność per jedno konto - a może inaczej?
+                    try {
+                        TwitterAccountDao accountDao = accountService.getAccountByName(accountName);
+                        List<TweetDao> currentTweets = null;
+                        if ( accountDao == null )
+                            errorBuilder.append("cannot find account name " + accountName + " : ");
+                        else {
+                            TwitterAccount account;
+
+                            TweetDao last = null;
+
+                            if ( replyTweet != null ) {
+                                last = tweetService.getLastActualRepliesForAccount(accountDao,
+                                                                                   replyTweet,
+                                                                                   fetchRequest.getDateFrom());
+                            }
+                            else {
+                                last = tweetService.getLastActualTweetForAccount(accountDao,
+                                                                                 fetchRequest.getDateFrom());
+                            }
+
+                            if ( last != null ) {
+                                try {
+                                    account = TwitterAccountMap.getTwitterAccount(accountDao);
+                                    TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
+                                    for ( TweetDao tweet : result.getReadyTweets() ) {
+                                        tweetService.save(tweet);
+                                    }
+                                    for ( TweetDao tweet : result.fulfilledNoReady() ) {
+                                        tweetService.save(tweet);
+                                    }
+
+                                }
+                                catch ( TwitterAuthenticationException e ) {
+                                    LOGGER.error(e.getMessage());
+                                    errorBuilder.append("fail while authenticate for " + accountName + " ; ");
+                                }
+                                catch ( TwitterActionException e ) {
+                                    LOGGER.error(e.getMessage());
+                                    errorBuilder.append("propably not all tweets are fetched for " +
+                                                        accountName +
+                                                        " ; ");
+                                }
+                            }
+
+                            //groupedTweets if used
+                            users.put(accountDao.getId(), accountDao.getAccountName());
+                            acs.add(accountDao);
+
+                        }
+                    }
+                    catch ( Throwable e ) {
+                        LOGGER.error(e.getMessage());
+                        errorBuilder.append("internal error for " + accountName + " ; ");
+                    }
+                }
+
+            }
+            if ( replyTweet != null ) {
+                mergedTweets = tweetService.getActualRepliesForAccounts(acs,
+                                                                        replyTweet,
+                                                                        fetchRequest.getDateFrom(),
+                                                                        fetchRequest.getSize());
+            }
+            else {
+                mergedTweets = tweetService.getActualTweetForAccounts(acs,
+                                                                      fetchRequest.getDateFrom(),
+                                                                      fetchRequest.getSize());
             }
         }
-
-        for ( TwitterAccountDao dao : groupedTweets.keySet() ) {
-            users.put(dao.getId(), dao.getAccountName());
+        catch ( Throwable e ) {
+            LOGGER.error(e.getMessage());
+            errorBuilder.append("internal error");
         }
 
         Response response;
@@ -134,7 +145,9 @@ public class FetchTweetsHandler implements Handler
         if ( StringUtils.isEmpty(errors) ) {
             response = ResponseImpl.create(Status.OK,
                                            "Tweet for all account was fetched correctly",
-                                           appData.getRequest().getTokenId());
+                                           appData.getRequest().getTokenId())
+                                   .buildFetchResponse(mergedTweets, users);
+            ;
         }
         else {
             response = ResponseImpl.create(Status.ERROR,

@@ -126,7 +126,7 @@ public class TwitterAccount
             else {
                 String msgWithTarget = "@" + toReplyTweet.getCreatorName() + " " + msg;
                 update = new StatusUpdate(msgWithTarget);
-                update.setInReplyToStatusId(toReplyTweet.getId());
+                update.setInReplyToStatusId(toReplyTweet.getExternalId());
             }
             if ( attachments.haveImage() )
                 update.setMedia(attachments.getImage().getAttachment());
@@ -252,7 +252,7 @@ public class TwitterAccount
      * @return
      * @throws TwitterActionException
      */
-    protected TweetsResult getTweetsFromHomeTimeline( DateTime since ) throws TwitterActionException {
+    public TweetsResult getTweetsFromHomeTimeline( DateTime since ) throws TwitterActionException {
         return getTweetsFromTimeline(since, TimeLine.Home);
     }
 
@@ -264,7 +264,7 @@ public class TwitterAccount
      * @return
      * @throws TwitterActionException
      */
-    protected TweetsResult getTweetsFromUserTimeline( DateTime since ) throws TwitterActionException {
+    public TweetsResult getTweetsFromUserTimeline( DateTime since ) throws TwitterActionException {
         return getTweetsFromTimeline(since, TimeLine.User);
     }
 
@@ -276,7 +276,7 @@ public class TwitterAccount
      * @return
      * @throws TwitterActionException
      */
-    protected TweetsResult getTweetsFromMentionsTimeline( DateTime since ) throws TwitterActionException {
+    public TweetsResult getTweetsFromMentionsTimeline( DateTime since ) throws TwitterActionException {
         return getTweetsFromTimeline(since, TimeLine.Mentions);
     }
 

@@ -1,6 +1,7 @@
 package com.pk.cwierkacz.model.dao;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -40,7 +41,7 @@ public class UserDao implements Serializable
                 targetEntity = TwitterAccountDao.class,
                 mappedBy = "user",
                 cascade = {CascadeType.ALL} )
-    private Set<TwitterAccountDao> accounts;
+    private Set<TwitterAccountDao> accounts = new HashSet<TwitterAccountDao>();
 
     private boolean isDeleted;
 
