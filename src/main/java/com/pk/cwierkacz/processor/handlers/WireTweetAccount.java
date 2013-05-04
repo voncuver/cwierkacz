@@ -11,7 +11,7 @@ import java.util.Map;
 
 import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
-import com.pk.cwierkacz.http.request.AddTweeAccRequest;
+import com.pk.cwierkacz.http.request.AddTweeterAccountRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.model.ApplicationData;
@@ -44,9 +44,9 @@ public class WireTweetAccount implements Handler
 
     @Override
     public void handle( ApplicationData appData ) {
-        AddTweeAccRequest accRequest = (AddTweeAccRequest) appData.getRequest();
+        AddTweeterAccountRequest accRequest = (AddTweeterAccountRequest) appData.getRequest();
 
-        UserDao user = userService.getByUserName(accRequest.getFunctionalUserName());
+        UserDao user = userService.getByUserName(accRequest.getUserName());
         if ( user != null && user.getSession().getCurrentToken() != accRequest.getTokenId() ) {
             Response response = ResponseImpl.create(Status.DENY, "Invalid Token", accRequest.getTokenId());
             appData.setResponse(response);
@@ -57,7 +57,7 @@ public class WireTweetAccount implements Handler
             accountsName.add(accountDao.getAccountName());
         }
 
-        if ( accountsName.contains(accRequest.getAccountTweet()) ) {
+        if ( accountsName.contains(accRequest.getLoginTweet()) ) {
             Response response = ResponseImpl.create(Status.DENY,
                                                     "User already has this accout",
                                                     accRequest.getTokenId());
@@ -67,7 +67,7 @@ public class WireTweetAccount implements Handler
 
         TwitterAccountDao account = TwitterAccountDao.create(0,
                                                              user,
-                                                             accRequest.getAccountTweet(),
+                                                             accRequest.getLoginTweet(),
                                                              null,
                                                              null);
         account.setId(1l);
@@ -100,9 +100,9 @@ public class WireTweetAccount implements Handler
                                   "&oauth_token=" +
                                   outhToken +
                                   "&session%5Busername_or_email%5D=" +
-                                  accRequest.getAccountTweet() +
+                                  accRequest.getLoginTweet() +
                                   "&session%5Bpassword%5D=" +
-                                  accRequest.getPassTweet();
+                                  accRequest.getPasswordTweet();
 
                 reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(httpClient.getUrlConnection(authUrl,
                                                                                                                       true,

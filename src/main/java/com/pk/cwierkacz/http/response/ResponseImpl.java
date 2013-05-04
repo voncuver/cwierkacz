@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.pk.cwierkacz.http.Status;
@@ -17,6 +18,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
 
     private String message; //TODO moze lepsza by była lista stringow?
 
+    @JsonIgnore
     private long tokenId;
 
     private Set<String> accounts;

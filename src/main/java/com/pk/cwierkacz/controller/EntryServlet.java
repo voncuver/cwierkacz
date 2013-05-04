@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,8 +35,10 @@ public class EntryServlet extends HttpServlet
     @Override
     public void doGet( HttpServletRequest request, HttpServletResponse response ) throws IOException {
 
+        Cookie[] cookies = request.getCookies();
         Map<String, String[]> parameters = request.getParameterMap();
-        Request requestAction = RequestBuilder.buildRequest(parameters);
+
+        Request requestAction = RequestBuilder.buildRequest(parameters, cookies);
         Response responseResult = mainProcessor.process(requestAction);
 
         String responseJson;
@@ -45,6 +48,11 @@ public class EntryServlet extends HttpServlet
         catch ( ProcessingException e ) {
             responseJson = "Fail to creat JSON";
         }
+
+        Cookie cookie = new Cookie("tokenId", new Long(responseResult.getTokenId()).toString());
+        cookie.setMaxAge(60 * 60);
+        response.addCookie(cookie);
+
         ServletOutputStream out = response.getOutputStream();
         out.print(responseJson);
     }

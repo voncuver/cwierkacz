@@ -28,14 +28,14 @@ public class LoginHandler implements Handler
 
     @Override
     public boolean isHandleable( ApplicationData applicationData ) {
-        return applicationData.getRequest().getAction().equals(Action.LOGIN);
+        return applicationData.getRequest().getAction().equals(Action.SIGNIN);
     }
 
     @Override
     public void handle( ApplicationData appData ) {
         LoginRequest loginRequest = (LoginRequest) appData.getRequest();
 
-        String name = loginRequest.getFunctionalUserName();
+        String name = loginRequest.getUserName();
         UserDao user = userService.getByUserName(name);
 
         if ( user == null ) {

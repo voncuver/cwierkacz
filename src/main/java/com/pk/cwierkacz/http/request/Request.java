@@ -4,13 +4,14 @@ import java.sql.Timestamp;
 
 import com.pk.cwierkacz.http.Action;
 
+// FetchTweeterAccountsRequest, LogoutRequest
 public interface Request
 {
     Action getAction( );
 
     Timestamp getTimestamp( );
 
-    String getFunctionalUserName( );
+    String getUserName( );
 
     long getTokenId( );
 }

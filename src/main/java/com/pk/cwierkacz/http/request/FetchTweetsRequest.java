@@ -4,15 +4,18 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
+// FetchTweetsRequest, FetchTweetRequest
 public interface FetchTweetsRequest extends Request
 {
     List<String> getAccounts( );
 
     int getSize( );
 
-    long getReplayForId( );
+    long getReplayFor( );
 
-    //TODO obsługa pobieranie re-tweetów
+    long getRetweetFor( );
 
     DateTime getDateFrom( );
+
+    DateTime getDateTo( );
 }

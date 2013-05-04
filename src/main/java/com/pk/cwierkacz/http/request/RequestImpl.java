@@ -12,33 +12,42 @@ import com.pk.cwierkacz.http.Action;
 public class RequestImpl implements
                         Request,
                         LoginRequest,
-                        AddTweeAccRequest,
+                        AddTweeterAccountRequest,
                         PublishRequest,
-                        FetchTweetsRequest
+                        FetchTweetsRequest,
+                        AccountManageRequest
 {
     //Basic
     private Action action;
     private Timestamp timestamp;
-    private String functionalUserName;
     private long tokenId;
 
-    //Wire TweetAccount
-    private String accountTweet;
-    private String passTweet;
-    private Long pin;
+    //SIGNIN, ADDACCOUNT
+    private String userName;
 
-    //FetchTweetsRequest, LoginResponse, PublishRequest
+    //ADDTWEETACCOUNT, DELTWEETACCOUNT
+    private String loginTweet;
+
+    //ADDTWEETACCOUNT
+    private String passwordTweet;
+
+    //FETCHTWEETS, PUBLISHTWEET
     private List<String> accounts;
 
-    //FetchTweets
+    //FETCHTWEETS
     private int size;
     private DateTime dateFrom;
+    private DateTime dateTo;
 
-    //Login
+    //SIGNIN, DELACCOUNT
     private String password;
+    private String newPassword;
 
-    //PublishTweet
-    private long replayForId;
+    //FETCHTWEETS, PUBLISHTWEET
+    private long replayFor;
+    private long retweetFor;
+
+    //PUBLISHTWEET
     private String tweetText;
 
     public static RequestImpl create( ) {
@@ -49,104 +58,116 @@ public class RequestImpl implements
     }
 
     public static RequestImpl create( Request request ) {
+        RequestImpl impl = (RequestImpl) request;
+
         RequestImpl requestImpl = new RequestImpl();
-        requestImpl.action = request.getAction();
-        requestImpl.functionalUserName = request.getFunctionalUserName();
-        requestImpl.timestamp = request.getTimestamp();
-        requestImpl.tokenId = request.getTokenId();
-        return requestImpl;
-    }
-
-    public static RequestImpl create( PublishRequest request ) {
-        RequestImpl requestImpl = create((Request) request);
-        requestImpl.accounts = request.getAccounts();
-        requestImpl.tweetText = request.getTweetText();
-        return requestImpl;
-    }
-
-    public static RequestImpl create( FetchTweetsRequest request ) {
-        RequestImpl requestImpl = create((Request) request);
-        requestImpl.accounts = request.getAccounts();
-        requestImpl.size = request.getSize();
-        requestImpl.dateFrom = request.getDateFrom();
-        requestImpl.replayForId = request.getReplayForId();
-        return requestImpl;
-    }
-
-    public static RequestImpl create( AddTweeAccRequest request ) {
-        RequestImpl requestImpl = create((Request) request);
-        requestImpl.accountTweet = request.getAccountTweet();
-        requestImpl.passTweet = request.getPassTweet();
-        requestImpl.pin = request.getPin();
+        requestImpl.accounts = impl.getAccounts();
+        requestImpl.action = impl.getAction();
+        requestImpl.dateFrom = impl.getDateFrom();
+        requestImpl.dateTo = impl.getDateTo();
+        requestImpl.loginTweet = impl.getLoginTweet();
+        requestImpl.newPassword = impl.getNewPassword();
+        requestImpl.password = impl.getPassword();
+        requestImpl.passwordTweet = impl.getPasswordTweet();
+        requestImpl.replayFor = impl.getReplayFor();
+        requestImpl.retweetFor = impl.getRetweetFor();
+        requestImpl.size = impl.getSize();
+        requestImpl.timestamp = impl.getTimestamp();
+        requestImpl.tokenId = impl.getTokenId();
+        requestImpl.tweetText = impl.getTweetText();
+        requestImpl.userName = impl.getUserName();
         return requestImpl;
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T buildEmptyRequest( ) {
+    public < T extends RequestImpl > T buildEmptyRequest( ) {
         this.action = Action.NOTRECOGNIZED;
         return (T) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T buildBaseRequest( Action action, String functionalUserName ) {
+    public < T extends RequestImpl > T buildBaseRequest( Action action, String userName ) {
         this.action = action;
-        this.functionalUserName = functionalUserName;
+        this.userName = userName;
         return (T) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T withTokenId( Long tokenId ) {
+    public < T extends RequestImpl > T withTokenId( Long tokenId ) {
         this.tokenId = tokenId;
         return (T) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T buildLoginRequest( String password ) {
+    public < T extends RequestImpl > T withTimestamp( Timestamp timestamp ) {
+        this.timestamp = timestamp;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public < T extends RequestImpl > T buildLoginRequest( String password ) {
         this.password = password;
         return (T) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T buildAddAccountTweetRequest( String login, String password ) {
-        this.accountTweet = login;
-        this.passTweet = password;
+    public < T extends RequestImpl > T withNewPassword( String newPassword ) {
+        this.newPassword = newPassword;
         return (T) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T buildPublishRequest( String tweetText, List<String> accounts ) {
+    public < T extends RequestImpl > T buildAddAccountTweetRequest( String loginTweet ) {
+        this.loginTweet = loginTweet;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public < T extends RequestImpl > T buildPublishRequest( String tweetText, List<String> accounts ) {
         this.tweetText = tweetText;
         this.accounts = accounts;
         return (T) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T withReplayForID( Long replayForID ) {
-        this.replayForId = replayForID;
+    public < T extends RequestImpl > T withReplayForID( Long replayForID ) {
+        this.replayFor = replayForID;
         return (T) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T buildFetchRequest( List<String> accounts ) {
+    public < T extends RequestImpl > T withRetweetForId( Long retweetForId ) {
+        this.retweetFor = retweetForId;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public < T extends RequestImpl > T buildFetchRequest( List<String> accounts ) {
         this.accounts = accounts;
         return (T) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T withSize( int size ) {
+    public < T extends RequestImpl > T withSize( int size ) {
         this.size = size;
         return (T) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T withPin( Long pin ) {
-        this.pin = pin;
+    public < T extends RequestImpl > T withDateFrom( DateTime dateTime ) {
+        this.dateFrom = dateTime;
         return (T) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T withDateFrom( DateTime dateTime ) {
-        this.dateFrom = dateTime;
+    public < T extends RequestImpl > T withDateTo( DateTime dateTime ) {
+        this.dateTo = dateTime;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public < T extends RequestImpl > T withPasswordTweet( String passwordTweet ) {
+        this.passwordTweet = passwordTweet;
         return (T) this;
     }
 
@@ -161,23 +182,23 @@ public class RequestImpl implements
     }
 
     @Override
-    public String getFunctionalUserName( ) {
-        return functionalUserName;
-    }
-
-    @Override
     public long getTokenId( ) {
         return tokenId;
     }
 
     @Override
-    public String getAccountTweet( ) {
-        return accountTweet;
+    public String getUserName( ) {
+        return userName;
     }
 
     @Override
-    public String getPassTweet( ) {
-        return passTweet;
+    public String getLoginTweet( ) {
+        return loginTweet;
+    }
+
+    @Override
+    public String getPasswordTweet( ) {
+        return passwordTweet;
     }
 
     @Override
@@ -191,18 +212,28 @@ public class RequestImpl implements
     }
 
     @Override
+    public DateTime getDateFrom( ) {
+        return dateFrom;
+    }
+
+    @Override
+    public DateTime getDateTo( ) {
+        return dateTo;
+    }
+
+    @Override
     public String getPassword( ) {
         return password;
     }
 
     @Override
-    public long getReplayForId( ) {
-        return replayForId;
+    public String getNewPassword( ) {
+        return newPassword;
     }
 
     @Override
-    public DateTime getDateFrom( ) {
-        return dateFrom;
+    public long getReplayFor( ) {
+        return replayFor;
     }
 
     @Override
@@ -211,7 +242,7 @@ public class RequestImpl implements
     }
 
     @Override
-    public Long getPin( ) {
-        return pin;
+    public long getRetweetFor( ) {
+        return retweetFor;
     }
 }

@@ -23,13 +23,13 @@ public class LogoutHandler implements Handler
 
     @Override
     public boolean isHandleable( ApplicationData applicationData ) {
-        return applicationData.getRequest().getAction().equals(Action.LOGOUT);
+        return applicationData.getRequest().getAction().equals(Action.SIGNOUT);
     }
 
     @Override
     public void handle( ApplicationData appData ) {
         LoginRequest loginRequest = (LoginRequest) appData.getRequest();
-        UserDao userDao = userService.getByUserName(loginRequest.getFunctionalUserName());
+        UserDao userDao = userService.getByUserName(loginRequest.getUserName());
 
         Long tokenRequest = loginRequest.getTokenId();
         Long sessionToken = userDao.getSession().getCurrentToken();

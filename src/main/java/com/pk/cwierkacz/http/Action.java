@@ -1,14 +1,21 @@
 package com.pk.cwierkacz.http;
 
 public enum Action {
-    NOTRECOGNIZED( "NotRecognized" ),
+    NOTRECOGNIZED( "NOTRECOGNIZED" ),
 
-    LOGIN( "Login" ),
-    LOGOUT( "Logout" ),
-    CREATEACCOUNT( "Create" ),
-    ADDTWEETACCOUNT( "AddTweetAccount" ),
-    PUBLISHTWEET( "PublishTweet" ),
-    FETCHTWEETS( "FetchTweets" );
+    SIGNIN( "SIGNIN" ),
+    SIGNOUT( "SIGNOUT" ),
+
+    ADDACCOUNT( "ADDACCOUNT" ),
+    MODACCOUNT( "MODACCOUNT" ),
+    DELACCOUNT( "DELACCOUNT" ),
+
+    FETCHTWEETS( "FETCHTWEETS" ),
+    PUBLISHTWEET( "PUBLISHTWEET" ),
+
+    ADDTWEETACCOUNT( "ADDTWEETACCOUNT" ),
+    DELTWEETACCOUNT( "DELTWEETACCOUNT" ),
+    FETCHTWEETACCOUNTS( "FETCHTWEETACCOUNTS" );
 
     private String actionName;
 

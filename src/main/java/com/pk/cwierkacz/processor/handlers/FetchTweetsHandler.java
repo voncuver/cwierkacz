@@ -63,8 +63,8 @@ public class FetchTweetsHandler implements Handler
                 else {
                     TwitterAccount account;
 
-                    if ( fetchRequest.getReplayForId() > 0 ) {
-                        TweetDao replyTweet = tweetService.getTweetById(fetchRequest.getReplayForId());
+                    if ( fetchRequest.getReplayFor() > 0 ) {
+                        TweetDao replyTweet = tweetService.getTweetById(fetchRequest.getReplayFor());
                         if ( replyTweet == null )
                             errorBuilder.append("cannot find in reply to tweet ; ");
                         else
@@ -89,8 +89,8 @@ public class FetchTweetsHandler implements Handler
                         }
 
                         List<TweetDao> newTweets = null;
-                        if ( fetchRequest.getReplayForId() > 0 ) { // TODO refaktorawac!!!! wydzielic do innej funkcji albo wymusic zeby był idk
-                            TweetDao replyTweet = tweetService.getTweetById(fetchRequest.getReplayForId());
+                        if ( fetchRequest.getReplayFor() > 0 ) { // TODO refaktorawac!!!! wydzielic do innej funkcji albo wymusic zeby był idk
+                            TweetDao replyTweet = tweetService.getTweetById(fetchRequest.getReplayFor());
                             if ( replyTweet == null )
                                 errorBuilder.append("cannot find in reply to tweet ; ");
                             else

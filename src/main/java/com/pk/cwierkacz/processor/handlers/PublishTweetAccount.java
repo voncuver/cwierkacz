@@ -53,8 +53,8 @@ public class PublishTweetAccount implements Handler
                 else {
                     TweetDao newTweet;
                     TwitterAccount account = TwitterAccountMap.getTwitterAccount(accountDao);
-                    if ( publishRequest.getReplayForId() > 0 ) {
-                        TweetDao inReply = tweetService.getTweetById(publishRequest.getReplayForId());
+                    if ( publishRequest.getReplayFor() > 0 ) {
+                        TweetDao inReply = tweetService.getTweetById(publishRequest.getReplayFor());
                         if ( inReply == null )
                             errorBuilder.append("in reply tweet not exist ; ");
                         newTweet = account.composeNewReplyTweet(publishRequest.getTweetText(), inReply);
