@@ -141,6 +141,7 @@ public class RequestImpl implements
                                                         long replayForId ) {
         this.tweetText = tweetText;
         this.accounts = accounts;
+        this.replayFor = replayForId;
         return (T) this;
     }
 
@@ -164,6 +165,7 @@ public class RequestImpl implements
         this.accounts = accounts;
         this.size = size;
         this.dateFrom = dateFrom;
+        this.replayFor = replayForId;
         return (T) this;
     }
 
