@@ -33,7 +33,6 @@ public final class TwitterAccountDao implements Serializable
     private static final long serialVersionUID = -4397008154952109275L;
 
     //TODO 5: zmodyfikować ciało metody create tak aby nadal przyjmowala userId - ale było to mapowane na Usera - tak stworzony TwitterAccountDao powinien byc z metody crete przed zwrócieniem zapisany w DB - na poziomie DAO nie powinnismy siegac do bazy zeby uzupelnic dane, dane powinny byc raczej dostarczone
-    //TODO 6: szyfrowania accessToken i accessTokenSecret - na poziomie handlera
 
     @Id
     @Column( length = 255 )
@@ -47,7 +46,7 @@ public final class TwitterAccountDao implements Serializable
     @JoinColumn( nullable = true, name = "user", referencedColumnName = "id" )
     //moze byc account bez usera - takiego nie śledzimy, ale może mieć tweety
     private UserDao user;
-    @Column( unique = true, nullable = false )
+    @Column( unique = false, nullable = false )
     private String accountName;
     private String accessToken;
     private String accessTokenSecret;

@@ -48,7 +48,7 @@ public class TwitterServiceTest
         userDao2.setPassword("Test");
         TwitterAccountDao twitterAccountDao2 = TwitterAccountDao.create(25,
                                                                         userDao,
-                                                                        "Twitter",
+                                                                        "Twitter2",
                                                                         "1234",
                                                                         "secret1234");
         Set<TwitterAccountDao> accounts2 = new HashSet<>();
