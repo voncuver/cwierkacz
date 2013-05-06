@@ -138,10 +138,12 @@ public class RequestImpl implements
     @SuppressWarnings( "unchecked" )
     public < T extends Request > T buildPublishRequest( String tweetText,
                                                         List<String> accounts,
-                                                        long replayForId ) {
+                                                        long replayForId,
+                                                        long retweetedId ) {
         this.tweetText = tweetText;
         this.accounts = accounts;
         this.replayFor = replayForId;
+        this.retweetFor = retweetedId;
         return (T) this;
     }
 

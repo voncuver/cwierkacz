@@ -2,7 +2,7 @@ package com.pk.cwierkacz.processor.handlers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -101,7 +101,7 @@ public class PublishTweetAccountTest extends PopulateData
         String text = "TEST OF PUBLISH TWEET HANDLER (REPLY) " + new Date().getTime();
         String textWithReplyName = "@" + username + " " + text;
 
-        Request request = RequestImpl.create().buildPublishRequest(text, accounts, tweet.getId());
+        Request request = RequestImpl.create().buildPublishRequest(text, accounts, tweet.getId(), 0);
         appData.setRequest(request);
 
         publishTweetAccount.handle(appData);
@@ -120,7 +120,7 @@ public class PublishTweetAccountTest extends PopulateData
         assertEquals(true, StringUtils.equals(tweets2.get(0).getText(), textWithReplyName));
 
         TweetsResult tweets1a = twitterAccount.getTweetsFromUserTimeline(startDate);
-        TweetsResult tweets2a = twitterAccount2.getTweetsFromMentionsAndUserTimeline(startDate);
+        TweetsResult tweets2a = twitterAccount2.getTweetsFromUserTimeline(startDate);
 
         TweetDao t1 = null;
         TweetDao t2 = null;
@@ -146,8 +146,77 @@ public class PublishTweetAccountTest extends PopulateData
     }
 
     @Test
-    public void addReTweet( ) {
-        fail("Not yet implemented");
-    }
+    public void addReTweet( ) throws TwitterActionException {
 
+        DateTime orig = new DateTime();
+        DateTime origStartDate = orig.minusMillis(orig.getMillisOfSecond());
+
+        String text = "NEW TWEET TEST FOR RETWEETED " + new Date().getTime();
+        TweetDao tweet = twitterAccount.composeNewTweet(text);
+        tweetService.save(tweet);
+
+        DateTime now = new DateTime();
+        DateTime startDate = now.minusMillis(now.getMillisOfSecond());
+
+        ApplicationData appData = new ApplicationData();
+        List<String> accounts = new ArrayList<String>();
+        accounts.add(username);
+        accounts.add(username2);
+
+        Request request = RequestImpl.create().buildPublishRequest(null, accounts, 0, tweet.getId());
+        appData.setRequest(request);
+
+        publishTweetAccount.handle(appData);
+
+        assertNotNull(appData.getResponse());
+        System.out.println("msg: " + appData.getResponse().getMessage());
+        assertEquals(Status.ERROR, appData.getResponse().getStatus());
+        assertTrue(appData.getResponse()
+                          .getMessage()
+                          .contains("fail while add tweet for " +
+                                    twitterAccount.getAccount().getAccountName())); //cannot retweet himself
+
+        assertTrue(!appData.getResponse()
+                           .getMessage()
+                           .contains(twitterAccount2.getAccount().getAccountName()));
+
+        List<TweetDao> tweets1 = tweetService.getActualRetweetsForAccount(twitterAccountDao, tweet, startDate);
+        List<TweetDao> tweets2 = tweetService.getActualRetweetsForAccount(twitterAccountDao2,
+                                                                          tweet,
+                                                                          startDate);
+
+        assertEquals(0, tweets1.size());
+        assertEquals(1, tweets2.size());
+
+        String textWithPrefix = "RT @" + twitterAccount.getAccount().getAccountName() + ": " + text;
+        assertEquals(true, StringUtils.equals(tweets2.get(0).getText(), textWithPrefix));
+
+        TweetsResult tweets2a = twitterAccount2.getTweetsFromMentionsAndUserTimeline(startDate);
+        TweetsResult tweets1b = twitterAccount.getRetweeted(origStartDate);
+        assertEquals(1, tweets1b.size());
+        TweetsResult tweets1a = twitterAccount.getRetweets(tweets1b.getTweets().get(0), startDate);
+
+        TweetDao t1 = null;
+        TweetDao t2 = null;
+
+        for ( TweetDao t : tweets2a.getTweets() ) {
+            if ( StringUtils.equals(t.getText(), textWithPrefix) )
+                t2 = t;
+        }
+
+        for ( TweetDao t : tweets1a.getTweets() ) {
+            if ( StringUtils.equals(t.getText(), textWithPrefix) )
+                t1 = t;
+        }
+
+        assertNotNull(t1);
+        assertNotNull(t2);
+
+        assertEquals(tweet.getId(), t1.getRetweeted().getId());
+        assertEquals(tweet.getId(), t2.getRetweeted().getId());
+
+        TweetDao refreshedMainTweet = tweetService.getTweetById(tweet.getId());
+        assertEquals(1, refreshedMainTweet.getRetweets().size());
+
+    }
 }
