@@ -6,6 +6,7 @@ import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
+import com.pk.cwierkacz.model.dao.SessionDao;
 import com.pk.cwierkacz.model.dao.UserDao;
 
 public class UserService extends AbstractService<UserDao>
@@ -33,6 +34,14 @@ public class UserService extends AbstractService<UserDao>
     public UserDao getByUserName( String name ) {
         Criteria criteria = getCriteria(UserDao.class);
         criteria.add(Restrictions.eq("name", name));
+        UserDao userDao = (UserDao) criteria.uniqueResult();
+        commit();
+        return userDao;
+    }
+
+    public UserDao getBySessionId( SessionDao sessionDao ) {
+        Criteria criteria = getCriteria(UserDao.class);
+        criteria.add(Restrictions.eq("session", sessionDao));
         UserDao userDao = (UserDao) criteria.uniqueResult();
         commit();
         return userDao;

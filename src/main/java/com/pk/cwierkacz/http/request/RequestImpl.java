@@ -50,11 +50,12 @@ public class RequestImpl implements
     //PUBLISHTWEET
     private String tweetText;
 
-    public static RequestImpl create( ) {
+    public static RequestImpl create( Action action ) {
         RequestImpl requestImpl = new RequestImpl();
         requestImpl.timestamp = new Timestamp(new Date().getTime());
+        requestImpl.action = action;
 
-        return new RequestImpl();
+        return requestImpl;
     }
 
     public static RequestImpl create( Request request ) {
@@ -86,8 +87,7 @@ public class RequestImpl implements
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends RequestImpl > T buildBaseRequest( Action action, String userName ) {
-        this.action = action;
+    public < T extends RequestImpl > T buildBaseRequest( String userName ) {
         this.userName = userName;
         return (T) this;
     }

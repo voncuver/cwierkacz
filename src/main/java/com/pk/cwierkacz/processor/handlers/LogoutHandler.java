@@ -29,21 +29,21 @@ public class LogoutHandler implements Handler
     @Override
     public void handle( ApplicationData appData ) {
         LoginRequest loginRequest = (LoginRequest) appData.getRequest();
-        UserDao userDao = userService.getByUserName(loginRequest.getUserName());
+        SessionDao sessionDao = sessionService.getByToken(loginRequest.getTokenId());
+        UserDao userDao = userService.getBySessionId(sessionDao);
 
-        Long tokenRequest = loginRequest.getTokenId();
-        Long sessionToken = userDao.getSession().getCurrentToken();
-        if ( !sessionToken.equals(tokenRequest) ) {
-            appData.setResponse(ResponseImpl.create(Status.DENY, "Wrong token value", tokenRequest));
+        if ( userDao == null ) {
+            appData.setResponse(ResponseImpl.create(Status.DENY,
+                                                    "Wrong token value",
+                                                    loginRequest.getTokenId()));
             return;
         }
 
-        SessionDao sessionDao = userDao.getSession();
         userDao.setSession(null);
         userService.saveOrUpdate(userDao);
         sessionService.deleteSession(sessionDao);
 
-        appData.setResponse(ResponseImpl.create(Status.OK, "Logout success", tokenRequest));
+        appData.setResponse(ResponseImpl.create(Status.OK, "Logout success", loginRequest.getTokenId()));
     }
 
 }

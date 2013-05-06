@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.request.RequestImpl;
@@ -95,7 +96,10 @@ public class FetchTweetsHandlerTest extends PopulateData
         accounts.add(username);
         accounts.add(username2);
 
-        Request request = RequestImpl.create().buildFetchRequest(accounts, 10, startDate, -1);
+        Request request = RequestImpl.create(Action.FETCHTWEETS).buildFetchRequest(accounts,
+                                                                                   10,
+                                                                                   startDate,
+                                                                                   -1);
         appData.setRequest(request);
 
         fetchTweetsHandler.handle(appData);
@@ -166,7 +170,10 @@ public class FetchTweetsHandlerTest extends PopulateData
         List<String> accounts = new ArrayList<String>();
         accounts.add(username);
 
-        Request request = RequestImpl.create().buildFetchRequest(accounts, -1, startDate, mainTweet.getId());
+        Request request = RequestImpl.create(Action.FETCHTWEETS).buildFetchRequest(accounts,
+                                                                                   -1,
+                                                                                   startDate,
+                                                                                   mainTweet.getId());
         appData.setRequest(request);
 
         fetchTweetsHandler.handle(appData);

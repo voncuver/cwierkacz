@@ -26,19 +26,20 @@ public class WireTweetAccountTest
     @Test
     public void complexTest( ) {
         ApplicationData appData = new ApplicationData();
-        Request request = RequestImpl.create().buildBaseRequest(Action.ADDACCOUNT, "test");
+        Request request = RequestImpl.create(Action.ADDACCOUNT).buildBaseRequest("test");
 
         LoginRequest loginRequest = RequestImpl.create(request).buildLoginRequest("Test");
         appData.setRequest(loginRequest);
         accountHandler.handle(appData);
 
-        Request request2 = RequestImpl.create().buildBaseRequest(Action.SIGNIN, "test");
+        Request request2 = RequestImpl.create(Action.SIGNIN).buildBaseRequest("test");
         LoginRequest loginRequest2 = RequestImpl.create(request2).buildLoginRequest("Test");
         appData.setRequest(loginRequest2);
         loginHandler.handle(appData);
 
-        RequestImpl request3 = RequestImpl.create().withTokenId(appData.getResponse().getTokenId());
-        Request request4 = request3.buildBaseRequest(Action.ADDTWEETACCOUNT, "test");
+        RequestImpl request3 = RequestImpl.create(Action.ADDTWEETACCOUNT).withTokenId(appData.getResponse()
+                                                                                             .getTokenId());
+        Request request4 = request3.buildBaseRequest("test");
         AddTweeterAccountRequest accRequest = RequestImpl.create(request4)
                                                          .buildAddAccountTweetRequest("msierpien")
                                                          .withPasswordTweet("Kinia12");

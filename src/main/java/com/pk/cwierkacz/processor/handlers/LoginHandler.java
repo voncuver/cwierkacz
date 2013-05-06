@@ -60,8 +60,7 @@ public class LoginHandler implements Handler
         if ( user.getSession() != null ) {
             appData.setResponse(ResponseImpl.create(Status.OK,
                                                     "Authenticated correct",
-                                                    user.getSession().getCurrentToken())
-                                            .buildLoginResponse(accounts));
+                                                    user.getSession().getCurrentToken()));
             return;
         }
 
@@ -72,10 +71,8 @@ public class LoginHandler implements Handler
 
         userService.saveOrUpdate(user);
 
-        appData.setResponse(ResponseImpl.create(Status.OK,
-                                                "Authenticated correct",
-                                                user.getSession().getCurrentToken())
-                                        .buildLoginResponse(accounts));
+        appData.setResponse(ResponseImpl.create(Status.OK, "Authenticated correct", user.getSession()
+                                                                                        .getCurrentToken()));
         return;
 
     }

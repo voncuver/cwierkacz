@@ -38,4 +38,12 @@ public class SessionService extends AbstractService<SessionDao>
         session.getTransaction().commit();
     }
 
+    public SessionDao getByToken( Long token ) {
+        Criteria criteria = getCriteria(SessionDao.class);
+        criteria.add(Restrictions.eq("currentToken", token));
+        SessionDao sessionDao = (SessionDao) criteria.uniqueResult();
+        commit();
+        return sessionDao;
+    }
+
 }
