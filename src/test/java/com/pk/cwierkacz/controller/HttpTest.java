@@ -30,7 +30,8 @@ public class HttpTest
         HttpContext context = new BasicHttpContext();
 
         HttpPost[] requests = new HttpPost[] {new HttpPost("http://localhost:8080/cwierkacz-0.0.1-SNAPSHOT/welcom.do?action=ADDACCOUNT&username=test&password=test"),
-                                              new HttpPost("http://localhost:8080/cwierkacz-0.0.1-SNAPSHOT/welcom.do?action=SIGNIN&username=test&password=test")};
+                                              new HttpPost("http://localhost:8080/cwierkacz-0.0.1-SNAPSHOT/welcom.do?action=SIGNIN&username=test&password=test"),
+                                              new HttpPost("http://localhost:8080/cwierkacz-0.0.1-SNAPSHOT/welcom.do?action=SIGNOUT")};
 
         for ( HttpPost request : requests ) {
             HttpResponse response = client.execute(request, context);
