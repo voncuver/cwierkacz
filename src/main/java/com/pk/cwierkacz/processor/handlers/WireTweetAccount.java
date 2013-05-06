@@ -15,9 +15,11 @@ import com.pk.cwierkacz.http.request.AddTweeterAccountRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.model.ApplicationData;
+import com.pk.cwierkacz.model.dao.SessionDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.dao.UserDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
+import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.UserService;
 import com.pk.cwierkacz.processor.handlers.halpers.HttpClient;
 import com.pk.cwierkacz.twitter.OAuthAuthentication;
@@ -27,11 +29,13 @@ public class WireTweetAccount implements Handler
 {
 
     private final UserService userService;
+    private final SessionService sessionService;
 
     private final HttpClient httpClient;
 
     public WireTweetAccount() {
         userService = ServiceRepo.getInstance().getService(UserService.class);
+        sessionService = ServiceRepo.getInstance().getService(SessionService.class);
         httpClient = new HttpClient();
     }
 
@@ -46,7 +50,8 @@ public class WireTweetAccount implements Handler
     public void handle( ApplicationData appData ) {
         AddTweeterAccountRequest accRequest = (AddTweeterAccountRequest) appData.getRequest();
 
-        UserDao user = userService.getByUserName(accRequest.getUserName());
+        SessionDao sessionDao = sessionService.getByToken(accRequest.getTokenId());
+        UserDao user = userService.getBySessionId(sessionDao);
         if ( user != null && user.getSession().getCurrentToken() != accRequest.getTokenId() ) {
             Response response = ResponseImpl.create(Status.DENY, "Invalid Token", accRequest.getTokenId());
             appData.setResponse(response);
@@ -65,11 +70,7 @@ public class WireTweetAccount implements Handler
             return;
         }
 
-        TwitterAccountDao account = TwitterAccountDao.create(0,
-                                                             user,
-                                                             accRequest.getLoginTweet(),
-                                                             null,
-                                                             null);
+        TwitterAccountDao account = TwitterAccountDao.create(0, user, accRequest.getLoginTweet(), null, null);
         account.setId(1l);
         OAuthAuthentication userAuthentication = null;
         if ( map.containsKey(accRequest.getTokenId()) ) {
