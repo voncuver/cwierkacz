@@ -41,89 +41,89 @@ public class FetchTweetsHandlerTest extends PopulateData
         populateUserAndAccount();
     }
 
-    /* @Test
-     public void fetchTweetForAccounts( ) throws TwitterActionException, InterruptedException {
-         DateTime now = new DateTime();
-         DateTime startDate = now.minusMillis(now.getMillisOfSecond());
-         List<TweetDao> tweets = new ArrayList<TweetDao>();
-         for ( int i = 0; i < 2; i++ ) {
-             System.out.println("adding tweet ......");
-             TweetDao t1 = twitterAccount.composeNewTweet("FetchTweetsHandlerTest Tweet " +
+    @Test
+    public void fetchTweetForAccounts( ) throws TwitterActionException, InterruptedException {
+        DateTime now = new DateTime();
+        DateTime startDate = now.minusMillis(now.getMillisOfSecond());
+        List<TweetDao> tweets = new ArrayList<TweetDao>();
+        for ( int i = 0; i < 2; i++ ) {
+            System.out.println("adding tweet ......");
+            TweetDao t1 = twitterAccount.composeNewTweet("FetchTweetsHandlerTest Tweet " +
+                                                         new Date().getTime());
+            Thread.sleep(1000);
+            System.out.println("adding tweet ......");
+            TweetDao t2 = twitterAccount2.composeNewTweet("FetchTweetsHandlerTest Tweet " +
                                                           new Date().getTime());
-             Thread.sleep(1000);
-             System.out.println("adding tweet ......");
-             TweetDao t2 = twitterAccount2.composeNewTweet("FetchTweetsHandlerTest Tweet " +
-                                                           new Date().getTime());
-             Thread.sleep(1000);
-             System.out.println("adding tweet ......");
-             TweetDao t3 = twitterAccount2.composeNewReplyTweet("FetchTweetsHandlerTest Tweet " +
-                                                                        new Date().getTime(),
-                                                                t1);
-
-             Thread.sleep(1000);
-
-             tweetService.save(t1);
-             tweetService.save(t2);
-             tweetService.save(t3);
-             tweets.add(t1);
-             tweets.add(t2);
-             tweets.add(t3);
-         }
-
-         for ( int i = 0; i < 2; i++ ) {
-             System.out.println("adding tweet ......");
-             TweetDao t1 = twitterAccount.composeNewTweet("FetchTweetsHandlerTest Tweet " +
-                                                          new Date().getTime());
-             Thread.sleep(1000);
-             System.out.println("adding tweet ......");
-             TweetDao t2 = twitterAccount2.composeNewTweet("FetchTweetsHandlerTest Tweet " +
-                                                           new Date().getTime());
-             Thread.sleep(1000);
-             System.out.println("adding tweet ......");
-             TweetDao t3 = twitterAccount.composeNewReplyTweet("FetchTweetsHandlerTest Tweet " +
+            Thread.sleep(1000);
+            System.out.println("adding tweet ......");
+            TweetDao t3 = twitterAccount2.composeNewReplyTweet("FetchTweetsHandlerTest Tweet " +
                                                                        new Date().getTime(),
-                                                               t2);
+                                                               t1);
 
-             Thread.sleep(1000);
-             tweets.add(t1);
-             tweets.add(t2);
-             tweets.add(t3);
-         }
+            Thread.sleep(1000);
 
-         ApplicationData appData = new ApplicationData();
-         List<String> accounts = new ArrayList<String>();
-         accounts.add(username);
-         accounts.add(username2);
+            tweetService.save(t1);
+            tweetService.save(t2);
+            tweetService.save(t3);
+            tweets.add(t1);
+            tweets.add(t2);
+            tweets.add(t3);
+        }
 
-         Request request = RequestImpl.create(Action.FETCHTWEETS).buildFetchRequest(accounts,
-                                                                                    10,
-                                                                                    startDate,
-                                                                                    -1,
-                                                                                    -1);
-         appData.setRequest(request);
+        for ( int i = 0; i < 2; i++ ) {
+            System.out.println("adding tweet ......");
+            TweetDao t1 = twitterAccount.composeNewTweet("FetchTweetsHandlerTest Tweet " +
+                                                         new Date().getTime());
+            Thread.sleep(1000);
+            System.out.println("adding tweet ......");
+            TweetDao t2 = twitterAccount2.composeNewTweet("FetchTweetsHandlerTest Tweet " +
+                                                          new Date().getTime());
+            Thread.sleep(1000);
+            System.out.println("adding tweet ......");
+            TweetDao t3 = twitterAccount.composeNewReplyTweet("FetchTweetsHandlerTest Tweet " +
+                                                                      new Date().getTime(),
+                                                              t2);
 
-         fetchTweetsHandler.handle(appData);
+            Thread.sleep(1000);
+            tweets.add(t1);
+            tweets.add(t2);
+            tweets.add(t3);
+        }
 
-         assertNotNull(appData.getResponse());
-         System.out.println("msg: " + appData.getResponse().getMessage());
-         assertEquals(Status.OK, appData.getResponse().getStatus());
-         FetchTweetsResponse response = (FetchTweetsResponse) appData.getResponse();
+        ApplicationData appData = new ApplicationData();
+        List<String> accounts = new ArrayList<String>();
+        accounts.add(username);
+        accounts.add(username2);
 
-         assertEquals(2, response.getUsersTweeter().size());
-         assertTrue(response.getUsersTweeter().containsKey(twitterAccountDao.getId()));
-         assertTrue(response.getUsersTweeter().containsKey(twitterAccountDao2.getId()));
-         assertTrue(response.getUsersTweeter().containsValue(twitterAccountDao.getAccountName()));
-         assertTrue(response.getUsersTweeter().containsValue(twitterAccountDao2.getAccountName()));
+        Request request = RequestImpl.create(Action.FETCHTWEETS).buildFetchRequest(accounts,
+                                                                                   10,
+                                                                                   startDate,
+                                                                                   -1,
+                                                                                   -1);
+        appData.setRequest(request);
 
-         assertEquals(10, response.getTweets().size());
+        fetchTweetsHandler.handle(appData);
 
-         for ( int i = 0; i < 10; i++ ) {
-             assertEquals(tweets.get(11 - i), response.getTweets().get(i));
-         }
+        assertNotNull(appData.getResponse());
+        System.out.println("msg: " + appData.getResponse().getMessage());
+        assertEquals(Status.OK, appData.getResponse().getStatus());
+        FetchTweetsResponse response = (FetchTweetsResponse) appData.getResponse();
 
-     }*/
+        assertEquals(2, response.getUsersTweeter().size());
+        assertTrue(response.getUsersTweeter().containsKey(twitterAccountDao.getId()));
+        assertTrue(response.getUsersTweeter().containsKey(twitterAccountDao2.getId()));
+        assertTrue(response.getUsersTweeter().containsValue(twitterAccountDao.getAccountName()));
+        assertTrue(response.getUsersTweeter().containsValue(twitterAccountDao2.getAccountName()));
 
-    /*@Test
+        assertEquals(10, response.getTweets().size());
+
+        for ( int i = 0; i < 10; i++ ) {
+            assertEquals(tweets.get(11 - i), response.getTweets().get(i));
+        }
+
+    }
+
+    @Test
     public void fetchReplyTweetForAccounts( ) throws TwitterActionException, InterruptedException {
         DateTime now = new DateTime();
         DateTime startDate = now.minusMillis(now.getMillisOfSecond());
@@ -197,7 +197,7 @@ public class FetchTweetsHandlerTest extends PopulateData
         for ( int i = 0; i < 8; i++ ) {
             assertEquals(tweets.get(7 - i), response.getTweets().get(i));
         }
-    }*/
+    }
 
     @Test
     public void fetchRewteetsForAccounts( ) throws TwitterActionException, InterruptedException {
