@@ -13,10 +13,12 @@ import com.pk.cwierkacz.processor.handlers.CreateAccountHandler;
 import com.pk.cwierkacz.processor.handlers.DeleteAccountHandler;
 import com.pk.cwierkacz.processor.handlers.FetchTweetsHandler;
 import com.pk.cwierkacz.processor.handlers.Handler;
+import com.pk.cwierkacz.processor.handlers.ListTweetAccounts;
 import com.pk.cwierkacz.processor.handlers.LoginHandler;
 import com.pk.cwierkacz.processor.handlers.LogoutHandler;
 import com.pk.cwierkacz.processor.handlers.ModifyAccountHandler;
 import com.pk.cwierkacz.processor.handlers.PublishTweetAccount;
+import com.pk.cwierkacz.processor.handlers.UnwireTweetAcocunt;
 import com.pk.cwierkacz.processor.handlers.WireTweetAccount;
 
 public class MainProcessor
@@ -33,6 +35,8 @@ public class MainProcessor
         handlers.add(new LogoutHandler());
         handlers.add(new PublishTweetAccount());
         handlers.add(new WireTweetAccount());
+        handlers.add(new UnwireTweetAcocunt());
+        handlers.add(new ListTweetAccounts());
 
         chainProcessor = new ChainProcessor(handlers);
     }

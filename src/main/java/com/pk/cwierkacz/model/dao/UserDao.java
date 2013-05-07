@@ -27,8 +27,6 @@ public class UserDao implements Serializable
      */
     private static final long serialVersionUID = 5884676710697619214L;
 
-    //TODO 2: szyfrowanie password - na poziomie handlera raczej
-
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Long id;
