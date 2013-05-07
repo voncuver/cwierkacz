@@ -81,7 +81,7 @@ public class PublishTweetAccount implements Handler
                     else {
                         newTweet = account.composeNewTweet(publishRequest.getTweetText());
                     }
-
+                    newTweet.setCreator(accountDao);
                     if ( !errors )
                         tweetService.save(newTweet);
 
