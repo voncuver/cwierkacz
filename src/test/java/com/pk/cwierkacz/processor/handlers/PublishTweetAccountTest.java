@@ -60,8 +60,14 @@ public class PublishTweetAccountTest extends PopulateData
         System.out.println("msg: " + appData.getResponse().getMessage());
         assertEquals(Status.OK, appData.getResponse().getStatus());
 
-        List<TweetDao> tweets1 = tweetService.getActualTweetForAccount(twitterAccountDao, startDate);
-        List<TweetDao> tweets2 = tweetService.getActualTweetForAccount(twitterAccountDao2, startDate);
+        List<TweetDao> tweets1 = tweetService.getActualTweetForAccount(twitterAccountDao,
+                                                                       startDate,
+                                                                       null,
+                                                                       null);
+        List<TweetDao> tweets2 = tweetService.getActualTweetForAccount(twitterAccountDao2,
+                                                                       startDate,
+                                                                       null,
+                                                                       null);
 
         assertEquals(1, tweets1.size());
         assertEquals(1, tweets2.size());
@@ -114,14 +120,12 @@ public class PublishTweetAccountTest extends PopulateData
         System.out.println("msg: " + appData.getResponse().getMessage());
         assertEquals(Status.OK, appData.getResponse().getStatus());
 
-        List<TweetDao> tweets1 = tweetService.getActualRepliesForAccount(twitterAccountDao, tweet, startDate);
-        List<TweetDao> tweets2 = tweetService.getActualRepliesForAccount(twitterAccountDao2, tweet, startDate);
+        List<TweetDao> tweets1 = tweetService.getActualReplies(tweet);
 
-        assertEquals(1, tweets1.size());
-        assertEquals(1, tweets2.size());
+        assertEquals(2, tweets1.size());
 
         assertEquals(true, StringUtils.equals(tweets1.get(0).getText(), textWithReplyName));
-        assertEquals(true, StringUtils.equals(tweets2.get(0).getText(), textWithReplyName));
+        assertEquals(true, StringUtils.equals(tweets1.get(1).getText(), textWithReplyName));
 
         TweetsResult tweets1a = twitterAccount.getTweetsFromUserTimeline(startDate);
         TweetsResult tweets2a = twitterAccount2.getTweetsFromUserTimeline(startDate);
@@ -187,16 +191,12 @@ public class PublishTweetAccountTest extends PopulateData
                            .getMessage()
                            .contains(twitterAccount2.getAccount().getAccountName()));
 
-        List<TweetDao> tweets1 = tweetService.getActualRetweetsForAccount(twitterAccountDao, tweet, startDate);
-        List<TweetDao> tweets2 = tweetService.getActualRetweetsForAccount(twitterAccountDao2,
-                                                                          tweet,
-                                                                          startDate);
+        List<TweetDao> tweets1 = tweetService.getActualRetweets(tweet);
 
-        assertEquals(0, tweets1.size());
-        assertEquals(1, tweets2.size());
+        assertEquals(1, tweets1.size());
 
         String textWithPrefix = "RT @" + twitterAccount.getAccount().getAccountName() + ": " + text;
-        assertEquals(true, StringUtils.equals(tweets2.get(0).getText(), textWithPrefix));
+        assertEquals(true, StringUtils.equals(tweets1.get(0).getText(), textWithPrefix));
 
         TweetsResult tweets2a = twitterAccount2.getTweetsFromMentionsAndUserTimeline(startDate);
         TweetsResult tweets1b = twitterAccount.getRetweeted(origStartDate);

@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
+import com.pk.cwierkacz.model.dao.UserDao;
 
 public class TwitterAccountService extends AbstractService<TwitterAccountDao>
 {
@@ -53,5 +54,27 @@ public class TwitterAccountService extends AbstractService<TwitterAccountDao>
         TwitterAccountDao result = (TwitterAccountDao) criteria.uniqueResult();
         commit();
         return result;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public List<TwitterAccountDao> getAccountsForUser( UserDao user ) {
+        Criteria criteria = getCriteria(TwitterAccountDao.class);
+        criteria.add(Restrictions.eq("user", user));
+        List<TwitterAccountDao> result = criteria.list();
+        commit();
+        return result;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public TwitterAccountDao getSampleAccountForUser( UserDao user ) {
+        Criteria criteria = getCriteria(TwitterAccountDao.class);
+        criteria.add(Restrictions.eq("user", user));
+        criteria.setMaxResults(1);
+        List<TwitterAccountDao> result = criteria.list();
+        commit();
+        if ( result.size() > 0 )
+            return result.get(0);
+        else
+            return null;
     }
 }

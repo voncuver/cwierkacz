@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -31,6 +32,7 @@ public class UserDao implements Serializable
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Long id;
 
+    @Column( unique = false, nullable = false )
     private String name;
 
     private String password;
@@ -54,6 +56,7 @@ public class UserDao implements Serializable
         this.id = id;
     }
 
+    @Column( unique = false, nullable = false )
     public String getName( ) {
         return name;
     }

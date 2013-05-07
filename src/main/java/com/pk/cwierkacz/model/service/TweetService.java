@@ -50,64 +50,71 @@ public class TweetService extends AbstractService<TweetDao>
     }
 
     public TweetDao getLastActualTweetForAccount( TwitterAccountDao account, DateTime since ) {
-        List<TweetDao> t = getActualTweetForAccount(account, since, 1);
+        List<TweetDao> t = getActualTweetForAccount(account, null, null, 1);
         if ( t.size() >= 1 )
             return t.get(0);
         else
             return null;
-    }
-
-    public List<TweetDao> getActualTweetForAccount( TwitterAccountDao account, DateTime since ) {
-        return getActualTweetForAccount(account, since, null);
     }
 
     @SuppressWarnings( "unchecked" )
     public List<TweetDao> getActualTweetForAccount( TwitterAccountDao account,
                                                     DateTime since,
+                                                    DateTime to,
                                                     Integer maxResult ) {
         Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("creator", account))
-                                                       .add(Restrictions.ge("cratedDate", since))
                                                        .add(Restrictions.eq("isDeleted", false))
                                                        .addOrder(Order.desc("cratedDate"));
 
         if ( maxResult != null && maxResult > 0 )
             criteria = criteria.setMaxResults(maxResult);
-        ;
+
+        if ( since != null )
+            criteria = criteria.add(Restrictions.ge("cratedDate", since));
+
+        if ( to != null )
+            criteria = criteria.add(Restrictions.ge("cratedDate", to));
+
         List<TweetDao> result = criteria.list();
         commit();
         return result;
-    }
-
-    public List<TweetDao> getActualTweetForAccounts( List<TwitterAccountDao> accounts, DateTime since ) {
-        return getActualTweetForAccounts(accounts, since, null);
     }
 
     @SuppressWarnings( "unchecked" )
     public List<TweetDao> getActualTweetForAccounts( List<TwitterAccountDao> accounts,
                                                      DateTime since,
+                                                     DateTime to,
                                                      Integer maxResult ) {
         Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.in("creator", accounts))
-                                                       .add(Restrictions.ge("cratedDate", since))
                                                        .add(Restrictions.eq("isDeleted", false))
                                                        .addOrder(Order.desc("cratedDate"));
-        ;
+
         if ( maxResult != null && maxResult > 0 )
             criteria = criteria.setMaxResults(maxResult);
+        if ( since != null )
+            criteria = criteria.add(Restrictions.ge("cratedDate", since));
+
+        if ( to != null )
+            criteria = criteria.add(Restrictions.ge("cratedDate", to));
+
         List<TweetDao> result = criteria.list();
         commit();
         return result;
     }
 
-    public List<TweetDao> getActualRepliesForAccount( TwitterAccountDao account,
-                                                      TweetDao inReplyTo,
-                                                      DateTime since ) {
-        return getActualRepliesForAccount(account, inReplyTo, since, null);
+    @SuppressWarnings( "unchecked" )
+    public List<TweetDao> getActualRetweets( TweetDao retweeted ) {
+        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("retweeted", retweeted))
+                                                       .add(Restrictions.eq("isDeleted", false))
+                                                       .addOrder(Order.desc("cratedDate"));
+
+        List<TweetDao> result = criteria.list();
+        commit();
+        return result;
     }
 
-    public TweetDao getLastActualRepliesForAccount( TwitterAccountDao account,
-                                                    TweetDao inReplyTo,
-                                                    DateTime since ) {
-        List<TweetDao> t = getActualRepliesForAccount(account, inReplyTo, since, 1);
+    public TweetDao getLastActualReplies( TweetDao inReplyTo ) {
+        List<TweetDao> t = getActualReplies(inReplyTo);
         if ( t.size() >= 1 )
             return t.get(0);
         else
@@ -115,96 +122,11 @@ public class TweetService extends AbstractService<TweetDao>
     }
 
     @SuppressWarnings( "unchecked" )
-    public List<TweetDao> getActualRepliesForAccount( TwitterAccountDao account,
-                                                      TweetDao inReplyTo,
-                                                      DateTime since,
-                                                      Integer maxResult ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("creator", account))
-                                                       .add(Restrictions.eq("inReplyTo", inReplyTo))
-                                                       .add(Restrictions.ge("cratedDate", since))
+    public List<TweetDao> getActualReplies( TweetDao inReplyTo ) {
+        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("inReplyTo", inReplyTo))
                                                        .add(Restrictions.eq("isDeleted", false))
                                                        .addOrder(Order.desc("cratedDate"));
-        if ( maxResult != null && maxResult > 0 )
-            criteria = criteria.setMaxResults(maxResult);
-        List<TweetDao> result = criteria.list();
-        commit();
-        return result;
-    }
 
-    public List<TweetDao> getActualRepliesForAccounts( List<TwitterAccountDao> accounts,
-                                                       TweetDao inReplyTo,
-                                                       DateTime since ) {
-        return getActualRepliesForAccounts(accounts, inReplyTo, since, null);
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public List<TweetDao> getActualRepliesForAccounts( List<TwitterAccountDao> accounts,
-                                                       TweetDao inReplyTo,
-                                                       DateTime since,
-                                                       Integer maxResult ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.in("creator", accounts))
-                                                       .add(Restrictions.eq("inReplyTo", inReplyTo))
-                                                       .add(Restrictions.ge("cratedDate", since))
-                                                       .add(Restrictions.eq("isDeleted", false))
-                                                       .addOrder(Order.desc("cratedDate"));
-        if ( maxResult != null && maxResult > 0 )
-            criteria = criteria.setMaxResults(maxResult);
-        List<TweetDao> result = criteria.list();
-        commit();
-        return result;
-    }
-
-    public List<TweetDao> getActualRetweetsForAccount( TwitterAccountDao account,
-                                                       TweetDao retweeted,
-                                                       DateTime since ) {
-        return getActualRetweetsForAccount(account, retweeted, since, null);
-    }
-
-    public TweetDao getLastActualRetweetForAccount( TwitterAccountDao account,
-                                                    TweetDao retweeted,
-                                                    DateTime since ) {
-        List<TweetDao> t = getActualRetweetsForAccount(account, retweeted, since, 1);
-        if ( t.size() >= 1 )
-            return t.get(0);
-        else
-            return null;
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public List<TweetDao> getActualRetweetsForAccount( TwitterAccountDao account,
-                                                       TweetDao retweeted,
-                                                       DateTime since,
-                                                       Integer maxResult ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("creator", account))
-                                                       .add(Restrictions.eq("retweeted", retweeted))
-                                                       .add(Restrictions.ge("cratedDate", since))
-                                                       .add(Restrictions.eq("isDeleted", false))
-                                                       .addOrder(Order.desc("cratedDate"));
-        if ( maxResult != null && maxResult > 0 )
-            criteria = criteria.setMaxResults(maxResult);
-        List<TweetDao> result = criteria.list();
-        commit();
-        return result;
-    }
-
-    public List<TweetDao> getActualRetweetsForAccount( List<TwitterAccountDao> accounts,
-                                                       TweetDao retweeted,
-                                                       DateTime since ) {
-        return getActualRetweetsForAccount(accounts, retweeted, since, null);
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public List<TweetDao> getActualRetweetsForAccount( List<TwitterAccountDao> accounts,
-                                                       TweetDao retweeted,
-                                                       DateTime since,
-                                                       Integer maxResult ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.in("creator", accounts))
-                                                       .add(Restrictions.eq("retweeted", retweeted))
-                                                       .add(Restrictions.ge("cratedDate", since))
-                                                       .add(Restrictions.eq("isDeleted", false))
-                                                       .addOrder(Order.desc("cratedDate"));
-        if ( maxResult != null && maxResult > 0 )
-            criteria = criteria.setMaxResults(maxResult);
         List<TweetDao> result = criteria.list();
         commit();
         return result;

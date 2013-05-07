@@ -58,6 +58,12 @@ public class RequestImpl implements
         return requestImpl;
     }
 
+    public static RequestImpl create( Action action, long tokenId ) {
+        RequestImpl r = create(action);
+        r.tokenId = tokenId;
+        return r;
+    }
+
     public static RequestImpl create( Request request ) {
         RequestImpl impl = (RequestImpl) request;
 
@@ -163,11 +169,13 @@ public class RequestImpl implements
     public < T extends Request > T buildFetchRequest( List<String> accounts,
                                                       int size,
                                                       DateTime dateFrom,
-                                                      long replayForId ) {
+                                                      long replayForId,
+                                                      long retweetedId ) {
         this.accounts = accounts;
         this.size = size;
         this.dateFrom = dateFrom;
         this.replayFor = replayForId;
+        this.retweetFor = retweetedId;
         return (T) this;
     }
 

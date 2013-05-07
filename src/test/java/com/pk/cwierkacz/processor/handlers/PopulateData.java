@@ -24,6 +24,8 @@ abstract public class PopulateData
     protected final String username2 = "cwierkacz13";
     protected final String sysUsername = "cwierkacz";
 
+    protected final long token = 32453534543L;
+
     protected TwitterAccountDao twitterAccountDao;
     protected TwitterAccountDao twitterAccountDao2;
     protected TwitterAccount twitterAccount;
@@ -47,7 +49,7 @@ abstract public class PopulateData
         if ( userDao == null ) {
             SessionDao session = new SessionDao();
             session.setLastActive(new Timestamp(new Date().getTime()));
-            session.setCurrentToken(34534534534L);
+            session.setCurrentToken(token);
             sessionService.save(session);
 
             UserDao user = new UserDao();

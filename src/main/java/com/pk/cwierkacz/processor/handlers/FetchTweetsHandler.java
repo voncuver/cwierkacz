@@ -15,11 +15,15 @@ import com.pk.cwierkacz.http.request.FetchTweetsRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.model.ApplicationData;
+import com.pk.cwierkacz.model.dao.SessionDao;
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
+import com.pk.cwierkacz.model.dao.UserDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
+import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
+import com.pk.cwierkacz.model.service.UserService;
 import com.pk.cwierkacz.twitter.TweetsResult;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
@@ -34,9 +38,15 @@ public class FetchTweetsHandler implements Handler
 
     private final TwitterAccountService accountService;
 
+    private final UserService userService;
+
+    private final SessionService sessionService;
+
     public FetchTweetsHandler() {
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
+        this.userService = ServiceRepo.getInstance().getService(UserService.class);
+        this.sessionService = ServiceRepo.getInstance().getService(SessionService.class);
     }
 
     @Override
@@ -46,24 +56,86 @@ public class FetchTweetsHandler implements Handler
 
     @Override
     public void handle( ApplicationData appData ) {
-
         //TODO może lepiej przechowywać odpowiedz jak mape list?
         FetchTweetsRequest fetchRequest = (FetchTweetsRequest) appData.getRequest();
-        Map<Long, String> users = new HashMap<Long, String>();
         List<TwitterAccountDao> acs = new ArrayList<TwitterAccountDao>();
 
         StringBuilder errorBuilder = new StringBuilder();
         //Map<TwitterAccountDao, List<TweetDao>> groupedTweets = new HashMap<TwitterAccountDao, List<TweetDao>>();
         List<TweetDao> mergedTweets = new ArrayList<TweetDao>();
         try {
-            TweetDao replyTweet = null;
+            //moze walidacja tego ze nie moze byc account i replay na przykład
             if ( fetchRequest.getReplayFor() > 0 ) {
-                replyTweet = tweetService.getTweetById(fetchRequest.getReplayFor());
+                TweetDao replyTweet = tweetService.getTweetById(fetchRequest.getReplayFor());
+                if ( replyTweet == null ) {
+                    errorBuilder.append("not found tweet which was supposed to be replied; ");
+                }
+                else {
+                    SessionDao sessionDao = sessionService.getByToken(fetchRequest.getTokenId());
+                    UserDao user = userService.getBySessionId(sessionDao);
+                    List<TwitterAccountDao> accountsDao = accountService.getAccountsForUser(user);
+                    for ( TwitterAccountDao accountDao : accountsDao ) {
+                        TweetDao last = tweetService.getLastActualReplies(replyTweet);
+                        if ( last == null )
+                            last = replyTweet;
+                        try {
+                            TwitterAccount account;
+                            account = TwitterAccountMap.getTwitterAccount(accountDao);
+                            TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
+                            for ( TweetDao tweet : result.getReadyTweets() ) {
+                                tweetService.save(tweet);
+                            }
+                            for ( TweetDao tweet : result.fulfilledNoReady() ) {
+                                tweetService.save(tweet);
+                            }
+
+                        }
+                        catch ( TwitterAuthenticationException e ) {
+                            LOGGER.error(e.getMessage());
+                            errorBuilder.append("fail while authenticate for " +
+                                                accountDao.getAccountName() +
+                                                " ; ");
+                        }
+                        catch ( TwitterActionException e ) {
+                            LOGGER.error(e.getMessage());
+                            errorBuilder.append("propably not all tweets are fetched for " +
+                                                accountDao.getAccountName() +
+                                                " ; ");
+                        }
+                    }
+                    mergedTweets = tweetService.getActualReplies(replyTweet);
+                    mergedTweets.add(replyTweet);
+                }
             }
-            if ( fetchRequest.getReplayFor() > 0 && replyTweet == null ) {
-                errorBuilder.append("cannot find in reply to tweet ; ");
+            else if ( fetchRequest.getRetweetFor() > 0 ) {
+                TweetDao retweeted = tweetService.getTweetById(fetchRequest.getRetweetFor());
+                if ( retweeted == null ) {
+                    errorBuilder.append("not found was supposed to be retweeted; ");
+                }
+                else {
+                    SessionDao sessionDao = sessionService.getByToken(fetchRequest.getTokenId());
+                    UserDao user = userService.getBySessionId(sessionDao);
+                    TwitterAccountDao accountDao = accountService.getSampleAccountForUser(user);
+                    if ( accountDao == null ) {
+                        errorBuilder.append("user haven't accounts : ");
+                    }
+                    else {
+                        TwitterAccount account;
+                        account = TwitterAccountMap.getTwitterAccount(accountDao);
+                        TweetsResult result = account.getRetweets(retweeted);
+                        for ( TweetDao tweet : result.getReadyTweets() ) {
+                            tweetService.save(tweet);
+                        }
+                        for ( TweetDao tweet : result.fulfilledNoReady() ) {
+                            tweetService.save(tweet);
+                        }
+
+                        mergedTweets = tweetService.getActualRetweets(retweeted);
+                        mergedTweets.add(retweeted);
+                    }
+                }
             }
-            else {
+            else if ( fetchRequest.getAccounts().size() > 0 ) {
                 for ( String accountName : fetchRequest.getAccounts() ) { //tranzakcyjność per jedno konto - a może inaczej?
                     try {
                         TwitterAccountDao accountDao = accountService.getAccountByName(accountName);
@@ -71,22 +143,11 @@ public class FetchTweetsHandler implements Handler
                         if ( accountDao == null )
                             errorBuilder.append("cannot find account name " + accountName + " : ");
                         else {
-                            TwitterAccount account;
-
-                            TweetDao last = null;
-
-                            if ( replyTweet != null ) {
-                                last = tweetService.getLastActualRepliesForAccount(accountDao,
-                                                                                   replyTweet,
-                                                                                   fetchRequest.getDateFrom());
-                            }
-                            else {
-                                last = tweetService.getLastActualTweetForAccount(accountDao,
-                                                                                 fetchRequest.getDateFrom());
-                            }
-
+                            TweetDao last = tweetService.getLastActualTweetForAccount(accountDao,
+                                                                                      fetchRequest.getDateFrom());
                             if ( last != null ) {
                                 try {
+                                    TwitterAccount account;
                                     account = TwitterAccountMap.getTwitterAccount(accountDao);
                                     TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
                                     for ( TweetDao tweet : result.getReadyTweets() ) {
@@ -110,8 +171,7 @@ public class FetchTweetsHandler implements Handler
                             }
 
                             //groupedTweets if used
-                            users.put(accountDao.getId(), accountDao.getAccountName());
-                            acs.add(accountDao);
+                            acs.add(accountDao); //TODO
 
                         }
                     }
@@ -120,23 +180,21 @@ public class FetchTweetsHandler implements Handler
                         errorBuilder.append("internal error for " + accountName + " ; ");
                     }
                 }
-
-            }
-            if ( replyTweet != null ) {
-                mergedTweets = tweetService.getActualRepliesForAccounts(acs,
-                                                                        replyTweet,
-                                                                        fetchRequest.getDateFrom(),
-                                                                        fetchRequest.getSize());
-            }
-            else {
                 mergedTweets = tweetService.getActualTweetForAccounts(acs,
                                                                       fetchRequest.getDateFrom(),
+                                                                      fetchRequest.getDateTo(),
                                                                       fetchRequest.getSize());
+
             }
         }
         catch ( Throwable e ) {
             LOGGER.error(e.getMessage());
             errorBuilder.append("internal error");
+        }
+
+        Map<Long, String> users = new HashMap<Long, String>();
+        for ( TweetDao tweet : mergedTweets ) {
+            users.put(tweet.getCreator().getId(), tweet.getCreatorName());
         }
 
         Response response;
@@ -157,5 +215,6 @@ public class FetchTweetsHandler implements Handler
         }
 
         appData.setResponse(response);
+
     }
 }
