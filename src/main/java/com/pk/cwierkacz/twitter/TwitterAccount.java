@@ -154,7 +154,7 @@ public class TwitterAccount
             if ( mainTweet.getCreator().getId() == account.getId() )
                 throw new TwitterActionException("You cannot retweet himself");
 
-            Status stat = twitter.retweetStatus(mainTweet.getId());
+            Status stat = twitter.retweetStatus(mainTweet.getExternalId());
             return tweetConverter.toTweet(stat);
         }
         catch ( TwitterException e ) {
@@ -209,6 +209,17 @@ public class TwitterAccount
      */
     public TweetsResult getTweetsFromUserTimeline( int count ) throws TwitterActionException {
         return getTweetsFromTimeline(count, TimeLine.User);
+    }
+
+    /**
+     * Method which get all for user which was retweeted
+     * 
+     * @param count
+     *            number of re tweets which we try get
+     * @throws TwitterActionException
+     */
+    public TweetsResult getRetweeted( int count ) throws TwitterActionException {
+        return getTweetsFromTimeline(count, TimeLine.Re);
     }
 
     /**
@@ -280,6 +291,17 @@ public class TwitterAccount
         return getTweetsFromTimeline(since, TimeLine.Mentions);
     }
 
+    /**
+     * Method which get all for user which was retweeted
+     * 
+     * @param since
+     *            date since which we try get tweets
+     * @throws TwitterActionException
+     */
+    public TweetsResult getRetweeted( DateTime since ) throws TwitterActionException {
+        return getTweetsFromTimeline(since, TimeLine.Re);
+    }
+
     protected TweetsResult getTweetsFromTimeline( DateTime since, TimeLine timeLine ) throws TwitterActionException {
         try {
             List<Status> statuses = new ArrayList<Status>();
@@ -340,6 +362,17 @@ public class TwitterAccount
         return getTweetsFromTimeline(sinceTweet, TimeLine.Mentions);
     }
 
+    /**
+     * Method which get all for user which was retweeted
+     * 
+     * @param since
+     *            last tweet since which we try get tweets
+     * @throws TwitterActionException
+     */
+    public TweetsResult getRetweeted( TweetDao sinceTweet ) throws TwitterActionException {
+        return getTweetsFromTimeline(sinceTweet, TimeLine.Re);
+    }
+
     protected TweetsResult getTweetsFromTimeline( TweetDao sinceTweet, TimeLine timeLine ) throws TwitterActionException {
         try {
             List<Status> statuses = new ArrayList<Status>();
@@ -361,6 +394,42 @@ public class TwitterAccount
         }
         catch ( TwitterException e ) {
             LOGGER.error(e.getMessage(), e);
+            throw new TwitterActionException(e.getMessage());
+        }
+    }
+
+    /**
+     * Method which get all retweets for tweet
+     * 
+     * @param retweeted
+     *            tweet for which we get re tweets
+     * @throws TwitterActionException
+     */
+    public TweetsResult getRetweets( TweetDao retweeted ) throws TwitterActionException {
+        return getRetweets(retweeted, null);
+    }
+
+    /**
+     * Method which get all retweets for tweet
+     * 
+     * @param retweeted
+     *            tweet for which we get re tweets
+     * @param since
+     *            date since which we try get re tweets
+     * @throws TwitterActionException
+     */
+    public TweetsResult getRetweets( TweetDao retweeted, DateTime since ) throws TwitterActionException {
+        try {
+            List<Status> stats = twitter.getRetweets(retweeted.getExternalId());
+            ImmutableList.Builder<TweetDao> builder = ImmutableList.builder();
+            for ( int i = 0; i < stats.size(); i++ ) {
+                if ( since != null && !currentDateBefore(stats.get(i).getCreatedAt(), since) )
+                    builder.add(tweetConverter.toTweet(stats.get(i)));
+            }
+            return TweetsResult.full(builder.build());
+        }
+        catch ( TwitterException e ) {
+            LOGGER.error(e.getMessage());
             throw new TwitterActionException(e.getMessage());
         }
     }
@@ -480,6 +549,8 @@ public class TwitterAccount
             partialStatuses = twitter.getUserTimeline(page);
         else if ( timeLine == TimeLine.Mentions )
             partialStatuses = twitter.getMentionsTimeline(page);
+        else if ( timeLine == TimeLine.Re )
+            partialStatuses = twitter.getRetweetsOfMe(page);
         else
             throw new UnsupportedOperationException("Time Line " + timeLine + " not supported");
 
@@ -489,6 +560,7 @@ public class TwitterAccount
     enum TimeLine {
         Home,
         User,
-        Mentions
+        Mentions,
+        Re
     }
 }

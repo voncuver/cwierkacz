@@ -44,6 +44,7 @@ public class PublishTweetAccount implements Handler
 
         StringBuilder errorBuilder = new StringBuilder();
         for ( String accountName : publishRequest.getAccounts() ) {
+            boolean errors = false;
             try {
                 //tranzakcyjność per jedno konto - a może inaczej?
                 TwitterAccountDao accountDao = accountService.getAccountByName(accountName);
@@ -51,20 +52,38 @@ public class PublishTweetAccount implements Handler
                     errorBuilder.append(accountName + " not exist in system ; ");
                 }
                 else {
-                    TweetDao newTweet;
+                    TweetDao newTweet = null;
                     TwitterAccount account = TwitterAccountMap.getTwitterAccount(accountDao);
-                    if ( publishRequest.getReplayFor() > 0 ) {
+                    if ( publishRequest.getRetweetFor() > 0 &&
+                         ( publishRequest.getReplayFor() > 0 || !StringUtils.isEmpty(publishRequest.getTweetText()) ) ) {
+                        errorBuilder.append("retweet can't be reply and retweet cant't have own text ; ");
+                        errors = true;
+                    }
+                    else if ( publishRequest.getReplayFor() > 0 ) {
                         TweetDao inReply = tweetService.getTweetById(publishRequest.getReplayFor());
-                        if ( inReply == null )
+                        if ( inReply == null ) {
                             errorBuilder.append("in reply tweet not exist ; ");
-                        newTweet = account.composeNewReplyTweet(publishRequest.getTweetText(), inReply);
+                            errors = true;
+                        }
+
+                        else
+                            newTweet = account.composeNewReplyTweet(publishRequest.getTweetText(), inReply);
+                    }
+                    else if ( publishRequest.getRetweetFor() > 0 ) {
+                        TweetDao retweeted = tweetService.getTweetById(publishRequest.getRetweetFor());
+                        if ( retweeted == null ) {
+                            errorBuilder.append("retweeted tweet not exist ; ");
+                            errors = true;
+                        }
+                        else
+                            newTweet = account.composeNewReTweet(retweeted);
                     }
                     else {
                         newTweet = account.composeNewTweet(publishRequest.getTweetText());
                     }
-                    //TODO add retweet handling
 
-                    tweetService.save(newTweet);
+                    if ( !errors )
+                        tweetService.save(newTweet);
 
                 }
             }

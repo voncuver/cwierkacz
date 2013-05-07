@@ -154,4 +154,60 @@ public class TweetService extends AbstractService<TweetDao>
         return result;
     }
 
+    public List<TweetDao> getActualRetweetsForAccount( TwitterAccountDao account,
+                                                       TweetDao retweeted,
+                                                       DateTime since ) {
+        return getActualRetweetsForAccount(account, retweeted, since, null);
+    }
+
+    public TweetDao getLastActualRetweetForAccount( TwitterAccountDao account,
+                                                    TweetDao retweeted,
+                                                    DateTime since ) {
+        List<TweetDao> t = getActualRetweetsForAccount(account, retweeted, since, 1);
+        if ( t.size() >= 1 )
+            return t.get(0);
+        else
+            return null;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public List<TweetDao> getActualRetweetsForAccount( TwitterAccountDao account,
+                                                       TweetDao retweeted,
+                                                       DateTime since,
+                                                       Integer maxResult ) {
+        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("creator", account))
+                                                       .add(Restrictions.eq("retweeted", retweeted))
+                                                       .add(Restrictions.ge("cratedDate", since))
+                                                       .add(Restrictions.eq("isDeleted", false))
+                                                       .addOrder(Order.desc("cratedDate"));
+        if ( maxResult != null && maxResult > 0 )
+            criteria = criteria.setMaxResults(maxResult);
+        List<TweetDao> result = criteria.list();
+        commit();
+        return result;
+    }
+
+    public List<TweetDao> getActualRetweetsForAccount( List<TwitterAccountDao> accounts,
+                                                       TweetDao retweeted,
+                                                       DateTime since ) {
+        return getActualRetweetsForAccount(accounts, retweeted, since, null);
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public List<TweetDao> getActualRetweetsForAccount( List<TwitterAccountDao> accounts,
+                                                       TweetDao retweeted,
+                                                       DateTime since,
+                                                       Integer maxResult ) {
+        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.in("creator", accounts))
+                                                       .add(Restrictions.eq("retweeted", retweeted))
+                                                       .add(Restrictions.ge("cratedDate", since))
+                                                       .add(Restrictions.eq("isDeleted", false))
+                                                       .addOrder(Order.desc("cratedDate"));
+        if ( maxResult != null && maxResult > 0 )
+            criteria = criteria.setMaxResults(maxResult);
+        List<TweetDao> result = criteria.list();
+        commit();
+        return result;
+    }
+
 }
