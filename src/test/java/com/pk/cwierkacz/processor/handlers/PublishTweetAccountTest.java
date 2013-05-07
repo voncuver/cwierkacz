@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.request.RequestImpl;
@@ -50,7 +51,7 @@ public class PublishTweetAccountTest extends PopulateData
         accounts.add(username2);
         String text = "TEST OF PUBLISH TWEET HANDLER " + new Date().getTime();
 
-        Request request = RequestImpl.create().buildPublishRequest(text, accounts);
+        Request request = RequestImpl.create(Action.PUBLISHTWEET).buildPublishRequest(text, accounts);
         appData.setRequest(request);
 
         publishTweetAccount.handle(appData);
@@ -101,7 +102,10 @@ public class PublishTweetAccountTest extends PopulateData
         String text = "TEST OF PUBLISH TWEET HANDLER (REPLY) " + new Date().getTime();
         String textWithReplyName = "@" + username + " " + text;
 
-        Request request = RequestImpl.create().buildPublishRequest(text, accounts, tweet.getId(), 0);
+        Request request = RequestImpl.create(Action.PUBLISHTWEET).buildPublishRequest(text,
+                                                                                      accounts,
+                                                                                      tweet.getId(),
+                                                                                      0);
         appData.setRequest(request);
 
         publishTweetAccount.handle(appData);
@@ -163,7 +167,10 @@ public class PublishTweetAccountTest extends PopulateData
         accounts.add(username);
         accounts.add(username2);
 
-        Request request = RequestImpl.create().buildPublishRequest(null, accounts, 0, tweet.getId());
+        Request request = RequestImpl.create(Action.PUBLISHTWEET).buildPublishRequest(null,
+                                                                                      accounts,
+                                                                                      0,
+                                                                                      tweet.getId());
         appData.setRequest(request);
 
         publishTweetAccount.handle(appData);

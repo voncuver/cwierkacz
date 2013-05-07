@@ -10,10 +10,12 @@ import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.processor.handlers.CreateAccountHandler;
+import com.pk.cwierkacz.processor.handlers.DeleteAccountHandler;
 import com.pk.cwierkacz.processor.handlers.FetchTweetsHandler;
 import com.pk.cwierkacz.processor.handlers.Handler;
 import com.pk.cwierkacz.processor.handlers.LoginHandler;
 import com.pk.cwierkacz.processor.handlers.LogoutHandler;
+import com.pk.cwierkacz.processor.handlers.ModifyAccountHandler;
 import com.pk.cwierkacz.processor.handlers.PublishTweetAccount;
 import com.pk.cwierkacz.processor.handlers.WireTweetAccount;
 
@@ -24,6 +26,8 @@ public class MainProcessor
     private MainProcessor() {
         List<Handler> handlers = new ArrayList<>();
         handlers.add(new CreateAccountHandler());
+        handlers.add(new ModifyAccountHandler());
+        handlers.add(new DeleteAccountHandler());
         handlers.add(new FetchTweetsHandler());
         handlers.add(new LoginHandler());
         handlers.add(new LogoutHandler());

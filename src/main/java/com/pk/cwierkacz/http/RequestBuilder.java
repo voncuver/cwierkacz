@@ -39,8 +39,10 @@ public class RequestBuilder
     @SuppressWarnings( "unchecked" )
     public static < T > T buildRequest( Map<String, String[]> params, Cookie[] cookies ) {
 
-        for ( Cookie cookie : cookies ) {
-            params.put(cookie.getName(), new String[] {cookie.getValue()});
+        if ( cookies != null ) {
+            for ( Cookie cookie : cookies ) {
+                params.put(cookie.getName(), new String[] {cookie.getValue()});
+            }
         }
 
         Request request = buildBasicRequest(params);
@@ -73,9 +75,14 @@ public class RequestBuilder
         String actionName = params.get(ACTIONPARAM)[ 0 ];
         Action action = Action.getActionByName(actionName);
 
-        Request request = RequestImpl.create()
-                                     .buildBaseRequest(action, params.get(USERNAME)[ 0 ])
-                                     .withTimestamp(new Timestamp(new Date().getTime()));
+        Request request = RequestImpl.create(action);
+
+        if ( params.get(USERNAME) != null && params.get(USERNAME).length > 0 ) {
+            String userName = params.get(USERNAME)[ 0 ];
+            request = RequestImpl.create(action)
+                                 .buildBaseRequest(userName)
+                                 .withTimestamp(new Timestamp(new Date().getTime()));
+        }
 
         if ( params.get(TOKEN) != null && params.get(TOKEN).length > 0 ) {
             Long tokenId = Long.parseLong(params.get(TOKEN)[ 0 ]);
@@ -94,7 +101,14 @@ public class RequestBuilder
     }
 
     private static Request createManageRequest( Map<String, String[]> params, Request request ) {
-        String password = params.get(PASSWORDOLD)[ 0 ];
+        String password = null;
+        if ( params.get(PASSWORD) != null && params.get(PASSWORD).length > 0 ) {
+            password = params.get(PASSWORD)[ 0 ];
+        }
+
+        if ( params.get(PASSWORDOLD) != null && params.get(PASSWORDOLD).length > 0 ) {
+            password = params.get(PASSWORDOLD)[ 0 ];
+        }
 
         request = RequestImpl.create(request).buildLoginRequest(password);
 

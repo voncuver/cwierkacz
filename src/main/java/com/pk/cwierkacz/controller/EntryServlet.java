@@ -1,6 +1,7 @@
 package com.pk.cwierkacz.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
@@ -36,7 +37,7 @@ public class EntryServlet extends HttpServlet
     public void doGet( HttpServletRequest request, HttpServletResponse response ) throws IOException {
 
         Cookie[] cookies = request.getCookies();
-        Map<String, String[]> parameters = request.getParameterMap();
+        Map<String, String[]> parameters = new HashMap<String, String[]>(request.getParameterMap());
 
         Request requestAction = RequestBuilder.buildRequest(parameters, cookies);
         Response responseResult = mainProcessor.process(requestAction);
@@ -49,7 +50,7 @@ public class EntryServlet extends HttpServlet
             responseJson = "Fail to creat JSON";
         }
 
-        Cookie cookie = new Cookie("tokenId", new Long(responseResult.getTokenId()).toString());
+        Cookie cookie = new Cookie("token", new Long(responseResult.getTokenId()).toString());
         cookie.setMaxAge(60 * 60);
         response.addCookie(cookie);
 

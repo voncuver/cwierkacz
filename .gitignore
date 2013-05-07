@@ -5,3 +5,4 @@ protobuf-generated/
 .classpath
 /target
 /target
+/bin

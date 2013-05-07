@@ -46,7 +46,7 @@ public class SessionDao
         return currentToken;
     }
 
-    public void setCurrentToken( long currentToken ) {
+    public void setCurrentToken( Long currentToken ) {
         this.currentToken = currentToken;
     }
 }
