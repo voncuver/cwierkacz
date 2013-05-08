@@ -423,7 +423,7 @@ public class TwitterAccount
             List<Status> stats = twitter.getRetweets(retweeted.getExternalId());
             ImmutableList.Builder<TweetDao> builder = ImmutableList.builder();
             for ( int i = 0; i < stats.size(); i++ ) {
-                if ( since != null && !currentDateBefore(stats.get(i).getCreatedAt(), since) )
+                if ( since == null || !currentDateBefore(stats.get(i).getCreatedAt(), since) )
                     builder.add(tweetConverter.toTweet(stats.get(i)));
             }
             return TweetsResult.full(builder.build());

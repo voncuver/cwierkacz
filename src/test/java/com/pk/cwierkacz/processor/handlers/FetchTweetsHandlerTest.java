@@ -236,14 +236,14 @@ public class FetchTweetsHandlerTest extends PopulateData
         assertEquals(Status.OK, appData.getResponse().getStatus());
         FetchTweetsResponse response = (FetchTweetsResponse) appData.getResponse();
 
-        assertEquals(1, response.getUsersTweeter().size());
+        assertEquals(2, response.getUsersTweeter().size());
         assertTrue(response.getUsersTweeter().containsKey(twitterAccountDao.getId()));
         assertTrue(response.getUsersTweeter().containsValue(twitterAccountDao.getAccountName()));
 
         assertEquals(2, response.getTweets().size());
 
         assertEquals(tweets.get(0), response.getTweets().get(0));
-        assertEquals(mainTweet, response.getTweets().get(0));
+        assertEquals(mainTweet, response.getTweets().get(1));
 
     }
 
