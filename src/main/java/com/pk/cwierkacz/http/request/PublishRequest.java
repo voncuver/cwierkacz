@@ -14,4 +14,6 @@ public interface PublishRequest extends Request
     List<String> getAccounts( );
 
     public byte[] getBody( );
+
+    public String getImgName( );
 }

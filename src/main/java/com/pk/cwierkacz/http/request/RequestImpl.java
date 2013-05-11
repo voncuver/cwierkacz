@@ -47,6 +47,7 @@ public class RequestImpl implements
     private long replayFor;
     private long retweetFor;
     private byte[] body;
+    private String imgName;
 
     //PUBLISHTWEET
     private String tweetText;
@@ -161,8 +162,9 @@ public class RequestImpl implements
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends RequestImpl > T withBody( byte[] body ) {
+    public < T extends RequestImpl > T withImg( byte[] body, String imgName ) {
         this.body = body;
+        this.imgName = imgName;
         return (T) this;
     }
 
@@ -288,6 +290,11 @@ public class RequestImpl implements
     @Override
     public byte[] getBody( ) {
         return body;
+    }
+
+    @Override
+    public String getImgName( ) {
+        return imgName;
     }
 
 }

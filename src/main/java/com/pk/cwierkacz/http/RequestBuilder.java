@@ -31,6 +31,7 @@ public class RequestBuilder
     public static final String TWEET = "tweet";
     public static final String REPLAYFORID = "replayForId";
     public static final String RETWEETFORID = "retweetForId";
+    public static final String IMGNAME = "imgName";
 
     public static final String SIZE = "size";
     public static final String DATEFROM = "dateFrom";
@@ -162,11 +163,15 @@ public class RequestBuilder
         String tweetText = params.get(TWEET)[ 0 ];
         List<String> accounts = Arrays.asList(params.get(ACCOUNTS));
 
-        request = RequestImpl.create(request).buildPublishRequest(tweetText, accounts).withBody(body);
+        request = RequestImpl.create(request)
+                             .buildPublishRequest(tweetText, accounts)
+                             .withImg(body, params.get(IMGNAME)[ 0 ]);
 
         if ( params.get(REPLAYFORID) != null && params.get(REPLAYFORID).length > 0 ) {
             Long replayForId = Long.parseLong(params.get(REPLAYFORID)[ 0 ]);
-            request = RequestImpl.create(request).withReplayForID(replayForId).withBody(body);
+            request = RequestImpl.create(request)
+                                 .withReplayForID(replayForId)
+                                 .withImg(body, params.get(IMGNAME)[ 0 ]);
         }
 
         if ( params.get(RETWEETFORID) != null && params.get(RETWEETFORID).length > 0 ) {

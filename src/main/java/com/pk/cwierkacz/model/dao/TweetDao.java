@@ -65,12 +65,14 @@ public class TweetDao
 
     @ManyToOne( fetch = FetchType.EAGER )
     @JoinColumn( nullable = false, name = "creator", referencedColumnName = "id" )
-    private TwitterAccountDao creator; //TODO zmienic nazwe na owner - bo to niekoniecznie musi byc creator - zmiana musi dotyczyc tez nazw pol w serwisie
+    private TwitterAccountDao creator;
 
     @Column
     @Type( type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime" )
     private DateTime cratedDate;
     private String text;
+
+    private String imagePath;
 
     private boolean isDeleted;
 
@@ -249,6 +251,14 @@ public class TweetDao
     @Override
     public int hashCode( ) {
         return externalId.intValue();
+    }
+
+    public String getImagePath( ) {
+        return imagePath;
+    }
+
+    public void setImagePath( String imagePath ) {
+        this.imagePath = imagePath;
     }
 
 }

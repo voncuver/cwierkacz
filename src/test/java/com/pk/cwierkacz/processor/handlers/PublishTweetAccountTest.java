@@ -4,10 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -92,6 +97,52 @@ public class PublishTweetAccountTest extends PopulateData
 
         assertEquals(true, exist1a);
         assertEquals(true, exist2a);
+    }
+
+    @Test
+    public void addTweetWithImg( ) throws TwitterActionException, FileNotFoundException, IOException {
+        DateTime now = new DateTime();
+        DateTime startDate = now.minusMillis(now.getMillisOfSecond());
+        ApplicationData appData = new ApplicationData();
+        List<String> accounts = new ArrayList<String>();
+        accounts.add(username);
+        String text = "TEST OF PUBLISH TWEET HANDLER WITH IMG" + new Date().getTime();
+
+        byte[] body = IOUtils.toByteArray(new FileInputStream(new File("src/test/java/com/pk/cwierkacz/processor/handlers/lena.PNG")));
+
+        Request request = RequestImpl.create(Action.PUBLISHTWEET)
+                                     .buildPublishRequest(text, accounts)
+                                     .withImg(body, "lena.PNG");
+        appData.setRequest(request);
+
+        publishTweetAccount.handle(appData);
+
+        assertNotNull(appData.getResponse());
+        System.out.println("msg: " + appData.getResponse().getMessage());
+        assertEquals(Status.OK, appData.getResponse().getStatus()); //if you don't write permissions to / then permission denied exception
+
+        List<TweetDao> tweets1 = tweetService.getActualTweetForAccount(twitterAccountDao,
+                                                                       startDate,
+                                                                       null,
+                                                                       null);
+
+        assertEquals(1, tweets1.size());
+
+        assertEquals(true, tweets1.get(0).getText().startsWith(text));
+        assertNotNull(tweets1.get(0).getImagePath());
+        System.out.println("path : " + tweets1.get(0).getImagePath());
+
+        TweetsResult tweets1a = twitterAccount.getTweetsFromUserTimeline(startDate);
+
+        TweetDao t1a = null;
+
+        for ( TweetDao t : tweets1a.getTweets() ) {
+            if ( t.getText().startsWith(text) )
+                t1a = t;
+        }
+
+        assertNotNull(t1a);
+        assertNotNull(t1a.getImagePath());
     }
 
     @Test
