@@ -5,6 +5,7 @@
 	version="3.0">
 
 	<display-name>cwierkacz</display-name>
+
 	<servlet>
 		<servlet-name>EntryServlet</servlet-name>
 		<servlet-class>com.pk.cwierkacz.controller.EntryServlet</servlet-class>
@@ -17,5 +18,26 @@
 
 	<listener>
 		<listener-class>com.pk.cwierkacz.appBuilder.ContextBuilder</listener-class>
-	</listener>
+	</listener> 
+	
+    
+    <servlet>
+        <servlet-name>Integration</servlet-name>
+        <servlet-class>
+            com.sun.xml.ws.transport.http.servlet.WSServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Integration</servlet-name>
+        <url-pattern>/Integration</url-pattern>
+    </servlet-mapping>
+
+	<listener>
+        <listener-class>
+                com.sun.xml.ws.transport.http.servlet.WSServletContextListener
+        </listener-class>
+    </listener>
+
 </web-app>
