@@ -58,6 +58,10 @@ public class PublishTweetAccount implements Handler
             inReply = tweetService.getTweetById(publishRequest.getReplayFor());
         if ( publishRequest.getRetweetFor() > 0 )
             retweeted = tweetService.getTweetById(publishRequest.getRetweetFor());
+        if(publishRequest.getRetweetFor() <= 0 && publishRequest.getTweetText() == null) {
+            errorBuilder.append("new tweet must have content; ");
+            errors = true;
+        }
 
         if ( publishRequest.getRetweetFor() > 0 &&
              ( publishRequest.getReplayFor() > 0 || !StringUtils.isEmpty(publishRequest.getTweetText()) || publishRequest.getBody() != null ) ) {

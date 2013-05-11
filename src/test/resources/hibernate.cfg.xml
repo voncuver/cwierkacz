@@ -16,6 +16,7 @@
 		<property name="connection.pool_size">1</property>
 		<property name="current_session_context_class">thread</property>
 
+  		<mapping class="com.pk.cwierkacz.model.dao.SettingsDao" />
 		<mapping class="com.pk.cwierkacz.model.dao.UserDao" />
 		<mapping class="com.pk.cwierkacz.model.dao.TweetDao" />
 		<mapping class="com.pk.cwierkacz.model.dao.SessionDao" />

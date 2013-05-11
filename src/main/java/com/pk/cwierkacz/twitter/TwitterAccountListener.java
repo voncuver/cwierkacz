@@ -9,14 +9,12 @@ import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
 import twitter4j.TwitterStream;
-import twitter4j.TwitterStreamFactory;
-import twitter4j.auth.AccessToken;
 
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.twitter.converters.TweetConverter;
 
-public class TwitterAccountListener
+public class TwitterAccountListener extends TwitterStreamResolver
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(TwitterAccountListener.class);
 
@@ -89,7 +87,7 @@ public class TwitterAccountListener
      * listen o twitter status on current user account
      */
     public void listen( ) {
-        long[] followers = {account.getId()};
+        long[] followers = {account.getExternalId()};
         FilterQuery query = new FilterQuery(0, followers);
         twitterStream.filter(query);
     }
@@ -102,15 +100,7 @@ public class TwitterAccountListener
     }
 
     protected void authenticate( TwitterAccountDao account ) throws TwitterAuthenticationException {
-        TwitterStreamFactory factory = new TwitterStreamFactory();
-
-        if ( account.isOAuthAvailable() ) {
-            AccessToken token = new AccessToken(account.getAccessToken(), account.getAccessTokenSecret());
-            twitterStream = factory.getInstance(token);
-        }
-        else {
-            throw new TwitterAuthenticationException("oAuth authentication impossible");
-        }
+        twitterStream = createTwitterStream(account, false);
     }
 
     @Override

@@ -74,6 +74,8 @@ public class PublishTweetAccountTest extends PopulateData
                                                                        null,
                                                                        null);
 
+        System.out.println(twitterAccountDao.getId());
+        System.out.println(startDate);
         assertEquals(1, tweets1.size());
         assertEquals(1, tweets2.size());
 

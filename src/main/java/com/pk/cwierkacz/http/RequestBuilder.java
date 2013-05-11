@@ -1,6 +1,7 @@
 package com.pk.cwierkacz.http;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -67,8 +68,10 @@ public class RequestBuilder
 
         }
         else if ( action.equals(Action.PUBLISHTWEET) ) {
-
-            request = createPublishTweetRequest(params, request, body);
+            byte[] bodyOrNull = null;
+            if ( body != null && body.length > 0 )
+                bodyOrNull = body;
+            request = createPublishTweetRequest(params, request, bodyOrNull);
         }
         else if ( action.equals(Action.ADDTWEETACCOUNT) || action.equals(Action.DELTWEETACCOUNT) ) {
             request = createAddTweeterAccountRequest(params, request);
@@ -160,18 +163,26 @@ public class RequestBuilder
     private static Request createPublishTweetRequest( Map<String, String[]> params,
                                                       Request request,
                                                       byte[] body ) {
-        String tweetText = params.get(TWEET)[ 0 ];
-        List<String> accounts = Arrays.asList(params.get(ACCOUNTS));
+        String[] tweetTexts = params.get(TWEET);
+        String tweetText = null;
+        if ( tweetTexts != null )
+            tweetText = tweetTexts[ 0 ];
 
-        request = RequestImpl.create(request)
-                             .buildPublishRequest(tweetText, accounts)
-                             .withImg(body, params.get(IMGNAME)[ 0 ]);
+        String[] imgNames = params.get(IMGNAME);
+        String imgName = null;
+        if ( imgNames != null )
+            imgName = imgNames[ 0 ];
+
+        List<String> accounts = new ArrayList<String>();
+        if ( params.get(ACCOUNTS) != null ) {
+            accounts = Arrays.asList(params.get(ACCOUNTS));
+        }
+
+        request = RequestImpl.create(request).buildPublishRequest(tweetText, accounts).withImg(body, imgName);
 
         if ( params.get(REPLAYFORID) != null && params.get(REPLAYFORID).length > 0 ) {
             Long replayForId = Long.parseLong(params.get(REPLAYFORID)[ 0 ]);
-            request = RequestImpl.create(request)
-                                 .withReplayForID(replayForId)
-                                 .withImg(body, params.get(IMGNAME)[ 0 ]);
+            request = RequestImpl.create(request).withReplayForID(replayForId).withImg(body, imgName);
         }
 
         if ( params.get(RETWEETFORID) != null && params.get(RETWEETFORID).length > 0 ) {

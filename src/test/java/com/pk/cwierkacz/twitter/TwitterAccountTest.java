@@ -15,7 +15,8 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
-import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.model.service.ServiceRepo;
+import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.twitter.attachment.ImageAttachment;
 import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
 
@@ -34,16 +35,21 @@ public class TwitterAccountTest
 
     private TwitterAccount account;
 
+    protected TwitterAccountService accountService = ServiceRepo.getInstance()
+                                                                .getService(TwitterAccountService.class);
+
     @Before
     public void setUp( ) throws Exception {
 
-        UserDao userDao = new UserDao();
-
         TwitterAccountDao user = TwitterAccountDao.create(userId,
-                                                          userDao,
+                                                          null,
                                                           username,
                                                           accessToken,
                                                           accessTokenSecret);
+
+        if ( accountService.getAccountByName(username) == null )
+            accountService.save(user);
+
         account = new TwitterAccount(user);
     }
 

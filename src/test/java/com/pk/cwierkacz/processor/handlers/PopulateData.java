@@ -8,6 +8,7 @@ import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.dao.UserDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.SessionService;
+import com.pk.cwierkacz.model.service.SettingsService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.model.service.UserService;
 import com.pk.cwierkacz.twitter.TwitterAccount;
@@ -19,6 +20,7 @@ abstract public class PopulateData
     protected TwitterAccountService accountService;
     protected SessionService sessionService;
     protected UserService userService;
+    protected SettingsService settingsService;
 
     protected final String username = "cwierkacz1";
     protected final String username2 = "cwierkacz13";
@@ -32,10 +34,14 @@ abstract public class PopulateData
     protected TwitterAccount twitterAccount2;
     protected UserDao userDao;
 
+    protected String consumerKey = "ipOt0R7N7Ds9PTnT8Usfxw";
+    protected String consumerSecret = "QDcJjMxF2wx6YNuiy7msid8QV0CjfA64laKSYfihRhU";
+
     public void populateUserAndAccount( ) throws TwitterAuthenticationException {
         accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
         userService = ServiceRepo.getInstance().getService(UserService.class);
         sessionService = ServiceRepo.getInstance().getService(SessionService.class);
+        settingsService = ServiceRepo.getInstance().getService(SettingsService.class);
 
         String accessToken = "1291752048-EINIa817O7rBs5FTcyQu6dozbgV6KQJx339Cn3I";
         String accessTokenSecret = "sIxeZvvJ0eSxgy3Zj27829De0KI0HytKtPcWrLK9Y";
@@ -44,6 +50,9 @@ abstract public class PopulateData
         String accessToken2 = "1291708484-x2GIuJprsYm4Wf2MWSFvsRYkdVPxUZncUxzKaJw";
         String accessTokenSecret2 = "jxqddQ8NdcFa0uqJJGuQcMgBifjj0us8BX4GNto4YQ";
         long userId2 = 1291708484;
+
+        if ( settingsService.getConsumerSettings() == null )
+            settingsService.setConsumerSettings(consumerKey, consumerSecret);
 
         userDao = userService.getByUserName(sysUsername);
         if ( userDao == null ) {

@@ -16,8 +16,6 @@ import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
 
 import com.google.common.collect.ImmutableList;
 import com.pk.cwierkacz.model.dao.TweetDao;
@@ -33,7 +31,7 @@ import com.pk.cwierkacz.utils.DateUtil;
  * @author radek
  * 
  */
-public class TwitterAccount
+public class TwitterAccount extends TwitterResolver
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(TwitterAccount.class);
     private static final DateTimeFormatter DATE_FORMATTER = DateUtil.formatterYyyyMMddUTC();
@@ -172,7 +170,7 @@ public class TwitterAccount
      */
     public void deleteTweet( TweetDao tweet ) throws TwitterActionException {
         try {
-            twitter.destroyStatus(tweet.getId());
+            twitter.destroyStatus(tweet.getExternalId());
         }
         catch ( TwitterException e ) {
             LOGGER.error(e.getMessage(), e);
@@ -522,15 +520,7 @@ public class TwitterAccount
     }
 
     protected void authenticate( TwitterAccountDao account ) throws TwitterAuthenticationException {
-        TwitterFactory factory = new TwitterFactory();
-
-        if ( account.isOAuthAvailable() ) {
-            AccessToken token = new AccessToken(account.getAccessToken(), account.getAccessTokenSecret());
-            twitter = factory.getInstance(token);
-        }
-        else {
-            throw new TwitterAuthenticationException("oAuth authentication impossible");
-        }
+        twitter = createTwitter(account, false);
     }
 
     @Deprecated
