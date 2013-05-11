@@ -12,4 +12,6 @@ public interface PublishRequest extends Request
     String getTweetText( );
 
     List<String> getAccounts( );
+
+    public byte[] getBody( );
 }

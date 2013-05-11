@@ -36,8 +36,12 @@ public class RequestBuilder
     public static final String DATEFROM = "dateFrom";
     public static final String DATETO = "dateTo";
 
-    @SuppressWarnings( "unchecked" )
     public static < T > T buildRequest( Map<String, String[]> params, Cookie[] cookies ) {
+        return buildRequest(params, cookies, null);
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public static < T > T buildRequest( Map<String, String[]> params, Cookie[] cookies, byte[] body ) {
 
         if ( cookies != null ) {
             for ( Cookie cookie : cookies ) {
@@ -62,7 +66,8 @@ public class RequestBuilder
 
         }
         else if ( action.equals(Action.PUBLISHTWEET) ) {
-            request = createPublishTweetRequest(params, request);
+
+            request = createPublishTweetRequest(params, request, body);
         }
         else if ( action.equals(Action.ADDTWEETACCOUNT) || action.equals(Action.DELTWEETACCOUNT) ) {
             request = createAddTweeterAccountRequest(params, request);
@@ -151,21 +156,24 @@ public class RequestBuilder
         return request;
     }
 
-    private static Request createPublishTweetRequest( Map<String, String[]> params, Request request ) {
+    private static Request createPublishTweetRequest( Map<String, String[]> params,
+                                                      Request request,
+                                                      byte[] body ) {
         String tweetText = params.get(TWEET)[ 0 ];
         List<String> accounts = Arrays.asList(params.get(ACCOUNTS));
 
-        request = RequestImpl.create(request).buildPublishRequest(tweetText, accounts);
+        request = RequestImpl.create(request).buildPublishRequest(tweetText, accounts).withBody(body);
 
         if ( params.get(REPLAYFORID) != null && params.get(REPLAYFORID).length > 0 ) {
             Long replayForId = Long.parseLong(params.get(REPLAYFORID)[ 0 ]);
-            request = RequestImpl.create(request).withReplayForID(replayForId);
+            request = RequestImpl.create(request).withReplayForID(replayForId).withBody(body);
         }
 
         if ( params.get(RETWEETFORID) != null && params.get(RETWEETFORID).length > 0 ) {
             Long retweetForId = Long.parseLong(params.get(RETWEETFORID)[ 0 ]);
             request = RequestImpl.create(request).withRetweetForId(retweetForId);
         }
+
         return request;
     }
 

@@ -1,5 +1,6 @@
 package com.pk.cwierkacz.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +10,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 
 import com.pk.cwierkacz.exception.ProcessingException;
 import com.pk.cwierkacz.http.RequestBuilder;
@@ -39,7 +42,12 @@ public class EntryServlet extends HttpServlet
         Cookie[] cookies = request.getCookies();
         Map<String, String[]> parameters = new HashMap<String, String[]>(request.getParameterMap());
 
-        Request requestAction = RequestBuilder.buildRequest(parameters, cookies);
+        BufferedReader bodyReader = request.getReader();
+        byte body[] = null;
+        if ( bodyReader != null )
+            body = IOUtils.toByteArray(bodyReader);
+
+        Request requestAction = RequestBuilder.buildRequest(parameters, cookies, body);
         Response responseResult = mainProcessor.process(requestAction);
 
         String responseJson;

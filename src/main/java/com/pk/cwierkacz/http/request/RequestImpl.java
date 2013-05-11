@@ -46,6 +46,7 @@ public class RequestImpl implements
     //FETCHTWEETS, PUBLISHTWEET
     private long replayFor;
     private long retweetFor;
+    private byte[] body;
 
     //PUBLISHTWEET
     private String tweetText;
@@ -156,6 +157,12 @@ public class RequestImpl implements
     @SuppressWarnings( "unchecked" )
     public < T extends RequestImpl > T withRetweetForId( Long retweetForId ) {
         this.retweetFor = retweetForId;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public < T extends RequestImpl > T withBody( byte[] body ) {
+        this.body = body;
         return (T) this;
     }
 
@@ -277,4 +284,10 @@ public class RequestImpl implements
     public long getRetweetFor( ) {
         return retweetFor;
     }
+
+    @Override
+    public byte[] getBody( ) {
+        return body;
+    }
+
 }
