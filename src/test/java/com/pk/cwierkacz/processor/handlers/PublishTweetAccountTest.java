@@ -121,7 +121,7 @@ public class PublishTweetAccountTest extends PopulateData
 
         assertNotNull(appData.getResponse());
         System.out.println("msg: " + appData.getResponse().getMessage());
-        assertEquals(Status.OK, appData.getResponse().getStatus()); //if you don't write permissions to / then permission denied exception
+        assertEquals(Status.OK, appData.getResponse().getStatus());
 
         List<TweetDao> tweets1 = tweetService.getActualTweetForAccount(twitterAccountDao,
                                                                        startDate,

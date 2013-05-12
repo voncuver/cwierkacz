@@ -15,9 +15,11 @@ import com.pk.cwierkacz.http.request.PublishRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.model.ApplicationData;
+import com.pk.cwierkacz.model.dao.SettingsDao;
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
+import com.pk.cwierkacz.model.service.SettingsService;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.twitter.TwitterAccount;
@@ -34,10 +36,12 @@ public class PublishTweetAccount implements Handler
     private final TweetService tweetService;
 
     private final TwitterAccountService accountService;
+    private final SettingsService settingsService;
 
     public PublishTweetAccount() {
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
+        this.settingsService = ServiceRepo.getInstance().getService(SettingsService.class);
     }
 
     @Override
@@ -58,7 +62,7 @@ public class PublishTweetAccount implements Handler
             inReply = tweetService.getTweetById(publishRequest.getReplayFor());
         if ( publishRequest.getRetweetFor() > 0 )
             retweeted = tweetService.getTweetById(publishRequest.getRetweetFor());
-        if(publishRequest.getRetweetFor() <= 0 && publishRequest.getTweetText() == null) {
+        if ( publishRequest.getRetweetFor() <= 0 && publishRequest.getTweetText() == null ) {
             errorBuilder.append("new tweet must have content; ");
             errors = true;
         }
@@ -87,11 +91,21 @@ public class PublishTweetAccount implements Handler
         TweetAttachments attachments = TweetAttachments.empty();
         if ( publishRequest.getBody() != null && publishRequest.getImgName() != null ) {
             try {
-                File file = File.createTempFile("img_", "_" + publishRequest.getImgName(), new File("/"));
+                SettingsDao imgSettings = settingsService.getImageSettings();
+                File dir = new File(settingsService.getImageAbsolutePath());
+                if ( !dir.exists() )
+                    dir.mkdir();
+                File file = File.createTempFile("img_", "_" + publishRequest.getImgName(), dir);
+                System.out.println(file.getAbsolutePath());
                 IOUtils.write(publishRequest.getBody(), new FileOutputStream(file));
-                filename = file.getAbsolutePath();
+                String sl = "";
+                if ( !imgSettings.getRelativeImgPath().endsWith(File.separator) )
+                    sl = File.separator;
+                filename = imgSettings.getRelativeImgPath() + sl + file.getName();
                 ImageAttachment image = new ImageAttachment(file);
                 attachments = TweetAttachments.createImage(image);
+
+                //TODO DOS ATTACK DENGER - control of size image and number of trying add image per user - probably these controls not in here, but somewhere higher
 
             }
             catch ( IOException e ) {
@@ -161,5 +175,4 @@ public class PublishTweetAccount implements Handler
 
         appData.setResponse(response);
     }
-
 }

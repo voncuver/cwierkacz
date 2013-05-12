@@ -143,8 +143,7 @@ public class FetchTweetsHandler implements Handler
                         if ( accountDao == null )
                             errorBuilder.append("cannot find account name " + accountName + " : ");
                         else {
-                            TweetDao last = tweetService.getLastActualTweetForAccount(accountDao,
-                                                                                      fetchRequest.getDateFrom());
+                            TweetDao last = tweetService.getLastActualTweetForAccount(accountDao);
                             if ( last != null ) {
                                 try {
                                     TwitterAccount account;

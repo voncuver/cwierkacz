@@ -22,6 +22,10 @@ public class SettingsDao
 
     private String consumerSecret;
 
+    private String relativeImgPath;
+
+    private String absoluteContainerPath;
+
     public Long getId( ) {
         return id;
     }
@@ -53,6 +57,22 @@ public class SettingsDao
 
     public void setConsumerSecret( String consumerSecret ) {
         this.consumerSecret = consumerSecret;
+    }
+
+    public String getRelativeImgPath( ) {
+        return relativeImgPath;
+    }
+
+    public void setRelativeImgPath( String relativeImgPath ) {
+        this.relativeImgPath = relativeImgPath;
+    }
+
+    public String getAbsoluteContainerPath( ) {
+        return absoluteContainerPath;
+    }
+
+    public void setAbsoluteContainerPath( String absoluteContainerPath ) {
+        this.absoluteContainerPath = absoluteContainerPath;
     }
 
 }
