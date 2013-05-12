@@ -118,6 +118,7 @@ public class PublishTweetAccount extends FileSaver implements Handler
                         }
                         else if ( retweeted != null ) {
                             newTweet = account.composeNewReTweet(retweeted);
+                            newTweet.setImagePath(retweeted.getImagePath());
                         }
                         else {
                             newTweet = account.composeNewTweet(publishRequest.getTweetText(), attachments);
