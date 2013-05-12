@@ -1,5 +1,6 @@
 package com.pk.cwierkacz.twitter.converters;
 
+import twitter4j.MediaEntity;
 import twitter4j.Status;
 
 import com.google.common.base.Function;
@@ -37,6 +38,13 @@ public class ToTweetConverter implements Function<Status, TweetDao>
 
             if ( status.getRetweetedStatus() != null )
                 tweetService.getByExternalId(status.getRetweetedStatus().getId());
+
+            if ( status.getMediaEntities() != null ) {
+                for ( MediaEntity me : status.getMediaEntities() ) {
+                    if ( me.getMediaURL() != null )
+                        tweet.setTwitterImageUrl(me.getMediaURL());
+                }
+            }
 
             return fulfill(tweet);
         }

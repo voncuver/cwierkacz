@@ -1,10 +1,7 @@
 package com.pk.cwierkacz.processor.handlers;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,21 +12,21 @@ import com.pk.cwierkacz.http.request.PublishRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.model.ApplicationData;
-import com.pk.cwierkacz.model.dao.SettingsDao;
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.SettingsService;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
+import com.pk.cwierkacz.processor.handlers.halpers.AttachmentsWithResources;
+import com.pk.cwierkacz.processor.handlers.halpers.FileSaver;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
 import com.pk.cwierkacz.twitter.TwitterActionException;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
-import com.pk.cwierkacz.twitter.attachment.ImageAttachment;
 import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
 
-public class PublishTweetAccount implements Handler
+public class PublishTweetAccount extends FileSaver implements Handler
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishTweetAccount.class);
 
@@ -91,22 +88,9 @@ public class PublishTweetAccount implements Handler
         TweetAttachments attachments = TweetAttachments.empty();
         if ( publishRequest.getBody() != null && publishRequest.getImgName() != null ) {
             try {
-                SettingsDao imgSettings = settingsService.getImageSettings();
-                File dir = new File(settingsService.getImageAbsolutePath());
-                if ( !dir.exists() )
-                    dir.mkdir();
-                File file = File.createTempFile("img_", "_" + publishRequest.getImgName(), dir);
-                System.out.println(file.getAbsolutePath());
-                IOUtils.write(publishRequest.getBody(), new FileOutputStream(file));
-                String sl = "";
-                if ( !imgSettings.getRelativeImgPath().endsWith(File.separator) )
-                    sl = File.separator;
-                filename = imgSettings.getRelativeImgPath() + sl + file.getName();
-                ImageAttachment image = new ImageAttachment(file);
-                attachments = TweetAttachments.createImage(image);
-
-                //TODO DOS ATTACK DENGER - control of size image and number of trying add image per user - probably these controls not in here, but somewhere higher
-
+                AttachmentsWithResources awr = saveFile(publishRequest.getBody(), publishRequest.getImgName());
+                filename = awr.getImgPath();
+                attachments = awr.getAttachments();
             }
             catch ( IOException e ) {
                 LOGGER.error(e.getMessage());

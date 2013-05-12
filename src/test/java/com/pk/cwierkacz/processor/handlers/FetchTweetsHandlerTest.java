@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,8 @@ import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.twitter.TwitterActionException;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
+import com.pk.cwierkacz.twitter.attachment.ImageAttachment;
+import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
 
 public class FetchTweetsHandlerTest extends PopulateData
 {
@@ -120,6 +123,55 @@ public class FetchTweetsHandlerTest extends PopulateData
         for ( int i = 0; i < 10; i++ ) {
             assertEquals(tweets.get(11 - i), response.getTweets().get(i));
         }
+
+    }
+
+    @Test
+    public void fetchTweetWithImgForAccounts( ) throws TwitterActionException, InterruptedException {
+        DateTime now = new DateTime();
+        DateTime startDate = now.minusMillis(now.getMillisOfSecond());
+
+        Thread.sleep(1000);
+        System.out.println("adding tweet ......");
+        TweetDao t1a = twitterAccount.composeNewTweet("FetchTweetsHandlerTest Tweet WITH SAVE" +
+                                                      new Date().getTime());
+        tweetService.save(t1a);
+
+        System.out.println("adding tweet ......");
+        ImageAttachment image = new ImageAttachment(new File("src/test/java/com/pk/cwierkacz/processor/handlers/lena.PNG"));
+        TweetDao t1 = twitterAccount.composeNewTweet("FetchTweetsHandlerTest Tweet WITHOUT SAVE" +
+                                                             new Date().getTime(),
+                                                     TweetAttachments.createImage(image));
+
+        ApplicationData appData = new ApplicationData();
+        List<String> accounts = new ArrayList<String>();
+        accounts.add(username);
+
+        Request request = RequestImpl.create(Action.FETCHTWEETS).buildFetchRequest(accounts,
+                                                                                   5,
+                                                                                   startDate,
+                                                                                   -1,
+                                                                                   -1);
+        appData.setRequest(request);
+
+        fetchTweetsHandler.handle(appData);
+
+        assertNotNull(appData.getResponse());
+        System.out.println("msg: " + appData.getResponse().getMessage());
+        assertEquals(Status.OK, appData.getResponse().getStatus());
+        FetchTweetsResponse response = (FetchTweetsResponse) appData.getResponse();
+
+        assertEquals(1, response.getUsersTweeter().size());
+        assertTrue(response.getUsersTweeter().containsKey(twitterAccountDao.getId()));
+        assertTrue(response.getUsersTweeter().containsValue(twitterAccountDao.getAccountName()));
+
+        assertEquals(2, response.getTweets().size());
+
+        TweetDao tweetNew = response.getTweets().get(0);
+        assertEquals(t1, tweetNew);
+
+        assertNotNull(tweetNew.getImagePath());
+        assertTrue(tweetNew.getImagePath().endsWith(".png"));
 
     }
 

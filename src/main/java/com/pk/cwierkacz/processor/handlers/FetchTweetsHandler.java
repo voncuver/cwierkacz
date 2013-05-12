@@ -1,5 +1,6 @@
 package com.pk.cwierkacz.processor.handlers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,13 +25,14 @@ import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.model.service.UserService;
+import com.pk.cwierkacz.processor.handlers.halpers.FileSaver;
 import com.pk.cwierkacz.twitter.TweetsResult;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
 import com.pk.cwierkacz.twitter.TwitterActionException;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
 
-public class FetchTweetsHandler implements Handler
+public class FetchTweetsHandler extends FileSaver implements Handler
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(FetchTweetsHandler.class);
 
@@ -41,6 +43,11 @@ public class FetchTweetsHandler implements Handler
     private final UserService userService;
 
     private final SessionService sessionService;
+
+    private TweetDao tweetWithImg( TweetDao t ) throws IOException {
+        t.setImagePath(saveFileFromUrl(t.getTwitterImageUrl()));
+        return t;
+    }
 
     public FetchTweetsHandler() {
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
@@ -74,6 +81,7 @@ public class FetchTweetsHandler implements Handler
                     SessionDao sessionDao = sessionService.getByToken(fetchRequest.getTokenId());
                     UserDao user = userService.getBySessionId(sessionDao);
                     List<TwitterAccountDao> accountsDao = accountService.getAccountsForUser(user);
+                    TweetsResult notReadyTweets = new TweetsResult();
                     for ( TwitterAccountDao accountDao : accountsDao ) {
                         TweetDao last = tweetService.getLastActualReplies(replyTweet);
                         if ( last == null )
@@ -83,11 +91,9 @@ public class FetchTweetsHandler implements Handler
                             account = TwitterAccountMap.getTwitterAccount(accountDao);
                             TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
                             for ( TweetDao tweet : result.getReadyTweets() ) {
-                                tweetService.save(tweet);
+                                tweetService.save(tweetWithImg(tweet));
                             }
-                            for ( TweetDao tweet : result.fulfilledNoReady() ) {
-                                tweetService.save(tweet);
-                            }
+                            notReadyTweets = notReadyTweets.add(result);
 
                         }
                         catch ( TwitterAuthenticationException e ) {
@@ -103,6 +109,16 @@ public class FetchTweetsHandler implements Handler
                                                 " ; ");
                         }
                     }
+                    try {
+                        for ( TweetDao tweet : notReadyTweets.fulfilledNoReady() ) {
+                            tweetService.save(tweetWithImg(tweet));
+                        }
+                    }
+                    catch ( Exception e ) {
+                        LOGGER.error(e.getMessage());
+                        errorBuilder.append("propably not all tweets are fetched, becouse some dependency ar not resolved ; ");
+                    }
+
                     mergedTweets = tweetService.getActualReplies(replyTweet);
                     mergedTweets.add(replyTweet);
                 }
@@ -124,10 +140,10 @@ public class FetchTweetsHandler implements Handler
                         account = TwitterAccountMap.getTwitterAccount(accountDao);
                         TweetsResult result = account.getRetweets(retweeted);
                         for ( TweetDao tweet : result.getReadyTweets() ) {
-                            tweetService.save(tweet);
+                            tweetService.save(tweetWithImg(tweet));
                         }
                         for ( TweetDao tweet : result.fulfilledNoReady() ) {
-                            tweetService.save(tweet);
+                            tweetService.save(tweetWithImg(tweet));
                         }
 
                         mergedTweets = tweetService.getActualRetweets(retweeted);
@@ -136,6 +152,7 @@ public class FetchTweetsHandler implements Handler
                 }
             }
             else if ( fetchRequest.getAccounts().size() > 0 ) {
+                TweetsResult notReadyTweets = new TweetsResult();
                 for ( String accountName : fetchRequest.getAccounts() ) { //tranzakcyjność per jedno konto - a może inaczej?
                     try {
                         TwitterAccountDao accountDao = accountService.getAccountByName(accountName);
@@ -150,11 +167,9 @@ public class FetchTweetsHandler implements Handler
                                     account = TwitterAccountMap.getTwitterAccount(accountDao);
                                     TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
                                     for ( TweetDao tweet : result.getReadyTweets() ) {
-                                        tweetService.save(tweet);
+                                        tweetService.save(tweetWithImg(tweet));
                                     }
-                                    for ( TweetDao tweet : result.fulfilledNoReady() ) {
-                                        tweetService.save(tweet);
-                                    }
+                                    notReadyTweets = notReadyTweets.add(result);
 
                                 }
                                 catch ( TwitterAuthenticationException e ) {
@@ -170,7 +185,7 @@ public class FetchTweetsHandler implements Handler
                             }
 
                             //groupedTweets if used
-                            acs.add(accountDao); //TODO
+                            acs.add(accountDao);
 
                         }
                     }
@@ -179,6 +194,16 @@ public class FetchTweetsHandler implements Handler
                         errorBuilder.append("internal error for " + accountName + " ; ");
                     }
                 }
+                try {
+                    for ( TweetDao tweet : notReadyTweets.fulfilledNoReady() ) {
+                        tweetService.save(tweetWithImg(tweet));
+                    }
+                }
+                catch ( Exception e ) {
+                    LOGGER.error(e.getMessage());
+                    errorBuilder.append("propably not all tweets are fetched, becouse some dependency ar not resolved ; ");
+                }
+
                 mergedTweets = tweetService.getActualTweetForAccounts(acs,
                                                                       fetchRequest.getDateFrom(),
                                                                       fetchRequest.getDateTo(),
