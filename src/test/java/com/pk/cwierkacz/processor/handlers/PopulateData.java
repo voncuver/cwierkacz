@@ -24,12 +24,14 @@ abstract public class PopulateData
 
     protected final String username = "cwierkacz1";
     protected final String username2 = "cwierkacz13";
+    protected final String username3 = "fake";
     protected final String sysUsername = "cwierkacz";
 
     protected final long token = 32453534543L;
 
     protected TwitterAccountDao twitterAccountDao;
     protected TwitterAccountDao twitterAccountDao2;
+    protected TwitterAccountDao twitterAccountDao3;
     protected TwitterAccount twitterAccount;
     protected TwitterAccount twitterAccount2;
     protected UserDao userDao;
@@ -53,6 +55,10 @@ abstract public class PopulateData
         String accessToken2 = "1291708484-x2GIuJprsYm4Wf2MWSFvsRYkdVPxUZncUxzKaJw";
         String accessTokenSecret2 = "jxqddQ8NdcFa0uqJJGuQcMgBifjj0us8BX4GNto4YQ";
         long userId2 = 1291708484;
+
+        String accessToken3 = "fake";
+        String accessTokenSecret3 = "fake";
+        long userId3 = 333333;
 
         if ( settingsService.getConsumerSettings() == null )
             settingsService.setConsumerSettings(consumerKey, consumerSecret);
@@ -94,6 +100,17 @@ abstract public class PopulateData
                                                                      username2,
                                                                      accessToken2,
                                                                      accessTokenSecret2);
+                user.getAccounts().add(account);
+                accountService.save(account);
+            }
+
+            twitterAccountDao3 = accountService.getAccountByName(username3);
+            if ( twitterAccountDao3 == null ) {
+                TwitterAccountDao account = TwitterAccountDao.create(userId3,
+                                                                     null,
+                                                                     username3,
+                                                                     accessToken3,
+                                                                     accessTokenSecret3);
                 user.getAccounts().add(account);
                 accountService.save(account);
             }

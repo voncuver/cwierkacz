@@ -1,4 +1,4 @@
-package com.pk.cwierkacz.processor.handlers.halpers;
+package com.pk.cwierkacz.processor.handlers.helpers;
 
 import com.pk.cwierkacz.twitter.attachment.ImageAttachment;
 import com.pk.cwierkacz.twitter.attachment.TweetAttachments;

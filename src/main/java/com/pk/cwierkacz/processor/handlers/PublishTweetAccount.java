@@ -18,8 +18,9 @@ import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.SettingsService;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
-import com.pk.cwierkacz.processor.handlers.halpers.AttachmentsWithResources;
-import com.pk.cwierkacz.processor.handlers.halpers.FileSaver;
+import com.pk.cwierkacz.processor.handlers.helpers.AccountPermissionValidator;
+import com.pk.cwierkacz.processor.handlers.helpers.AttachmentsWithResources;
+import com.pk.cwierkacz.processor.handlers.helpers.FileSaver;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
 import com.pk.cwierkacz.twitter.TwitterActionException;
@@ -51,7 +52,14 @@ public class PublishTweetAccount extends FileSaver implements Handler
         PublishRequest publishRequest = (PublishRequest) appData.getRequest();
 
         boolean errors = false;
+        boolean deny = false;
         StringBuilder errorBuilder = new StringBuilder();
+
+        if ( !AccountPermissionValidator.checkPermissionForName(publishRequest.getAccounts(),
+                                                                publishRequest.getTokenId()) ) {
+            errorBuilder.append("you do not have rights to at least one account; ");
+            deny = true;
+        }
 
         TweetDao inReply = null;
         TweetDao retweeted = null;
@@ -86,7 +94,7 @@ public class PublishTweetAccount extends FileSaver implements Handler
         }
         String filename = null;
         TweetAttachments attachments = TweetAttachments.empty();
-        if ( publishRequest.getBody() != null && publishRequest.getImgName() != null ) {
+        if ( !errors && !deny && publishRequest.getBody() != null && publishRequest.getImgName() != null ) {
             try {
                 AttachmentsWithResources awr = saveFile(publishRequest.getBody(), publishRequest.getImgName());
                 filename = awr.getImgPath();
@@ -100,7 +108,7 @@ public class PublishTweetAccount extends FileSaver implements Handler
 
         }
 
-        if ( !errors ) {
+        if ( !errors && !deny ) {
             for ( String accountName : publishRequest.getAccounts() ) {
                 try {
                     //tranzakcyjność per jedno konto - a może inaczej?
@@ -148,16 +156,20 @@ public class PublishTweetAccount extends FileSaver implements Handler
 
         Response response;
         String errorsMsg = errorBuilder.toString();
-        if ( StringUtils.isEmpty(errorsMsg) ) {
+
+        if ( errors ) {
+            response = ResponseImpl.create(Status.ERROR, "Tweet for not all account was add correctly - " +
+                                                         errorsMsg, appData.getRequest().getTokenId());
+        }
+        else if ( deny ) {
+            response = ResponseImpl.create(Status.DENY, "Deny access - " + errorsMsg, appData.getRequest()
+                                                                                             .getTokenId());
+        }
+        else {
             response = ResponseImpl.create(Status.OK,
                                            "Tweet for all account was add correctly",
                                            appData.getRequest().getTokenId());
         }
-        else {
-            response = ResponseImpl.create(Status.ERROR, "Tweet for not all account was add correctly - " +
-                                                         errorsMsg, appData.getRequest().getTokenId());
-        }
-
         appData.setResponse(response);
     }
 }

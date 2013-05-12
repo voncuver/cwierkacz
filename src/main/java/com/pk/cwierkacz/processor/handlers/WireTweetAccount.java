@@ -21,7 +21,7 @@ import com.pk.cwierkacz.model.dao.UserDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.UserService;
-import com.pk.cwierkacz.processor.handlers.halpers.HttpClient;
+import com.pk.cwierkacz.processor.handlers.helpers.HttpClient;
 import com.pk.cwierkacz.twitter.OAuthAuthentication;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
 
