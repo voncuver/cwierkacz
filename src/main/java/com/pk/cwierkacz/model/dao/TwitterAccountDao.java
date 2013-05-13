@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.annotate.JsonManagedReference;
 
 /**
  * Data access object of single twitter account
@@ -42,6 +43,7 @@ public final class TwitterAccountDao implements Serializable
     @Column( unique = true, nullable = false )
     private Long externalId;
 
+    @JsonManagedReference
     @ManyToOne( fetch = FetchType.EAGER )
     @JoinColumn( nullable = true, name = "user", referencedColumnName = "id" )
     //moze byc account bez usera - takiego nie śledzimy, ale może mieć tweety
