@@ -28,8 +28,6 @@ import org.joda.time.DateTime;
 @Table( name = "Tweets" )
 public class TweetDao
 {
-    //TODO 15: dodać odpowiednie metody moze zamiast publicznych setterow aby robily od razu wiazanie w dwie strony? - jak uwazasz  - mozna stworzyc jakies buildery, ale moze nie w dao tylko poza
-
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Long Id;
@@ -73,6 +71,9 @@ public class TweetDao
     private String text;
 
     private String imagePath;
+
+    @Transient
+    private String twitterImageUrl;
 
     private boolean isDeleted;
 
@@ -259,6 +260,15 @@ public class TweetDao
 
     public void setImagePath( String imagePath ) {
         this.imagePath = imagePath;
+    }
+
+    @Transient
+    public String getTwitterImageUrl( ) {
+        return twitterImageUrl;
+    }
+
+    public void setTwitterImageUrl( String twitterImageUrl ) {
+        this.twitterImageUrl = twitterImageUrl;
     }
 
 }

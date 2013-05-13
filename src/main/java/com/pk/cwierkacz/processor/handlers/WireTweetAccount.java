@@ -21,7 +21,7 @@ import com.pk.cwierkacz.model.dao.UserDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.UserService;
-import com.pk.cwierkacz.processor.handlers.halpers.HttpClient;
+import com.pk.cwierkacz.processor.handlers.helpers.HttpClient;
 import com.pk.cwierkacz.twitter.OAuthAuthentication;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
 
@@ -73,15 +73,16 @@ public class WireTweetAccount implements Handler
         TwitterAccountDao account = TwitterAccountDao.create(0, user, accRequest.getLoginTweet(), null, null);
         account.setId(1l);
         OAuthAuthentication userAuthentication = null;
-        if ( map.containsKey(accRequest.getTokenId()) ) {
-            userAuthentication = map.get(accRequest.getTokenId());
-        }
-        else {
-            userAuthentication = new OAuthAuthentication(account);
-            map.put(accRequest.getTokenId(), userAuthentication);
-        }
         String pin = null;
         try {
+            if ( map.containsKey(accRequest.getTokenId()) ) {
+                userAuthentication = map.get(accRequest.getTokenId());
+            }
+            else {
+                userAuthentication = new OAuthAuthentication(account);
+                map.put(accRequest.getTokenId(), userAuthentication);
+            }
+
             String url = userAuthentication.getAuthenticationURL();
 
             String authUrl = "https://api.twitter.com/oauth/authorize";

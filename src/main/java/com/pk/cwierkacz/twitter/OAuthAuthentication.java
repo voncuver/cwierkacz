@@ -5,16 +5,14 @@ import org.slf4j.LoggerFactory;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 
-public class OAuthAuthentication
+public class OAuthAuthentication extends TwitterResolver
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuthAuthentication.class);
-    private static final TwitterFactory FACTORY = new TwitterFactory();
     private TwitterAccountDao account;
     private final Twitter twitter;
     private RequestToken requestToken;
@@ -24,10 +22,11 @@ public class OAuthAuthentication
      * 
      * @param user
      *            user which we wont authenticate
+     * @throws TwitterAuthenticationException
      */
-    public OAuthAuthentication( TwitterAccountDao account ) {
+    public OAuthAuthentication( TwitterAccountDao account ) throws TwitterAuthenticationException {
         this.account = account;
-        this.twitter = FACTORY.getInstance();
+        this.twitter = createTwitter(account, true);
     }
 
     /**

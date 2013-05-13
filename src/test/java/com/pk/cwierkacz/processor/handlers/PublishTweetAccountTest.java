@@ -56,7 +56,7 @@ public class PublishTweetAccountTest extends PopulateData
         accounts.add(username2);
         String text = "TEST OF PUBLISH TWEET HANDLER " + new Date().getTime();
 
-        Request request = RequestImpl.create(Action.PUBLISHTWEET).buildPublishRequest(text, accounts);
+        Request request = RequestImpl.create(Action.PUBLISHTWEET, token).buildPublishRequest(text, accounts);
         appData.setRequest(request);
 
         publishTweetAccount.handle(appData);
@@ -74,6 +74,8 @@ public class PublishTweetAccountTest extends PopulateData
                                                                        null,
                                                                        null);
 
+        System.out.println(twitterAccountDao.getId());
+        System.out.println(startDate);
         assertEquals(1, tweets1.size());
         assertEquals(1, tweets2.size());
 
@@ -110,7 +112,7 @@ public class PublishTweetAccountTest extends PopulateData
 
         byte[] body = IOUtils.toByteArray(new FileInputStream(new File("src/test/java/com/pk/cwierkacz/processor/handlers/lena.PNG")));
 
-        Request request = RequestImpl.create(Action.PUBLISHTWEET)
+        Request request = RequestImpl.create(Action.PUBLISHTWEET, token)
                                      .buildPublishRequest(text, accounts)
                                      .withImg(body, "lena.PNG");
         appData.setRequest(request);
@@ -119,7 +121,7 @@ public class PublishTweetAccountTest extends PopulateData
 
         assertNotNull(appData.getResponse());
         System.out.println("msg: " + appData.getResponse().getMessage());
-        assertEquals(Status.OK, appData.getResponse().getStatus()); //if you don't write permissions to / then permission denied exception
+        assertEquals(Status.OK, appData.getResponse().getStatus());
 
         List<TweetDao> tweets1 = tweetService.getActualTweetForAccount(twitterAccountDao,
                                                                        startDate,
@@ -159,10 +161,10 @@ public class PublishTweetAccountTest extends PopulateData
         String text = "TEST OF PUBLISH TWEET HANDLER (REPLY) " + new Date().getTime();
         String textWithReplyName = "@" + username + " " + text;
 
-        Request request = RequestImpl.create(Action.PUBLISHTWEET).buildPublishRequest(text,
-                                                                                      accounts,
-                                                                                      tweet.getId(),
-                                                                                      0);
+        Request request = RequestImpl.create(Action.PUBLISHTWEET, token).buildPublishRequest(text,
+                                                                                             accounts,
+                                                                                             tweet.getId(),
+                                                                                             0);
         appData.setRequest(request);
 
         publishTweetAccount.handle(appData);
@@ -222,10 +224,10 @@ public class PublishTweetAccountTest extends PopulateData
         accounts.add(username);
         accounts.add(username2);
 
-        Request request = RequestImpl.create(Action.PUBLISHTWEET).buildPublishRequest(null,
-                                                                                      accounts,
-                                                                                      0,
-                                                                                      tweet.getId());
+        Request request = RequestImpl.create(Action.PUBLISHTWEET, token).buildPublishRequest(null,
+                                                                                             accounts,
+                                                                                             0,
+                                                                                             tweet.getId());
         appData.setRequest(request);
 
         publishTweetAccount.handle(appData);
@@ -275,6 +277,33 @@ public class PublishTweetAccountTest extends PopulateData
 
         TweetDao refreshedMainTweet = tweetService.getTweetById(tweet.getId());
         assertEquals(1, refreshedMainTweet.getRetweets().size());
+
+    }
+
+    @Test
+    public void addTweetWithNoRights( ) throws TwitterActionException {
+        DateTime now = new DateTime();
+        DateTime startDate = now.minusMillis(now.getMillisOfSecond());
+        ApplicationData appData = new ApplicationData();
+        List<String> accounts = new ArrayList<String>();
+        accounts.add(username3);
+        String text = "TEST OF PUBLISH TWEET HANDLER " + new Date().getTime();
+
+        Request request = RequestImpl.create(Action.PUBLISHTWEET, token).buildPublishRequest(text, accounts);
+        appData.setRequest(request);
+
+        publishTweetAccount.handle(appData);
+
+        assertNotNull(appData.getResponse());
+        System.out.println("msg: " + appData.getResponse().getMessage());
+        assertEquals(Status.DENY, appData.getResponse().getStatus());
+
+        List<TweetDao> tweets1 = tweetService.getActualTweetForAccount(twitterAccountDao3,
+                                                                       startDate,
+                                                                       null,
+                                                                       null);
+
+        assertEquals(0, tweets1.size());
 
     }
 }

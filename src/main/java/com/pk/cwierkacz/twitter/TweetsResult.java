@@ -45,6 +45,13 @@ public class TweetsResult
         return ( ( t.getInReplyTo() == null && t.getInReplyToExtId() != null ) || ( t.getRetweeted() == null && t.getRetweetedExtId() != null ) );
     }
 
+    public TweetsResult() {
+        this.fullResult = true;
+        this.existingTweets = ImmutableList.of();
+        this.readyTweets = ImmutableList.of();
+        this.notReadyTweets = ImmutableList.of();
+    }
+
     public TweetsResult( boolean fullResult,
                          ImmutableList<TweetDao> existingTweets,
                          ImmutableList<TweetDao> readyTweets,
@@ -65,9 +72,9 @@ public class TweetsResult
             if ( t.getId() != null )
                 existingTweetsB.add(t);
             else if ( notReady(t) )
-                readyTweetsB.add(t);
-            else
                 notReadyTweetsB.add(t);
+            else
+                readyTweetsB.add(t);
         }
         existingTweets = existingTweetsB.build();
         readyTweets = readyTweetsB.build();

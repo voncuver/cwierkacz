@@ -16,7 +16,8 @@ import org.junit.Test;
 
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
-import com.pk.cwierkacz.model.dao.UserDao;
+import com.pk.cwierkacz.model.service.ServiceRepo;
+import com.pk.cwierkacz.model.service.TwitterAccountService;
 
 public class TwitterAccountListenerTest
 {
@@ -33,16 +34,18 @@ public class TwitterAccountListenerTest
 
     private TwitterAccountListener listener;
     private MemoryTwitterStorage storage;
-    private final UserDao userDao = new UserDao();
+
+    protected TwitterAccountService accountService = ServiceRepo.getInstance()
+                                                                .getService(TwitterAccountService.class);;
 
     TwitterAccountDao accountDao = TwitterAccountDao.create(userId,
-                                                            userDao,
+                                                            null,
                                                             username,
                                                             accessToken,
                                                             accessTokenSecret);
 
     TwitterAccountDao accountDao2 = TwitterAccountDao.create(userId2,
-                                                             userDao,
+                                                             null,
                                                              username2,
                                                              accessToken2,
                                                              accessTokenSecret2);
@@ -93,6 +96,10 @@ public class TwitterAccountListenerTest
     @Before
     public void setUp( ) throws Exception {
 
+        if ( accountService.getAccountByName(username) == null )
+            accountService.save(accountDao);
+        if ( accountService.getAccountByName(username2) == null )
+            accountService.save(accountDao2);
         account1 = new TwitterAccount(accountDao);
         account2 = new TwitterAccount(accountDao2);
 

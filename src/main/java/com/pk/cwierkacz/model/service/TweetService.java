@@ -49,7 +49,7 @@ public class TweetService extends AbstractService<TweetDao>
         return result;
     }
 
-    public TweetDao getLastActualTweetForAccount( TwitterAccountDao account, DateTime since ) {
+    public TweetDao getLastActualTweetForAccount( TwitterAccountDao account ) {
         List<TweetDao> t = getActualTweetForAccount(account, null, null, 1);
         if ( t.size() >= 1 )
             return t.get(0);
