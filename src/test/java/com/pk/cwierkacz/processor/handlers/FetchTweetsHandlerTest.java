@@ -19,6 +19,7 @@ import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.request.RequestImpl;
 import com.pk.cwierkacz.http.response.FetchTweetsResponse;
+import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
@@ -95,11 +96,12 @@ public class FetchTweetsHandlerTest extends PopulateData
         accounts.add(username);
         accounts.add(username2);
 
-        Request request = RequestImpl.create(Action.FETCHTWEETS).buildFetchRequest(accounts,
-                                                                                   10,
-                                                                                   startDate,
-                                                                                   -1,
-                                                                                   -1);
+        Request request = RequestImpl.create(Action.FETCHMESSAGES).buildFetchRequest(accounts,
+                                                                                     10,
+                                                                                     startDate,
+                                                                                     -1,
+                                                                                     -1,
+                                                                                     AccountType.TWITTER);
         appData.setRequest(request);
 
         fetchTweetsHandler.handle(appData);
@@ -172,11 +174,13 @@ public class FetchTweetsHandlerTest extends PopulateData
         List<String> accounts = new ArrayList<String>();
         accounts.add(username);
 
-        Request request = RequestImpl.create(Action.FETCHTWEETS, token).buildFetchRequest(accounts,
-                                                                                          -1,
-                                                                                          startDate,
-                                                                                          mainTweet.getId(),
-                                                                                          -1);
+        Request request = RequestImpl.create(Action.FETCHMESSAGES, token)
+                                     .buildFetchRequest(accounts,
+                                                        -1,
+                                                        startDate,
+                                                        mainTweet.getId(),
+                                                        -1,
+                                                        AccountType.TWITTER);
         appData.setRequest(request);
 
         fetchTweetsHandler.handle(appData);
@@ -221,11 +225,13 @@ public class FetchTweetsHandlerTest extends PopulateData
         List<String> accounts = new ArrayList<String>();
         accounts.add(username);
 
-        Request request = RequestImpl.create(Action.FETCHTWEETS, token).buildFetchRequest(accounts,
-                                                                                          -1,
-                                                                                          startDate,
-                                                                                          -1,
-                                                                                          mainTweet.getId());
+        Request request = RequestImpl.create(Action.FETCHMESSAGES, token)
+                                     .buildFetchRequest(accounts,
+                                                        -1,
+                                                        startDate,
+                                                        -1,
+                                                        mainTweet.getId(),
+                                                        AccountType.TWITTER);
 
         appData.setRequest(request);
 

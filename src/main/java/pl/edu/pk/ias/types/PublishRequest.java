@@ -17,11 +17,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="token" type="{http://pk.edu.pl/ias/types}token"/>
- *         &lt;element name="lss" type="{http://pk.edu.pl/ias/types}lss"/>
- *         &lt;element name="file" type="{http://pk.edu.pl/ias/types}file"/>
- *         &lt;element name="filename" type="{http://pk.edu.pl/ias/types}filename"/>
- *         &lt;element name="description" type="{http://pk.edu.pl/ias/types}description"/>
+ *         &lt;element name="token" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="lss" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="file" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
+ *         &lt;element name="filename" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>

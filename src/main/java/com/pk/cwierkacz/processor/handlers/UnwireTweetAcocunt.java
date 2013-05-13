@@ -31,7 +31,7 @@ public class UnwireTweetAcocunt implements Handler
 
     @Override
     public boolean isHandleable( ApplicationData applicationData ) {
-        return applicationData.getRequest().getAction().equals(Action.DELTWEETACCOUNT);
+        return applicationData.getRequest().getAction().equals(Action.UNLINKSOCIALACCOUNT);
     }
 
     @Override

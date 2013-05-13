@@ -135,19 +135,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IncorrectPasswordFault }
-     * 
-     */
-    public IncorrectPasswordFault createIncorrectPasswordFault() {
-        return new IncorrectPasswordFault();
-    }
-
-    /**
      * Create an instance of {@link GetItemsRequest }
      * 
      */
     public GetItemsRequest createGetItemsRequest() {
         return new GetItemsRequest();
+    }
+
+    /**
+     * Create an instance of {@link IncorrectPasswordFault }
+     * 
+     */
+    public IncorrectPasswordFault createIncorrectPasswordFault() {
+        return new IncorrectPasswordFault();
     }
 
     /**

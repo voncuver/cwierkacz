@@ -51,7 +51,8 @@ public class FetchTweetsHandler implements Handler
 
     @Override
     public boolean isHandleable( ApplicationData applicationData ) {
-        return applicationData.getRequest().getAction().equals(Action.FETCHTWEETS);
+        return applicationData.getRequest().getAction().equals(Action.FETCHMESSAGE) ||
+               applicationData.getRequest().getAction().equals(Action.FETCHMESSAGES);
     }
 
     @Override

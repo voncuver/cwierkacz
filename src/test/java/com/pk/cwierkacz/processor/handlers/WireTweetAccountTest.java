@@ -37,8 +37,8 @@ public class WireTweetAccountTest
         appData.setRequest(loginRequest2);
         loginHandler.handle(appData);
 
-        RequestImpl request3 = RequestImpl.create(Action.ADDTWEETACCOUNT).withTokenId(appData.getResponse()
-                                                                                             .getTokenId());
+        RequestImpl request3 = RequestImpl.create(Action.LINKSOCIALACCOUNT).withTokenId(appData.getResponse()
+                                                                                               .getTokenId());
         Request request4 = request3.buildBaseRequest("test");
         AddTweeterAccountRequest accRequest = RequestImpl.create(request4)
                                                          .buildAddAccountTweetRequest("msierpien")

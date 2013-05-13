@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="token" type="{http://pk.edu.pl/ias/types}token"/>
+ *         &lt;element name="token" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="idsList" type="{http://pk.edu.pl/ias/types}itemId" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -38,6 +38,7 @@ public class RemoveRequest {
 
     @XmlElement(required = true)
     protected String token;
+    @XmlElement(nillable = true)
     protected List<ItemId> idsList;
 
     /**

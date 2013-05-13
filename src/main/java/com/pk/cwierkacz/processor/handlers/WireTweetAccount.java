@@ -41,7 +41,7 @@ public class WireTweetAccount implements Handler
 
     @Override
     public boolean isHandleable( ApplicationData applicationData ) {
-        return applicationData.getRequest().getAction().equals(Action.ADDTWEETACCOUNT);
+        return applicationData.getRequest().getAction().equals(Action.LINKSOCIALACCOUNT);
     }
 
     Map<Long, OAuthAuthentication> map = new HashMap<>();

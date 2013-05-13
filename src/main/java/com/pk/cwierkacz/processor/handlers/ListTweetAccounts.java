@@ -28,7 +28,7 @@ public class ListTweetAccounts implements Handler
 
     @Override
     public boolean isHandleable( ApplicationData applicationData ) {
-        return applicationData.getRequest().getAction().equals(Action.FETCHTWEETACCOUNTS);
+        return applicationData.getRequest().getAction().equals(Action.LINKSOCIALACCOUNT);
     }
 
     @Override

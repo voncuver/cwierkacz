@@ -12,6 +12,7 @@ import org.joda.time.DateTime;
 
 import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.request.RequestImpl;
+import com.pk.cwierkacz.model.AccountType;
 
 public class RequestBuilder
 {
@@ -24,9 +25,10 @@ public class RequestBuilder
     public static final String PASSWORDNEW = "passwordNew";
 
     public static final String ACCOUNTS = "accounts";
+    public static final String ACCOUNTTYPE = "accountType";
 
-    public static final String LOGINTWEET = "loginTweet";
-    public static final String PASSWORDTWEET = "passwordTweet";
+    public static final String ACCOUNTLOGIN = "accountLogin";
+    public static final String ACCOUNTPASSWORD = "accountPassword";
 
     public static final String TWEET = "tweet";
     public static final String REPLAYFORID = "replayForId";
@@ -62,7 +64,7 @@ public class RequestBuilder
                   action.equals(Action.DELACCOUNT) ) {
             request = createManageRequest(params, request);
         }
-        else if ( action.equals(Action.FETCHTWEETS) ) {
+        else if ( action.equals(Action.FETCHMESSAGE) || action.equals(Action.FETCHMESSAGES) ) {
             request = createFetchTweetsRequest(params, request);
 
         }
@@ -70,7 +72,7 @@ public class RequestBuilder
 
             request = createPublishTweetRequest(params, request, body);
         }
-        else if ( action.equals(Action.ADDTWEETACCOUNT) || action.equals(Action.DELTWEETACCOUNT) ) {
+        else if ( action.equals(Action.LINKSOCIALACCOUNT) || action.equals(Action.UNLINKSOCIALACCOUNT) ) {
             request = createAddTweeterAccountRequest(params, request);
         }
 
@@ -128,7 +130,9 @@ public class RequestBuilder
 
     private static Request createFetchTweetsRequest( Map<String, String[]> params, Request request ) {
         List<String> accounts = Arrays.asList(params.get(ACCOUNTS));
-        request = RequestImpl.create(request).buildFetchRequest(accounts);
+        String accontTypeString = params.get(ACCOUNTTYPE)[ 0 ];
+        AccountType accountType = AccountType.getAccountType(accontTypeString);
+        request = RequestImpl.create(request).buildFetchRequest(accounts, accountType);
 
         if ( params.get(SIZE) != null && params.get(SIZE).length > 0 ) {
             int size = Integer.parseInt(params.get(SIZE)[ 0 ]);
@@ -163,15 +167,16 @@ public class RequestBuilder
         String tweetText = params.get(TWEET)[ 0 ];
         List<String> accounts = Arrays.asList(params.get(ACCOUNTS));
 
-        request = RequestImpl.create(request)
-                             .buildPublishRequest(tweetText, accounts)
-                             .withImg(body, params.get(IMGNAME)[ 0 ]);
+        request = RequestImpl.create(request).buildPublishRequest(tweetText, accounts);
+
+        if ( params.get(IMGNAME) != null && params.get(IMGNAME).length > 0 ) {
+            String imgName = params.get(IMGNAME)[ 0 ];
+            request = RequestImpl.create(request).withImg(body, imgName);
+        }
 
         if ( params.get(REPLAYFORID) != null && params.get(REPLAYFORID).length > 0 ) {
             Long replayForId = Long.parseLong(params.get(REPLAYFORID)[ 0 ]);
-            request = RequestImpl.create(request)
-                                 .withReplayForID(replayForId)
-                                 .withImg(body, params.get(IMGNAME)[ 0 ]);
+            request = RequestImpl.create(request).withReplayForID(replayForId);
         }
 
         if ( params.get(RETWEETFORID) != null && params.get(RETWEETFORID).length > 0 ) {
@@ -183,12 +188,12 @@ public class RequestBuilder
     }
 
     private static Request createAddTweeterAccountRequest( Map<String, String[]> params, Request request ) {
-        String loginTweet = params.get(LOGINTWEET)[ 0 ];
+        String loginTweet = params.get(ACCOUNTLOGIN)[ 0 ];
 
         request = RequestImpl.create(request).buildAddAccountTweetRequest(loginTweet);
 
-        if ( params.get(PASSWORDTWEET) != null && params.get(PASSWORDTWEET).length > 0 ) {
-            String password = params.get(PASSWORDTWEET)[ 0 ];
+        if ( params.get(ACCOUNTPASSWORD) != null && params.get(ACCOUNTPASSWORD).length > 0 ) {
+            String password = params.get(ACCOUNTPASSWORD)[ 0 ];
             request = RequestImpl.create(request).withPasswordTweet(password);
         }
 

@@ -7,6 +7,7 @@ import java.util.List;
 import org.joda.time.DateTime;
 
 import com.pk.cwierkacz.http.Action;
+import com.pk.cwierkacz.model.AccountType;
 
 // login,logout,createAccount - by Action
 public class RequestImpl implements
@@ -52,6 +53,8 @@ public class RequestImpl implements
     //PUBLISHTWEET
     private String tweetText;
 
+    private AccountType accountType;
+
     public static RequestImpl create( Action action ) {
         RequestImpl requestImpl = new RequestImpl();
         requestImpl.timestamp = new Timestamp(new Date().getTime());
@@ -85,6 +88,7 @@ public class RequestImpl implements
         requestImpl.tokenId = impl.getTokenId();
         requestImpl.tweetText = impl.getTweetText();
         requestImpl.userName = impl.getUserName();
+        requestImpl.body = impl.getBody();
         return requestImpl;
     }
 
@@ -169,8 +173,9 @@ public class RequestImpl implements
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends RequestImpl > T buildFetchRequest( List<String> accounts ) {
+    public < T extends RequestImpl > T buildFetchRequest( List<String> accounts, AccountType accountType ) {
         this.accounts = accounts;
+        this.accountType = accountType;
         return (T) this;
     }
 
@@ -179,12 +184,14 @@ public class RequestImpl implements
                                                       int size,
                                                       DateTime dateFrom,
                                                       long replayForId,
-                                                      long retweetedId ) {
+                                                      long retweetedId,
+                                                      AccountType accountType ) {
         this.accounts = accounts;
         this.size = size;
         this.dateFrom = dateFrom;
         this.replayFor = replayForId;
         this.retweetFor = retweetedId;
+        this.accountType = accountType;
         return (T) this;
     }
 
@@ -295,6 +302,11 @@ public class RequestImpl implements
     @Override
     public String getImgName( ) {
         return imgName;
+    }
+
+    @Override
+    public AccountType getAccountType( ) {
+        return accountType;
     }
 
 }

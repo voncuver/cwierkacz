@@ -52,17 +52,17 @@ public class RequestBuilderTest
     @Test
     public void addTweeterAccountRequestTest( ) {
         Map<String, String[]> params = new HashMap<String, String[]>();
-        params.put("action", new String[] {Action.ADDTWEETACCOUNT.toString()});
+        params.put("action", new String[] {Action.LINKSOCIALACCOUNT.toString()});
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
-        params.put("loginTweet", new String[] {"TEST"});
-        params.put("passwordTweet", new String[] {"TEST"});
+        params.put("accountLogin", new String[] {"TEST"});
+        params.put("accountPassword", new String[] {"TEST"});
 
         Cookie[] cookies = new Cookie[0];
 
         AddTweeterAccountRequest request = RequestBuilder.buildRequest(params, cookies, null);
 
-        assertEquals(Action.ADDTWEETACCOUNT, request.getAction());
+        assertEquals(Action.LINKSOCIALACCOUNT, request.getAction());
         assertEquals(1234, request.getTokenId());
         assertEquals("TEST", request.getUserName());
         assertEquals("TEST", request.getLoginTweet());
@@ -72,7 +72,7 @@ public class RequestBuilderTest
     @Test
     public void fetchTweetsRequestTest( ) {
         Map<String, String[]> params = new HashMap<String, String[]>();
-        params.put("action", new String[] {Action.FETCHTWEETS.toString()});
+        params.put("action", new String[] {Action.FETCHMESSAGES.toString()});
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
         params.put("password", new String[] {"1111"});
@@ -82,12 +82,13 @@ public class RequestBuilderTest
         params.put("size", new String[] {"15"});
         params.put("dateFrom", new String[] {"2012-12-01"});
         params.put("dateTo", new String[] {"2012-12-04"});
+        params.put("accountType", new String[] {"twitter"});
 
         Cookie[] cookies = new Cookie[0];
 
         FetchTweetsRequest request = RequestBuilder.buildRequest(params, cookies, null);
 
-        assertEquals(Action.FETCHTWEETS, request.getAction());
+        assertEquals(Action.FETCHMESSAGES, request.getAction());
         assertEquals(1234, request.getTokenId());
         assertEquals("TEST", request.getUserName());
 
@@ -153,6 +154,7 @@ public class RequestBuilderTest
         params.put("token", new String[] {"1234"});
         params.put("accounts", new String[] {"1234", "test"});
         params.put("tweet", new String[] {"Testtowy test"});
+        params.put("imgName", new String[] {"TEST"});
 
         File lenaFile = new File("src/test/java/com/pk/cwierkacz/http/lena.PNG");
         InputStream is = new FileInputStream(lenaFile);
@@ -180,7 +182,7 @@ public class RequestBuilderTest
     @Test
     public void fetchTweeterAccountsTest( ) {
         Map<String, String[]> params = new HashMap<String, String[]>();
-        params.put("action", new String[] {Action.FETCHTWEETACCOUNTS.toString()});
+        params.put("action", new String[] {Action.FETCHSOCIALACCOUNTS.toString()});
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
 
@@ -188,7 +190,7 @@ public class RequestBuilderTest
 
         Request request = RequestBuilder.buildRequest(params, cookies, null);
 
-        assertEquals(Action.FETCHTWEETACCOUNTS, request.getAction());
+        assertEquals(Action.FETCHSOCIALACCOUNTS, request.getAction());
         assertEquals(1234, request.getTokenId());
         assertEquals("TEST", request.getUserName());
     }
