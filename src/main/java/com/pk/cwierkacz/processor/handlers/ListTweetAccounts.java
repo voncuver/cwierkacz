@@ -16,7 +16,7 @@ import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.UserService;
 
-public class ListTweetAccounts implements Handler
+public class ListTweetAccounts extends AbstractHandler
 {
     private final UserService userService;
     private final SessionService sessionService;

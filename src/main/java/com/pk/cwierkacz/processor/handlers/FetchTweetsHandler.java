@@ -32,7 +32,7 @@ import com.pk.cwierkacz.twitter.TwitterAccountMap;
 import com.pk.cwierkacz.twitter.TwitterActionException;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
 
-public class FetchTweetsHandler extends FileSaver implements Handler
+public class FetchTweetsHandler extends AbstractHandler
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(FetchTweetsHandler.class);
 
@@ -44,8 +44,10 @@ public class FetchTweetsHandler extends FileSaver implements Handler
 
     private final SessionService sessionService;
 
+    private final FileSaver fileSaver;
+
     private TweetDao tweetWithImg( TweetDao t ) throws IOException {
-        t.setImagePath(saveFileFromUrl(t.getTwitterImageUrl()));
+        t.setImagePath(fileSaver.saveFileFromUrl(t.getTwitterImageUrl()));
         return t;
     }
 
@@ -54,6 +56,7 @@ public class FetchTweetsHandler extends FileSaver implements Handler
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
         this.userService = ServiceRepo.getInstance().getService(UserService.class);
         this.sessionService = ServiceRepo.getInstance().getService(SessionService.class);
+        this.fileSaver = new FileSaver();
     }
 
     @Override

@@ -11,7 +11,7 @@ import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.UserService;
 
-public class LogoutHandler implements Handler
+public class LogoutHandler extends AbstractHandler
 {
     private final UserService userService;
     private final SessionService sessionService;

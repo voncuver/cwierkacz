@@ -13,7 +13,7 @@ import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.UserService;
 import com.pk.cwierkacz.utils.HashUtil;
 
-public class DeleteAccountHandler implements Handler
+public class DeleteAccountHandler extends AbstractHandler
 {
 
     private final UserService userService;

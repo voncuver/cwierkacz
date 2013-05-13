@@ -14,18 +14,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 
 import com.pk.cwierkacz.exception.ProcessingException;
-import com.pk.cwierkacz.http.RequestBuilder;
-import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.model.transformer.JsonTransformer;
-import com.pk.cwierkacz.processor.MainProcessor;
 
 public class EntryServlet extends HttpServlet
 {
-    MainProcessor mainProcessor;
+    private final SecurityController securityController;
 
     public EntryServlet() {
-        mainProcessor = MainProcessor.getInstance();
+        securityController = new SecurityController();
     }
 
     private static final long serialVersionUID = 1310933093609408261L;
@@ -48,8 +45,7 @@ public class EntryServlet extends HttpServlet
         if ( bodyStream != null )
             body = IOUtils.toByteArray(bodyStream);
 
-        Request requestAction = RequestBuilder.buildRequest(parameters, cookies, body);
-        Response responseResult = mainProcessor.process(requestAction);
+        Response responseResult = securityController.handle(parameters, cookies, body);
 
         String responseJson;
         try {

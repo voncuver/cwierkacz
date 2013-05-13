@@ -6,5 +6,5 @@ public interface Handler
 {
     boolean isHandleable( ApplicationData applicationData );
 
-    void handle( ApplicationData appData );
+    void handleWithSecurity( ApplicationData appData );
 }

@@ -25,7 +25,7 @@ import com.pk.cwierkacz.processor.handlers.helpers.HttpClient;
 import com.pk.cwierkacz.twitter.OAuthAuthentication;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
 
-public class WireTweetAccount implements Handler
+public class WireTweetAccount extends AbstractHandler
 {
 
     private final UserService userService;

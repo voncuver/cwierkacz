@@ -13,7 +13,7 @@ import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.UserService;
 import com.pk.cwierkacz.utils.HashUtil;
 
-public class ModifyAccountHandler implements Handler
+public class ModifyAccountHandler extends AbstractHandler
 {
 
     private final UserService userService;

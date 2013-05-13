@@ -16,7 +16,7 @@ import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.model.service.UserService;
 
-public class UnwireTweetAcocunt implements Handler
+public class UnwireTweetAcocunt extends AbstractHandler
 {
 
     private final UserService userService;

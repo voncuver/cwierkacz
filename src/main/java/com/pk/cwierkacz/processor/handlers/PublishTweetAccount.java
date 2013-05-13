@@ -27,7 +27,7 @@ import com.pk.cwierkacz.twitter.TwitterActionException;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
 import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
 
-public class PublishTweetAccount extends FileSaver implements Handler
+public class PublishTweetAccount extends AbstractHandler
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishTweetAccount.class);
 
@@ -35,11 +35,13 @@ public class PublishTweetAccount extends FileSaver implements Handler
 
     private final TwitterAccountService accountService;
     private final SettingsService settingsService;
+    private final FileSaver fileSaver;
 
     public PublishTweetAccount() {
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
         this.settingsService = ServiceRepo.getInstance().getService(SettingsService.class);
+        this.fileSaver = new FileSaver();
     }
 
     @Override
@@ -96,7 +98,8 @@ public class PublishTweetAccount extends FileSaver implements Handler
         TweetAttachments attachments = TweetAttachments.empty();
         if ( !errors && !deny && publishRequest.getBody() != null && publishRequest.getImgName() != null ) {
             try {
-                AttachmentsWithResources awr = saveFile(publishRequest.getBody(), publishRequest.getImgName());
+                AttachmentsWithResources awr = fileSaver.saveFile(publishRequest.getBody(),
+                                                                  publishRequest.getImgName());
                 filename = awr.getImgPath();
                 attachments = awr.getAttachments();
             }

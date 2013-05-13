@@ -11,7 +11,7 @@ import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.UserService;
 import com.pk.cwierkacz.utils.HashUtil;
 
-public class CreateAccountHandler implements Handler
+public class CreateAccountHandler extends AbstractHandler
 {
     private final UserService userService;
 

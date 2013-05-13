@@ -2,8 +2,6 @@ package com.pk.cwierkacz.processor.handlers;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
@@ -11,14 +9,13 @@ import com.pk.cwierkacz.http.request.LoginRequest;
 import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.dao.SessionDao;
-import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.dao.UserDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.UserService;
 import com.pk.cwierkacz.utils.HashUtil;
 import com.pk.cwierkacz.utils.TokenUtil;
 
-public class LoginHandler implements Handler
+public class LoginHandler extends AbstractHandler
 {
     private final UserService userService;
 
@@ -49,12 +46,6 @@ public class LoginHandler implements Handler
         if ( !password.equals(cadidatePass) ) {
             appData.setResponse(ResponseImpl.create(Status.DENY, "Wrong password", 0));
             return;
-        }
-
-        Set<String> accounts = new HashSet<>();
-
-        for ( TwitterAccountDao accountDao : user.getAccounts() ) {
-            accounts.add(accountDao.getAccountName());
         }
 
         if ( user.getSession() != null ) {
