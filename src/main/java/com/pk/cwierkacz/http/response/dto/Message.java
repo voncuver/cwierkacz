@@ -20,8 +20,6 @@ public class Message
 
     private Long retweetedId;
 
-    private Long accountId;
-
     private Account account;
 
     private String text;
@@ -74,14 +72,6 @@ public class Message
 
     public void setDeleted( boolean isDeleted ) {
         this.isDeleted = isDeleted;
-    }
-
-    public Long getAccountId( ) {
-        return accountId;
-    }
-
-    public void setAccountId( Long accountId ) {
-        this.accountId = accountId;
     }
 
     public Long getRetweetedId( ) {
@@ -162,7 +152,6 @@ public class Message
 
         //TODO przed uzyciem tego zastanowic sie nad tym,pewnie trzeba cos tu pozmienia, chocby ten file?
         Message tweet = new Message();
-        tweet.setAccountId(null);
         Account account = new Account(accountName, accountType);
         tweet.setAccount(account);
         tweet.setCratedDate(null); //brak daty - przejebane
