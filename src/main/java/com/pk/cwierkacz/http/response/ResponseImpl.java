@@ -8,6 +8,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.pk.cwierkacz.http.Status;
+import com.pk.cwierkacz.model.Account;
 import com.pk.cwierkacz.model.dao.TweetDao;
 
 @JsonSerialize( include = JsonSerialize.Inclusion.NON_NULL )
@@ -21,7 +22,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
     @JsonIgnore
     private long tokenId;
 
-    private Set<String> accounts;
+    private Set<Account> accounts;
 
     private List<TweetDao> tweets; //TODO może lepsza by była mapa przechowująca account name na liste tweetów? - ale jeśli tak to co miało by oznaczać wtedy size w requescie? - proponował bym wtedy zeby to był size per konto
 
@@ -41,7 +42,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Response > T buildLoginResponse( Set<String> accounts ) {
+    public < T extends Response > T buildLoginResponse( Set<Account> accounts ) {
         this.accounts = accounts;
         return (T) this;
     }
@@ -69,7 +70,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchTweetsRespons
     }
 
     @Override
-    public Set<String> getAccounts( ) {
+    public Set<Account> getAccounts( ) {
         return accounts;
     }
 

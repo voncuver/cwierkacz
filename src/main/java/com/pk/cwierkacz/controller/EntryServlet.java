@@ -55,6 +55,10 @@ public class EntryServlet extends HttpServlet
             responseJson = "Fail to creat JSON";
         }
 
+        if ( parameters.containsKey("callback") ) {
+            responseJson = parameters.get("callback")[ 0 ] + "(" + responseJson + ");";
+        }
+
         Cookie cookie = new Cookie("token", new Long(responseResult.getTokenId()).toString());
         cookie.setMaxAge(60 * 60);
         response.addCookie(cookie);

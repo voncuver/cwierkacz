@@ -8,6 +8,8 @@ import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.AddTweeterAccountRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
+import com.pk.cwierkacz.model.Account;
+import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.dao.SessionDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
@@ -28,7 +30,7 @@ public class ListTweetAccounts extends AbstractHandler
 
     @Override
     public boolean isHandleable( ApplicationData applicationData ) {
-        return applicationData.getRequest().getAction().equals(Action.LINKSOCIALACCOUNT);
+        return applicationData.getRequest().getAction().equals(Action.FETCHSOCIALACCOUNTS);
     }
 
     @Override
@@ -45,9 +47,9 @@ public class ListTweetAccounts extends AbstractHandler
 
         Set<TwitterAccountDao> accounts = user.getAccounts();
 
-        Set<String> accountsNames = new HashSet<>();
+        Set<Account> accountsNames = new HashSet<>();
         for ( TwitterAccountDao accountDao : accounts ) {
-            accountsNames.add(accountDao.getAccountName());
+            accountsNames.add(new Account(accountDao.getAccountName(), AccountType.TWITTER));
         }
 
         Response response = ResponseImpl.create(Status.OK, "Account List", accRequest.getTokenId())
