@@ -145,14 +145,17 @@ public class PublishTweetAccount extends AbstractHandler
                 catch ( TwitterAuthenticationException e ) {
                     LOGGER.error(e.getMessage());
                     errorBuilder.append("fail while authenticate for " + accountName + " ; ");
+                    errors = true;
                 }
                 catch ( TwitterActionException e ) {
                     LOGGER.error(e.getMessage());
                     errorBuilder.append("fail while add tweet for " + accountName + " ; ");
+                    errors = true;
                 }
                 catch ( Throwable e ) {
                     LOGGER.error(e.getMessage());
                     errorBuilder.append("internal error for " + accountName + " ; ");
+                    errors = true;
                 }
             }
         }

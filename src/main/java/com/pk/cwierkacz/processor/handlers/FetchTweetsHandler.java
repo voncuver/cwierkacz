@@ -15,6 +15,7 @@ import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.FetchTweetsRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
+import com.pk.cwierkacz.http.response.dto.Message;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.dao.SessionDao;
 import com.pk.cwierkacz.model.dao.TweetDao;
@@ -232,14 +233,14 @@ public class FetchTweetsHandler extends AbstractHandler
             response = ResponseImpl.create(Status.OK,
                                            "Tweet for all account was fetched correctly",
                                            appData.getRequest().getTokenId())
-                                   .buildFetchResponse(mergedTweets, users);
+                                   .buildFetchResponse(Message.apply(mergedTweets));
             ;
         }
         else {
             response = ResponseImpl.create(Status.ERROR,
                                            "Tweet for not all account was fetched correctly - " + errors,
                                            appData.getRequest().getTokenId())
-                                   .buildFetchResponse(mergedTweets, users);
+                                   .buildFetchResponse(Message.apply(mergedTweets));
         }
 
         appData.setResponse(response);

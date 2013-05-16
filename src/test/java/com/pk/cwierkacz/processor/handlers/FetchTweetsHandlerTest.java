@@ -19,7 +19,8 @@ import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.request.RequestImpl;
-import com.pk.cwierkacz.http.response.FetchTweetsResponse;
+import com.pk.cwierkacz.http.response.FetchMessagesResponse;
+import com.pk.cwierkacz.http.response.dto.Message;
 import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.dao.TweetDao;
@@ -110,20 +111,14 @@ public class FetchTweetsHandlerTest extends PopulateData
         fetchTweetsHandler.handle(appData);
 
         assertNotNull(appData.getResponse());
-        System.out.println("msg: " + appData.getResponse().getMessage());
+        System.out.println("msg: " + appData.getResponse().getErrors());
         assertEquals(Status.OK, appData.getResponse().getStatus());
-        FetchTweetsResponse response = (FetchTweetsResponse) appData.getResponse();
+        FetchMessagesResponse response = (FetchMessagesResponse) appData.getResponse();
 
-        assertEquals(2, response.getUsersTweeter().size());
-        assertTrue(response.getUsersTweeter().containsKey(twitterAccountDao.getId()));
-        assertTrue(response.getUsersTweeter().containsKey(twitterAccountDao2.getId()));
-        assertTrue(response.getUsersTweeter().containsValue(twitterAccountDao.getAccountName()));
-        assertTrue(response.getUsersTweeter().containsValue(twitterAccountDao2.getAccountName()));
-
-        assertEquals(10, response.getTweets().size());
+        assertEquals(10, response.getMessages().size());
 
         for ( int i = 0; i < 10; i++ ) {
-            assertEquals(tweets.get(11 - i), response.getTweets().get(i));
+            assertEquals(tweets.get(11 - i).getText(), response.getMessages().get(i).getText());
         }
 
     }
@@ -160,18 +155,12 @@ public class FetchTweetsHandlerTest extends PopulateData
         fetchTweetsHandler.handle(appData);
 
         assertNotNull(appData.getResponse());
-        System.out.println("msg: " + appData.getResponse().getMessage());
+        System.out.println("msg: " + appData.getResponse().getErrors());
         assertEquals(Status.OK, appData.getResponse().getStatus());
-        FetchTweetsResponse response = (FetchTweetsResponse) appData.getResponse();
+        FetchMessagesResponse response = (FetchMessagesResponse) appData.getResponse();
 
-        assertEquals(1, response.getUsersTweeter().size());
-        assertTrue(response.getUsersTweeter().containsKey(twitterAccountDao.getId()));
-        assertTrue(response.getUsersTweeter().containsValue(twitterAccountDao.getAccountName()));
-
-        assertEquals(2, response.getTweets().size());
-
-        TweetDao tweetNew = response.getTweets().get(0);
-        assertEquals(t1, tweetNew);
+        Message tweetNew = response.getMessages().get(0);
+        assertEquals(t1.getText(), tweetNew.getText());
 
         assertNotNull(tweetNew.getImagePath());
         assertTrue(tweetNew.getImagePath().endsWith(".png"));
@@ -239,20 +228,16 @@ public class FetchTweetsHandlerTest extends PopulateData
         fetchTweetsHandler.handle(appData);
 
         assertNotNull(appData.getResponse());
-        System.out.println("msg: " + appData.getResponse().getMessage());
+        System.out.println("msg: " + appData.getResponse().getErrors());
         assertEquals(Status.OK, appData.getResponse().getStatus());
-        FetchTweetsResponse response = (FetchTweetsResponse) appData.getResponse();
+        FetchMessagesResponse response = (FetchMessagesResponse) appData.getResponse();
 
-        assertEquals(2, response.getUsersTweeter().size());
-        assertTrue(response.getUsersTweeter().containsKey(twitterAccountDao.getId()));
-        assertTrue(response.getUsersTweeter().containsValue(twitterAccountDao.getAccountName()));
+        assertEquals(9, response.getMessages().size());
 
-        assertEquals(9, response.getTweets().size());
-
-        assertEquals(mainTweet, response.getTweets().get(8));
+        assertEquals(mainTweet.getText(), response.getMessages().get(8).getText());
 
         for ( int i = 0; i < 8; i++ ) {
-            assertEquals(tweets.get(7 - i), response.getTweets().get(i));
+            assertEquals(tweets.get(7 - i).getText(), response.getMessages().get(i).getText());
         }
     }
 
@@ -291,18 +276,14 @@ public class FetchTweetsHandlerTest extends PopulateData
         fetchTweetsHandler.handle(appData);
 
         assertNotNull(appData.getResponse());
-        System.out.println("msg: " + appData.getResponse().getMessage());
+        System.out.println("msg: " + appData.getResponse().getErrors());
         assertEquals(Status.OK, appData.getResponse().getStatus());
-        FetchTweetsResponse response = (FetchTweetsResponse) appData.getResponse();
+        FetchMessagesResponse response = (FetchMessagesResponse) appData.getResponse();
 
-        assertEquals(2, response.getUsersTweeter().size());
-        assertTrue(response.getUsersTweeter().containsKey(twitterAccountDao.getId()));
-        assertTrue(response.getUsersTweeter().containsValue(twitterAccountDao.getAccountName()));
+        assertEquals(2, response.getMessages().size());
 
-        assertEquals(2, response.getTweets().size());
-
-        assertEquals(tweets.get(0), response.getTweets().get(0));
-        assertEquals(mainTweet, response.getTweets().get(1));
+        assertEquals(tweets.get(0).getText(), response.getMessages().get(0).getText());
+        assertEquals(mainTweet.getText(), response.getMessages().get(1).getText());
 
     }
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 
@@ -102,6 +103,15 @@ public class TweetService extends AbstractService<TweetDao>
         return result;
     }
 
+    public Long countActualRetweets( TweetDao retweeted ) {
+        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("retweeted", retweeted))
+                                                       .add(Restrictions.eq("isDeleted", false));
+
+        Long c = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+        commit();
+        return c;
+    }
+
     @SuppressWarnings( "unchecked" )
     public List<TweetDao> getActualRetweets( TweetDao retweeted ) {
         Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("retweeted", retweeted))
@@ -119,6 +129,15 @@ public class TweetService extends AbstractService<TweetDao>
             return t.get(0);
         else
             return null;
+    }
+
+    public Long countActualReplies( TweetDao retweeted ) {
+        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("inReplyTo", retweeted))
+                                                       .add(Restrictions.eq("isDeleted", false));
+
+        Long c = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+        commit();
+        return c;
     }
 
     @SuppressWarnings( "unchecked" )
