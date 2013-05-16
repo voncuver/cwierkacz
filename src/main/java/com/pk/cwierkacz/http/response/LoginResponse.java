@@ -2,8 +2,10 @@ package com.pk.cwierkacz.http.response;
 
 import java.util.Set;
 
+import com.pk.cwierkacz.http.response.dto.Account;
+
 public interface LoginResponse extends Response
 {
-    Set<String> getAccounts( );
+    Set<Account> getAccounts( );
 
 }

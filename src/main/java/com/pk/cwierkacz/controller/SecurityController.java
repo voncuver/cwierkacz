@@ -23,7 +23,7 @@ public class SecurityController
 
     public Response handle( Map<String, String[]> parameters, Cookie[] cookies, byte body[] ) {
         Result result = checkParams();
-        if ( result.isValid() ) {
+        if ( !result.isValid() ) {
             Long tokenId = 0l;
             if ( parameters.get(RequestBuilder.TOKEN) != null &&
                  parameters.get(RequestBuilder.TOKEN).length > 0 ) {

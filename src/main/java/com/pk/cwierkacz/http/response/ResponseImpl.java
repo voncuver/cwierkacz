@@ -7,6 +7,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.pk.cwierkacz.http.Status;
+import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.http.response.dto.Message;
 
 @JsonSerialize( include = JsonSerialize.Inclusion.NON_NULL )
@@ -20,7 +21,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchMessagesRespo
     @JsonIgnore
     private long tokenId;
 
-    private Set<String> accounts;
+    private Set<Account> accounts;
 
     private List<Message> messages;
 
@@ -38,7 +39,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchMessagesRespo
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Response > T buildLoginResponse( Set<String> accounts ) {
+    public < T extends Response > T buildLoginResponse( Set<Account> accounts ) {
         this.accounts = accounts;
         return (T) this;
     }
@@ -60,7 +61,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchMessagesRespo
     }
 
     @Override
-    public Set<String> getAccounts( ) {
+    public Set<Account> getAccounts( ) {
         return accounts;
     }
 

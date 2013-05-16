@@ -8,6 +8,7 @@ import org.junit.Test;
 import com.pk.cwierkacz.http.response.FetchMessagesResponse;
 import com.pk.cwierkacz.http.response.LoginResponse;
 import com.pk.cwierkacz.http.response.Response;
+import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.http.response.dto.Message;
 
 public class Generator
@@ -55,6 +56,18 @@ public class Generator
         ObjectMapper mapper = new ObjectMapper();
         JsonSchema jsonSchema = mapper.generateJsonSchema(Message.class);
         System.out.println("Message:");
+        System.out.println("");
+        System.out.println(jsonSchema.toString());
+        System.out.println("");
+        System.out.println("======================");
+    }
+
+    @Test
+    public void generateAccountResponse( ) throws JsonMappingException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonSchema jsonSchema = mapper.generateJsonSchema(Account.class);
+        System.out.println("Account:");
         System.out.println("");
         System.out.println(jsonSchema.toString());
         System.out.println("");

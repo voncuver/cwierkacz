@@ -22,11 +22,7 @@ public class Message
 
     private Long accountId;
 
-    private String accountName;
-
-    private String accountType; // twitter facebookBridge twitpicBridge flickrBridge
-
-    private DateTime cratedDate;
+    private Account account;
 
     private String text;
 
@@ -37,6 +33,8 @@ public class Message
     private Long nbOfRetweets;
 
     private Long nbOfReplies;
+
+    private DateTime cratedDate;
 
     public Long getId( ) {
         return Id;
@@ -52,22 +50,6 @@ public class Message
 
     public void setInReplyToId( Long inReplyToId ) {
         this.inReplyToId = inReplyToId;
-    }
-
-    public String getAccountName( ) {
-        return accountName;
-    }
-
-    public void setAccountName( String accountName ) {
-        this.accountName = accountName;
-    }
-
-    public DateTime getCratedDate( ) {
-        return cratedDate;
-    }
-
-    public void setCratedDate( DateTime cratedDate ) {
-        this.cratedDate = cratedDate;
     }
 
     public String getText( ) {
@@ -126,22 +108,31 @@ public class Message
         this.nbOfReplies = nbOfReplies;
     }
 
-    public String getAccountType( ) {
-        return accountType;
+    public Account getAccount( ) {
+        return account;
     }
 
-    public void setAccountType( String accountType ) {
-        this.accountType = accountType;
+    public void setAccount( Account account ) {
+        this.account = account;
+    }
+
+    public DateTime getCratedDate( ) {
+        return cratedDate;
+    }
+
+    public void setCratedDate( DateTime cratedDate ) {
+        this.cratedDate = cratedDate;
     }
 
     public static Message apply( TweetDao tweetDao ) {
         TweetService tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         Message tweet = new Message();
+        Account account = new Account();
         if ( tweetDao.getCreator() != null ) {
-            tweet.setAccountId(tweetDao.getCreator().getId());
-            tweet.setAccountName(tweetDao.getCreator().getAccountName());
+            account.setLogin(tweetDao.getCreator().getAccountName());
         }
-        tweet.setAccountType(AccountType.TWITTER.getType());
+        account.setType(AccountType.TWITTER);
+        tweet.setAccount(account);
         tweet.setCratedDate(tweetDao.getCratedDate());
         tweet.setDeleted(tweetDao.isDeleted());
         tweet.setId(tweetDao.getId());
@@ -172,8 +163,8 @@ public class Message
         //TODO przed uzyciem tego zastanowic sie nad tym,pewnie trzeba cos tu pozmienia, chocby ten file?
         Message tweet = new Message();
         tweet.setAccountId(null);
-        tweet.setAccountName(accountName);
-        tweet.setAccountType(accountType.getType());
+        Account account = new Account(accountName, accountType);
+        tweet.setAccount(account);
         tweet.setCratedDate(null); //brak daty - przejebane
         tweet.setDeleted(false);
         tweet.setId(item.getId().getId().longValue());
