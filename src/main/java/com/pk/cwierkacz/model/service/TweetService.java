@@ -50,6 +50,13 @@ public class TweetService extends AbstractService<TweetDao>
         return result;
     }
 
+    public TweetDao getById( Long id ) {
+        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("Id", id));
+        TweetDao result = (TweetDao) criteria.uniqueResult();
+        commit();
+        return result;
+    }
+
     public TweetDao getLastActualTweetForAccount( TwitterAccountDao account ) {
         List<TweetDao> t = getActualTweetForAccount(account, null, null, 1);
         if ( t.size() >= 1 )

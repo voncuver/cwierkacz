@@ -139,7 +139,7 @@ public class PublishTweetAccount extends AbstractHandler
                             newTweet.setImagePath(filename);
 
                         tweetService.save(newTweet);
-
+                        appData.setParam("TweetId", newTweet.getId().toString());
                     }
                 }
                 catch ( TwitterAuthenticationException e ) {

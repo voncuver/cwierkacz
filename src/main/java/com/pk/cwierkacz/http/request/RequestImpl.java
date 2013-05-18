@@ -35,6 +35,8 @@ public class RequestImpl implements
     //FETCHTWEETS, PUBLISHTWEET
     private List<String> accounts;
 
+    private List<Long> ids;
+
     //FETCHTWEETS
     private int size;
     private DateTime dateFrom;
@@ -89,6 +91,7 @@ public class RequestImpl implements
         requestImpl.tweetText = impl.getTweetText();
         requestImpl.userName = impl.getUserName();
         requestImpl.body = impl.getBody();
+        requestImpl.ids = impl.getIds();
         return requestImpl;
     }
 
@@ -176,6 +179,12 @@ public class RequestImpl implements
     public < T extends RequestImpl > T buildFetchRequest( List<String> accounts, AccountType accountType ) {
         this.accounts = accounts;
         this.accountType = accountType;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public < T extends RequestImpl > T buildFetchByIdRequest( List<Long> ids ) {
+        this.ids = ids;
         return (T) this;
     }
 
@@ -309,4 +318,8 @@ public class RequestImpl implements
         return accountType;
     }
 
+    @Override
+    public List<Long> getIds( ) {
+        return ids;
+    }
 }

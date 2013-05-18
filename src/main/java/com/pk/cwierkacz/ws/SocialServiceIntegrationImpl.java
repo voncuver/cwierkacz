@@ -1,11 +1,17 @@
 package com.pk.cwierkacz.ws;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
+import javax.servlet.http.Cookie;
 
 import pl.edu.pk.ias.socialserviceintegration.IncorrectPasswordFault;
 import pl.edu.pk.ias.socialserviceintegration.SocialServiceIntegration;
@@ -29,9 +35,25 @@ import pl.edu.pk.ias.types.PublishResponse;
 import pl.edu.pk.ias.types.RemoveRequest;
 import pl.edu.pk.ias.types.RemoveResponse;
 
+import com.pk.cwierkacz.controller.SecurityController;
+import com.pk.cwierkacz.http.Action;
+import com.pk.cwierkacz.http.RequestBuilder;
+import com.pk.cwierkacz.http.Status;
+import com.pk.cwierkacz.http.response.FetchMessagesResponse;
+import com.pk.cwierkacz.http.response.Response;
+import com.pk.cwierkacz.http.response.dto.Account;
+import com.pk.cwierkacz.http.response.dto.Message;
+import com.pk.cwierkacz.model.ApplicationData;
+
 @WebService( endpointInterface = "pl.edu.pk.ias.socialserviceintegration.SocialServiceIntegration" )
 public class SocialServiceIntegrationImpl implements SocialServiceIntegration
 {
+
+    private final SecurityController securityController;
+
+    public SocialServiceIntegrationImpl() {
+        securityController = new SecurityController();
+    }
 
     @Override
     @WebMethod( action = "http://pk.edu.pl/ias/socialserviceintegration/action/login" )
@@ -42,8 +64,16 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
                                            targetNamespace = "http://pk.edu.pl/ias/types",
                                            partName = "parameters" ) LoginRequest parameters ) throws IncorrectPasswordFault,
                                                                                               UserNotExistFault {
+        Map<String, String[]> parametersMap = new HashMap<String, String[]>();
+        parametersMap.put(RequestBuilder.USERNAME, new String[] {parameters.getLogin()});
+        parametersMap.put(RequestBuilder.PASSWORD, new String[] {parameters.getPassword()});
+        parametersMap.put(RequestBuilder.ACTIONPARAM, new String[] {Action.SIGNIN.getActionName()});
+
+        Response response = securityController.handle(parametersMap, new Cookie[0], new byte[0])
+                                              .getResponse();
+
         LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setToken("1234");
+        loginResponse.setToken(Long.toString(response.getTokenId()));
         return loginResponse;
     }
 
@@ -55,8 +85,16 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
     public LogoutResponse logout( @WebParam( name = "logoutRequest",
                                              targetNamespace = "http://pk.edu.pl/ias/types",
                                              partName = "parameters" ) LogoutRequest parameters ) {
+
+        Map<String, String[]> parametersMap = new HashMap<String, String[]>();
+        parametersMap.put(RequestBuilder.TOKEN, new String[] {parameters.getToken()});
+        parametersMap.put(RequestBuilder.ACTIONPARAM, new String[] {Action.SIGNOUT.getActionName()});
+
+        Response response = securityController.handle(parametersMap, new Cookie[0], new byte[0])
+                                              .getResponse();
+
         LogoutResponse logoutResponse = new LogoutResponse();
-        logoutResponse.setIsOperationSuccess(true);
+        logoutResponse.setIsOperationSuccess(response.getStatus().equals(Status.OK));
         return logoutResponse;
     }
 
@@ -68,8 +106,23 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
     public AccountsResponse accounts( @WebParam( name = "accountsRequest",
                                                  targetNamespace = "http://pk.edu.pl/ias/types",
                                                  partName = "parameters" ) AccountsRequest parameters ) throws TokenExpiredFault {
+        Map<String, String[]> parametersMap = new HashMap<String, String[]>();
+        parametersMap.put(RequestBuilder.TOKEN, new String[] {parameters.getToken()});
+        parametersMap.put(RequestBuilder.ACTIONPARAM,
+                          new String[] {Action.FETCHSOCIALACCOUNTS.getActionName()});
+
+        com.pk.cwierkacz.http.response.LoginResponse response = (com.pk.cwierkacz.http.response.LoginResponse) securityController.handle(parametersMap,
+                                                                                                                                         new Cookie[0],
+                                                                                                                                         new byte[0])
+                                                                                                                                 .getResponse();
+        Set<Account> accounts = response.getAccounts();
+        List<String> accountsNames = new ArrayList<>();
+        for ( Account account : accounts ) {
+            accountsNames.add(account.getLogin());
+        }
+
         AccountsResponse accountsResponse = new AccountsResponse();
-        accountsResponse.getLss().add("AAA");
+        accountsResponse.getLss().addAll(accountsNames);
         return accountsResponse;
     }
 
@@ -81,9 +134,23 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
     public PublishResponse publish( @WebParam( name = "publishRequest",
                                                targetNamespace = "http://pk.edu.pl/ias/types",
                                                partName = "parameters" ) PublishRequest parameters ) throws TokenExpiredFault {
+
+        Map<String, String[]> parametersMap = new HashMap<String, String[]>();
+        parametersMap.put(RequestBuilder.TOKEN, new String[] {parameters.getToken()});
+        parametersMap.put(RequestBuilder.ACTIONPARAM, new String[] {Action.PUBLISHTWEET.getActionName()});
+        parametersMap.put(RequestBuilder.IMGNAME, new String[] {parameters.getFilename()});
+        parametersMap.put(RequestBuilder.TWEET, new String[] {parameters.getDescription()});
+        parametersMap.put(RequestBuilder.ACCOUNTS, new String[] {parameters.getLss()});
+
+        ApplicationData response = securityController.handle(parametersMap,
+                                                             new Cookie[0],
+                                                             parameters.getFile());
+
+        List<String> ids = response.getParam("TweetId");
+
         ItemId itemId = new ItemId();
-        itemId.setId(new BigInteger("1234"));
-        itemId.setLss("test");
+        itemId.setId(new BigInteger(ids.get(0)));
+        itemId.setLss(parameters.getLss());
 
         PublishResponse publishResponse = new PublishResponse();
         publishResponse.setId(itemId);
@@ -98,11 +165,40 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
     public GetItemsPreviewsResponse getItemsPreviews( @WebParam( name = "getItemsPreviewsRequest",
                                                                  targetNamespace = "http://pk.edu.pl/ias/types",
                                                                  partName = "parameters" ) GetItemsPreviewsRequest parameters ) throws TokenExpiredFault {
-        GetItemsPreviewsResponse getItemsPreviewsRequest = new GetItemsPreviewsResponse();
-        ItemPreview itemPreview = new ItemPreview();
-        itemPreview.setName("aaa");
-        getItemsPreviewsRequest.getItemPreviewsList().add(itemPreview);
-        return getItemsPreviewsRequest;
+
+        Map<String, String[]> parametersMap = new HashMap<String, String[]>();
+        parametersMap.put(RequestBuilder.TOKEN, new String[] {parameters.getToken()});
+        parametersMap.put(RequestBuilder.ACTIONPARAM, new String[] {Action.FETCHMESSAGES.getActionName()});
+        parametersMap.put(RequestBuilder.DATEFROM, new String[] {parameters.getDateFrom().toString()});
+        parametersMap.put(RequestBuilder.DATETO, new String[] {parameters.getDateTo().toString()});
+        parametersMap.put(RequestBuilder.ACCOUNTS, new String[] {parameters.getLss()});
+
+        FetchMessagesResponse response = (FetchMessagesResponse) securityController.handle(parametersMap,
+                                                                                           new Cookie[0],
+                                                                                           new byte[0])
+                                                                                   .getResponse();
+
+        GetItemsPreviewsResponse getItemsPreviewsResponse = new GetItemsPreviewsResponse();
+
+        for ( Message message : response.getMessages() ) {
+
+            ItemId itemId = new ItemId();
+            itemId.setLss(message.getAccount().getLogin());
+            itemId.setId(BigInteger.valueOf(message.getId()));
+            ItemPreview itemPreview = new ItemPreview();
+
+            itemPreview.setId(itemId);
+            if ( message.getText().length() > 10 ) {
+                itemPreview.setName(message.getText().substring(0, 10) + "...");
+            }
+            else {
+                itemPreview.setName(message.getText());
+            }
+
+            getItemsPreviewsResponse.getItemPreviewsList().add(itemPreview);
+
+        }
+        return getItemsPreviewsResponse;
     }
 
     @Override
@@ -113,11 +209,42 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
     public GetItemsResponse getItems( @WebParam( name = "getItemsRequest",
                                                  targetNamespace = "http://pk.edu.pl/ias/types",
                                                  partName = "parameters" ) GetItemsRequest parameters ) throws TokenExpiredFault {
-        Item item = new Item();
-        item.setDescription("test");
+
+        Map<String, String[]> parametersMap = new HashMap<String, String[]>();
+        parametersMap.put(RequestBuilder.TOKEN, new String[] {parameters.getToken()});
+        parametersMap.put(RequestBuilder.ACTIONPARAM, new String[] {Action.FETCHMESSAGEBYID.getActionName()});
+
+        List<String> ids = new ArrayList<>();
+        for ( ItemId id : parameters.getIdsList() ) {
+            ids.add(id.getId().toString());
+        }
+
+        parametersMap.put(RequestBuilder.IDS, ids.toArray(new String[0]));
+
+        FetchMessagesResponse response = (FetchMessagesResponse) securityController.handle(parametersMap,
+                                                                                           new Cookie[0],
+                                                                                           new byte[0])
+                                                                                   .getResponse();
 
         GetItemsResponse getItemsResponse = new GetItemsResponse();
-        getItemsResponse.getItemsList().add(item);
+
+        for ( Message message : response.getMessages() ) {
+
+            ItemId itemId = new ItemId();
+            itemId.setLss(message.getAccount().getLogin());
+            itemId.setId(BigInteger.valueOf(message.getId()));
+            Item item = new Item();
+            item.setDescription(message.getText());
+            if ( message.getText().length() > 10 ) {
+                item.setName(message.getText().substring(0, 10) + "...");
+            }
+            else {
+                item.setName(message.getText());
+            }
+
+            getItemsResponse.getItemsList().add(item);
+
+        }
         return getItemsResponse;
     }
 
@@ -129,11 +256,7 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
     public RemoveResponse remove( @WebParam( name = "removeRequest",
                                              targetNamespace = "http://pk.edu.pl/ias/types",
                                              partName = "parameters" ) RemoveRequest parameters ) throws TokenExpiredFault {
-        RemoveResponse removeResponse = new RemoveResponse();
-        ItemId itemId = new ItemId();
-        itemId.setLss("1111");
-        removeResponse.getIdsList().add(itemId);
-        return removeResponse;
+        return null;
     }
 
 }

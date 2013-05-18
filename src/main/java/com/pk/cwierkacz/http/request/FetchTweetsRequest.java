@@ -22,4 +22,6 @@ public interface FetchTweetsRequest extends Request
     DateTime getDateFrom( );
 
     DateTime getDateTo( );
+
+    List<Long> getIds( );
 }

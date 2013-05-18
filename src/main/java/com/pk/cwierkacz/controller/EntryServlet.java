@@ -45,7 +45,7 @@ public class EntryServlet extends HttpServlet
         if ( bodyStream != null )
             body = IOUtils.toByteArray(bodyStream);
 
-        Response responseResult = securityController.handle(parameters, cookies, body);
+        Response responseResult = securityController.handle(parameters, cookies, body).getResponse();
 
         String responseJson;
         try {

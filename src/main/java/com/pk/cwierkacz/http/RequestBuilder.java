@@ -40,6 +40,8 @@ public class RequestBuilder
     public static final String DATEFROM = "dateFrom";
     public static final String DATETO = "dateTo";
 
+    public static final String IDS = "ids";
+
     public static < T > T buildRequest( Map<String, String[]> params, Cookie[] cookies ) {
         return buildRequest(params, cookies, null);
     }
@@ -68,6 +70,9 @@ public class RequestBuilder
         else if ( action.equals(Action.FETCHMESSAGE) || action.equals(Action.FETCHMESSAGES) ) {
             request = createFetchTweetsRequest(params, request);
 
+        }
+        else if ( action.equals(Action.FETCHMESSAGEBYID) ) {
+            request = createFetchByIdTweetsRequest(params, request);
         }
         else if ( action.equals(Action.PUBLISHTWEET) ) {
             byte[] bodyOrNull = null;
@@ -162,6 +167,17 @@ public class RequestBuilder
             request = RequestImpl.create(request).withRetweetForId(retweetForId);
         }
         return request;
+    }
+
+    private static Request createFetchByIdTweetsRequest( Map<String, String[]> params, Request request ) {
+        List<String> ids = Arrays.asList(params.get(IDS));
+        List<Long> idsLong = new ArrayList<>();
+
+        for ( String id : ids ) {
+            idsLong.add(new Long(id));
+        }
+
+        return request = RequestImpl.create(request).buildFetchByIdRequest(idsLong);
     }
 
     private static Request createPublishTweetRequest( Map<String, String[]> params,
