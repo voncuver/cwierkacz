@@ -21,10 +21,10 @@ import javax.xml.ws.WebServiceFeature;
 public class SocialServiceIntegrationImplService extends Service
 {
 
-    private final static URL SOCIALSERVICEINTEGRATIONIMPLSERVICE_WSDL_LOCATION;
-    private final static WebServiceException SOCIALSERVICEINTEGRATIONIMPLSERVICE_EXCEPTION;
-    private final static QName SOCIALSERVICEINTEGRATIONIMPLSERVICE_QNAME = new QName("http://ws.cwierkacz.pk.com/",
-                                                                                     "SocialServiceIntegrationImplService");
+    private static URL SOCIALSERVICEINTEGRATIONIMPLSERVICE_WSDL_LOCATION;
+    private static WebServiceException SOCIALSERVICEINTEGRATIONIMPLSERVICE_EXCEPTION;
+    private static QName SOCIALSERVICEINTEGRATIONIMPLSERVICE_QNAME = new QName("http://ws.cwierkacz.pk.com/",
+                                                                               "SocialServiceIntegrationImplService");
 
     static {
         URL url = null;
@@ -41,6 +41,20 @@ public class SocialServiceIntegrationImplService extends Service
 
     public SocialServiceIntegrationImplService() {
         super(__getWsdlLocation(), SOCIALSERVICEINTEGRATIONIMPLSERVICE_QNAME);
+    }
+
+    public SocialServiceIntegrationImplService( String urlPath ) {
+        super(__getWsdlLocation(), SOCIALSERVICEINTEGRATIONIMPLSERVICE_QNAME);
+        URL url = null;
+        WebServiceException e = null;
+        try {
+            url = new URL(urlPath);
+        }
+        catch ( MalformedURLException ex ) {
+            e = new WebServiceException(ex);
+        }
+        SOCIALSERVICEINTEGRATIONIMPLSERVICE_WSDL_LOCATION = url;
+        SOCIALSERVICEINTEGRATIONIMPLSERVICE_EXCEPTION = e;
     }
 
     public SocialServiceIntegrationImplService( WebServiceFeature... features ) {
