@@ -33,9 +33,7 @@ public class LogoutHandler extends AbstractHandler
         UserDao userDao = userService.getBySessionId(sessionDao);
 
         if ( userDao == null ) {
-            appData.setResponse(ResponseImpl.create(Status.DENY,
-                                                    "Wrong token value",
-                                                    loginRequest.getTokenId()));
+            appData.setResponse(ResponseImpl.create(Status.DENY, "Zły token.", loginRequest.getTokenId()));
             return;
         }
 
@@ -43,7 +41,9 @@ public class LogoutHandler extends AbstractHandler
         userService.saveOrUpdate(userDao);
         sessionService.deleteSession(sessionDao);
 
-        appData.setResponse(ResponseImpl.create(Status.OK, "Logout success", loginRequest.getTokenId()));
+        appData.setResponse(ResponseImpl.create(Status.OK,
+                                                "Pomyślnie wylogowano użytkownika.",
+                                                loginRequest.getTokenId()));
     }
 
 }

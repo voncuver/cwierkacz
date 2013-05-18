@@ -40,7 +40,7 @@ public class ListTweetAccounts extends AbstractHandler
         SessionDao sessionDao = sessionService.getByToken(accRequest.getTokenId());
         UserDao user = userService.getBySessionId(sessionDao);
         if ( user != null && user.getSession().getCurrentToken() != accRequest.getTokenId() ) {
-            Response response = ResponseImpl.create(Status.DENY, "Invalid Token", accRequest.getTokenId());
+            Response response = ResponseImpl.create(Status.DENY, "Zły token.", accRequest.getTokenId());
             appData.setResponse(response);
             return;
         }
@@ -52,7 +52,7 @@ public class ListTweetAccounts extends AbstractHandler
             accountsNames.add(new Account(accountDao.getAccountName(), AccountType.TWITTER));
         }
 
-        Response response = ResponseImpl.create(Status.OK, "Account List", accRequest.getTokenId())
+        Response response = ResponseImpl.create(Status.OK, "Lista dostępnych kont.", accRequest.getTokenId())
                                         .buildLoginResponse(accountsNames);
         appData.setResponse(response);
         return;

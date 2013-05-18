@@ -31,7 +31,7 @@ public class CreateAccountHandler extends AbstractHandler
 
         UserDao check = userService.getByUserName(loginRequest.getUserName());
         if ( check != null ) {
-            appData.setResponse(ResponseImpl.create(Status.ERROR, "Current User exist", 0));
+            appData.setResponse(ResponseImpl.create(Status.ERROR, "Użytkownik już instnieje.", 0));
             return;
         }
 
@@ -39,14 +39,14 @@ public class CreateAccountHandler extends AbstractHandler
         userDao.setName(loginRequest.getUserName());
         String hashedPassowrd = HashUtil.hashString(loginRequest.getPassword());
         if ( hashedPassowrd == "" ) {
-            appData.setResponse(ResponseImpl.create(Status.ERROR, "Exception while hashing Password", 0));
+            appData.setResponse(ResponseImpl.create(Status.ERROR, "Błąd podczas hashowania hasła.", 0));
         }
 
         userDao.setPassword(hashedPassowrd);
 
         userService.save(userDao);
 
-        Response response = ResponseImpl.create(Status.OK, "Succesfully created Account", 0);
+        Response response = ResponseImpl.create(Status.OK, "Konto utowrozne pomyślnie.", 0);
         appData.setResponse(response);
     }
 

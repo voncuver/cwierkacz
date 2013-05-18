@@ -59,7 +59,7 @@ public class PublishTweetAccount extends AbstractHandler
 
         if ( !AccountPermissionValidator.checkPermissionForName(publishRequest.getAccounts(),
                                                                 publishRequest.getTokenId()) ) {
-            errorBuilder.append("you do not have rights to at least one account; ");
+            errorBuilder.append("Brak uprawnień do przynajmniej jednego konta.");
             deny = true;
         }
 
@@ -70,7 +70,7 @@ public class PublishTweetAccount extends AbstractHandler
         if ( publishRequest.getRetweetFor() > 0 )
             retweeted = tweetService.getTweetById(publishRequest.getRetweetFor());
         if ( publishRequest.getRetweetFor() <= 0 && publishRequest.getTweetText() == null ) {
-            errorBuilder.append("new tweet must have content; ");
+            errorBuilder.append("Brak treści tweetu.");
             errors = true;
         }
 
@@ -80,18 +80,18 @@ public class PublishTweetAccount extends AbstractHandler
             errors = true;
         }
         if ( publishRequest.getReplayFor() > 0 && inReply == null ) {
-            errorBuilder.append("in reply tweet not exist ; ");
+            errorBuilder.append("In reply tweet nie istnieje.");
             errors = true;
         }
         if ( publishRequest.getRetweetFor() > 0 && retweeted == null ) {
-            errorBuilder.append("retweeted tweet not exist ; ");
+            errorBuilder.append("Retweeted tweet nie istnieje.");
             errors = true;
         }
         if ( publishRequest.getBody() != null &&
              publishRequest.getImgName() == null ||
              publishRequest.getBody() == null &&
              publishRequest.getImgName() != null ) {
-            errorBuilder.append("if request contain image then request also must contain image name and vice versa ; ");
+            errorBuilder.append("Brak pliku zdjęcia albo jego nazwy.");
             errors = true;
         }
         String filename = null;
@@ -105,7 +105,7 @@ public class PublishTweetAccount extends AbstractHandler
             }
             catch ( IOException e ) {
                 LOGGER.error(e.getMessage());
-                errorBuilder.append("cannot save image ; ");
+                errorBuilder.append("Bład zapisu pliku.");
                 errors = true;
             }
 
@@ -117,7 +117,7 @@ public class PublishTweetAccount extends AbstractHandler
                     //tranzakcyjność per jedno konto - a może inaczej?
                     TwitterAccountDao accountDao = accountService.getAccountByName(accountName);
                     if ( accountDao == null ) {
-                        errorBuilder.append(accountName + " not exist in system ; ");
+                        errorBuilder.append(accountName + " użytkownik nie istnieje.");
                     }
                     else {
                         TweetDao newTweet = null;
@@ -144,17 +144,17 @@ public class PublishTweetAccount extends AbstractHandler
                 }
                 catch ( TwitterAuthenticationException e ) {
                     LOGGER.error(e.getMessage());
-                    errorBuilder.append("fail while authenticate for " + accountName + " ; ");
+                    errorBuilder.append("Bład autoryzacji: " + accountName + ".");
                     errors = true;
                 }
                 catch ( TwitterActionException e ) {
                     LOGGER.error(e.getMessage());
-                    errorBuilder.append("fail while add tweet for " + accountName + " ; ");
+                    errorBuilder.append("Bład komunikacji dla użytkownika " + accountName + ".");
                     errors = true;
                 }
                 catch ( Throwable e ) {
                     LOGGER.error(e.getMessage());
-                    errorBuilder.append("internal error for " + accountName + " ; ");
+                    errorBuilder.append("Bład aplikacji dla użytkownika " + accountName + ".");
                     errors = true;
                 }
             }
@@ -164,16 +164,18 @@ public class PublishTweetAccount extends AbstractHandler
         String errorsMsg = errorBuilder.toString();
 
         if ( errors ) {
-            response = ResponseImpl.create(Status.ERROR, "Tweet for not all account was add correctly - " +
-                                                         errorsMsg, appData.getRequest().getTokenId());
+            response = ResponseImpl.create(Status.ERROR,
+                                           "Tweety nie dla wszystkich kont zostały dodane poprawnie: - " +
+                                                   errorsMsg,
+                                           appData.getRequest().getTokenId());
         }
         else if ( deny ) {
-            response = ResponseImpl.create(Status.DENY, "Deny access - " + errorsMsg, appData.getRequest()
-                                                                                             .getTokenId());
+            response = ResponseImpl.create(Status.DENY, "Brak dostępu dla " + errorsMsg, appData.getRequest()
+                                                                                                .getTokenId());
         }
         else {
             response = ResponseImpl.create(Status.OK,
-                                           "Tweet for all account was add correctly",
+                                           "Pomyślnie dodano wszystkie tweety.",
                                            appData.getRequest().getTokenId());
         }
         appData.setResponse(response);

@@ -37,24 +37,20 @@ public class DeleteAccountHandler extends AbstractHandler
         UserDao userDao = userService.getBySessionId(sessionDao);
 
         if ( userDao == null ) {
-            appData.setResponse(ResponseImpl.create(Status.ERROR, "User dosen't exist", 0));
+            appData.setResponse(ResponseImpl.create(Status.ERROR, "Użytkownik nie istnieje.", 0));
             return;
         }
 
         String hash = HashUtil.hashString(loginRequest.getPassword());
 
         if ( !hash.equals(userDao.getPassword()) ) {
-            appData.setResponse(ResponseImpl.create(Status.ERROR,
-                                                    "Password dosen't match",
-                                                    loginRequest.getTokenId()));
+            appData.setResponse(ResponseImpl.create(Status.ERROR, "Błędne hasło.", loginRequest.getTokenId()));
             return;
         }
 
         userService.delete(userDao);
 
-        Response response = ResponseImpl.create(Status.OK,
-                                                "Succesfully deleted Account",
-                                                loginRequest.getTokenId());
+        Response response = ResponseImpl.create(Status.OK, "Konto skasowano.", loginRequest.getTokenId());
         appData.setResponse(response);
 
     }

@@ -41,7 +41,7 @@ public class UnwireTweetAcocunt extends AbstractHandler
         SessionDao sessionDao = sessionService.getByToken(accRequest.getTokenId());
         UserDao user = userService.getBySessionId(sessionDao);
         if ( user != null && user.getSession().getCurrentToken() != accRequest.getTokenId() ) {
-            Response response = ResponseImpl.create(Status.DENY, "Invalid Token", accRequest.getTokenId());
+            Response response = ResponseImpl.create(Status.DENY, "Zły token.", accRequest.getTokenId());
             appData.setResponse(response);
             return;
         }
@@ -57,7 +57,7 @@ public class UnwireTweetAcocunt extends AbstractHandler
         }
         accountService.delete(accountDaoToRemove);
 
-        Response response = ResponseImpl.create(Status.OK, "Account Deleted", accRequest.getTokenId());
+        Response response = ResponseImpl.create(Status.OK, "Konto odwiązano.", accRequest.getTokenId());
         appData.setResponse(response);
         return;
     }

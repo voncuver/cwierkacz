@@ -38,7 +38,7 @@ public class ModifyAccountHandler extends AbstractHandler
 
         if ( userDao == null ) {
             appData.setResponse(ResponseImpl.create(Status.ERROR,
-                                                    "User dosen't exist",
+                                                    "Użytkownik nie istnieje.",
                                                     loginRequest.getTokenId()));
             return;
         }
@@ -46,9 +46,7 @@ public class ModifyAccountHandler extends AbstractHandler
         String hash = HashUtil.hashString(loginRequest.getPassword());
 
         if ( !hash.equals(userDao.getPassword()) ) {
-            appData.setResponse(ResponseImpl.create(Status.ERROR,
-                                                    "Password dosen't match",
-                                                    loginRequest.getTokenId()));
+            appData.setResponse(ResponseImpl.create(Status.ERROR, "Złe hasło.", loginRequest.getTokenId()));
             return;
         }
 
@@ -57,7 +55,7 @@ public class ModifyAccountHandler extends AbstractHandler
         userService.saveOrUpdate(userDao);
 
         Response response = ResponseImpl.create(Status.OK,
-                                                "Succesfully password changed",
+                                                "Hasło zostało zmienionę.",
                                                 loginRequest.getTokenId());
         appData.setResponse(response);
 

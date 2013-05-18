@@ -80,7 +80,7 @@ public class FetchTweetsHandler extends AbstractHandler
             if ( fetchRequest.getReplayFor() > 0 ) {
                 TweetDao replyTweet = tweetService.getTweetById(fetchRequest.getReplayFor());
                 if ( replyTweet == null ) {
-                    errorBuilder.append("not found tweet which was supposed to be replied; ");
+                    errorBuilder.append("Brak tweetu, dla którego przesłano odpowiedz.");
                 }
                 else {
                     SessionDao sessionDao = sessionService.getByToken(fetchRequest.getTokenId());
@@ -103,15 +103,13 @@ public class FetchTweetsHandler extends AbstractHandler
                         }
                         catch ( TwitterAuthenticationException e ) {
                             LOGGER.error(e.getMessage());
-                            errorBuilder.append("fail while authenticate for " +
-                                                accountDao.getAccountName() +
-                                                " ; ");
+                            errorBuilder.append("Błąd autoryzacji dla: " + accountDao.getAccountName() + ".");
                         }
                         catch ( TwitterActionException e ) {
                             LOGGER.error(e.getMessage());
-                            errorBuilder.append("propably not all tweets are fetched for " +
+                            errorBuilder.append("Bład pobierania tweetów dla " +
                                                 accountDao.getAccountName() +
-                                                " ; ");
+                                                ".");
                         }
                     }
                     try {
@@ -121,7 +119,7 @@ public class FetchTweetsHandler extends AbstractHandler
                     }
                     catch ( Exception e ) {
                         LOGGER.error(e.getMessage());
-                        errorBuilder.append("propably not all tweets are fetched, becouse some dependency ar not resolved ; ");
+                        errorBuilder.append("Bład pobierania tweetów.");
                     }
 
                     mergedTweets = tweetService.getActualReplies(replyTweet);
@@ -131,14 +129,14 @@ public class FetchTweetsHandler extends AbstractHandler
             else if ( fetchRequest.getRetweetFor() > 0 ) {
                 TweetDao retweeted = tweetService.getTweetById(fetchRequest.getRetweetFor());
                 if ( retweeted == null ) {
-                    errorBuilder.append("not found was supposed to be retweeted; ");
+                    errorBuilder.append("Brak tweetu dla akcji retweet.");
                 }
                 else {
                     SessionDao sessionDao = sessionService.getByToken(fetchRequest.getTokenId());
                     UserDao user = userService.getBySessionId(sessionDao);
                     TwitterAccountDao accountDao = accountService.getSampleAccountForUser(user);
                     if ( accountDao == null ) {
-                        errorBuilder.append("user haven't accounts : ");
+                        errorBuilder.append("Użytkownik nie ma dostępu do kont.");
                     }
                     else {
                         TwitterAccount account;
@@ -163,7 +161,7 @@ public class FetchTweetsHandler extends AbstractHandler
                         TwitterAccountDao accountDao = accountService.getAccountByName(accountName);
                         List<TweetDao> currentTweets = null;
                         if ( accountDao == null )
-                            errorBuilder.append("cannot find account name " + accountName + " : ");
+                            errorBuilder.append("Brak konta " + accountName + ".");
                         else {
                             TweetDao last = tweetService.getLastActualTweetForAccount(accountDao);
                             if ( last != null ) {
@@ -179,13 +177,11 @@ public class FetchTweetsHandler extends AbstractHandler
                                 }
                                 catch ( TwitterAuthenticationException e ) {
                                     LOGGER.error(e.getMessage());
-                                    errorBuilder.append("fail while authenticate for " + accountName + " ; ");
+                                    errorBuilder.append("Bład autoryzacji : " + accountName + ".");
                                 }
                                 catch ( TwitterActionException e ) {
                                     LOGGER.error(e.getMessage());
-                                    errorBuilder.append("propably not all tweets are fetched for " +
-                                                        accountName +
-                                                        " ; ");
+                                    errorBuilder.append("Bład pobierania tweetów dla: " + accountName + ".");
                                 }
                             }
 
@@ -196,7 +192,7 @@ public class FetchTweetsHandler extends AbstractHandler
                     }
                     catch ( Throwable e ) {
                         LOGGER.error(e.getMessage());
-                        errorBuilder.append("internal error for " + accountName + " ; ");
+                        errorBuilder.append("Wewnętrzny bład aplikacji dla " + accountName + " ; ");
                     }
                 }
                 try {
@@ -206,7 +202,7 @@ public class FetchTweetsHandler extends AbstractHandler
                 }
                 catch ( Exception e ) {
                     LOGGER.error(e.getMessage());
-                    errorBuilder.append("propably not all tweets are fetched, becouse some dependency ar not resolved ; ");
+                    errorBuilder.append("Bład pobierania tweetów.");
                 }
 
                 mergedTweets = tweetService.getActualTweetForAccounts(acs,
@@ -218,7 +214,7 @@ public class FetchTweetsHandler extends AbstractHandler
         }
         catch ( Throwable e ) {
             LOGGER.error(e.getMessage());
-            errorBuilder.append("internal error");
+            errorBuilder.append("Wewnętrzny bład aplikacji.");
         }
 
         Map<Long, String> users = new HashMap<Long, String>();
@@ -231,14 +227,14 @@ public class FetchTweetsHandler extends AbstractHandler
         String errors = errorBuilder.toString();
         if ( StringUtils.isEmpty(errors) ) {
             response = ResponseImpl.create(Status.OK,
-                                           "Tweet for all account was fetched correctly",
+                                           "Pobrano pomyślnie wszystkie tweety.",
                                            appData.getRequest().getTokenId())
                                    .buildFetchResponse(Message.apply(mergedTweets));
             ;
         }
         else {
             response = ResponseImpl.create(Status.ERROR,
-                                           "Tweet for not all account was fetched correctly - " + errors,
+                                           "Bład pobierania tweetów dla: " + errors,
                                            appData.getRequest().getTokenId())
                                    .buildFetchResponse(Message.apply(mergedTweets));
         }

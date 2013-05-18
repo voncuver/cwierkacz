@@ -53,7 +53,7 @@ public class WireTweetAccount extends AbstractHandler
         SessionDao sessionDao = sessionService.getByToken(accRequest.getTokenId());
         UserDao user = userService.getBySessionId(sessionDao);
         if ( user != null && user.getSession().getCurrentToken() != accRequest.getTokenId() ) {
-            Response response = ResponseImpl.create(Status.DENY, "Invalid Token", accRequest.getTokenId());
+            Response response = ResponseImpl.create(Status.DENY, "Zły token.", accRequest.getTokenId());
             appData.setResponse(response);
             return;
         }
@@ -64,7 +64,7 @@ public class WireTweetAccount extends AbstractHandler
 
         if ( accountsName.contains(accRequest.getLoginTweet()) ) {
             Response response = ResponseImpl.create(Status.DENY,
-                                                    "User already has this accout",
+                                                    "Konto już zostało powiązne.",
                                                     accRequest.getTokenId());
             appData.setResponse(response);
             return;
@@ -138,7 +138,7 @@ public class WireTweetAccount extends AbstractHandler
         userService.saveOrUpdate(user);
 
         Response response = ResponseImpl.create(Status.OK,
-                                                "Account succesfully wired",
+                                                "Konto powiązano pomyślnie.",
                                                 accRequest.getTokenId());
         appData.setResponse(response);
         return;
