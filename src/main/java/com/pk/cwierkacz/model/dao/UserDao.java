@@ -77,7 +77,7 @@ public class UserDao implements Serializable
     }
 
     public Set<TwitterAccountDao> getAccounts( ) {
-        return accounts;
+        return new HashSet<>(accounts);
     }
 
     public void setAccounts( Set<TwitterAccountDao> accounts ) {
