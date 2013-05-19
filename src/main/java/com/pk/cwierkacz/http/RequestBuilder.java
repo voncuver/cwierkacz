@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 
 import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.request.RequestImpl;
+import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.model.AccountType;
 
 public class RequestBuilder
@@ -27,6 +28,9 @@ public class RequestBuilder
 
     public static final String ACCOUNTS = "accounts";
     public static final String ACCOUNTTYPE = "accountType";
+
+    public static final String ACCOUNTLOGINS = "accountLogins";
+    public static final String ACCOUNTTYPES = "accountTypes";
 
     public static final String ACCOUNTLOGIN = "accountLogin";
     public static final String ACCOUNTPASSWORD = "accountPassword";
@@ -140,7 +144,13 @@ public class RequestBuilder
         List<String> accounts = Arrays.asList(params.get(ACCOUNTS));
         String accontTypeString = params.get(ACCOUNTTYPE)[ 0 ];
         AccountType accountType = AccountType.getAccountType(accontTypeString);
-        request = RequestImpl.create(request).buildFetchRequest(accounts, accountType);
+
+        List<Account> accountsWithType = new ArrayList<>();
+        for ( String account : accounts ) {
+            accountsWithType.add(new Account(account, account, accountType));
+        }
+
+        request = RequestImpl.create(request).buildFetchRequest(accountsWithType);
 
         if ( params.get(SIZE) != null && params.get(SIZE).length > 0 ) {
             int size = Integer.parseInt(params.get(SIZE)[ 0 ]);
@@ -189,11 +199,24 @@ public class RequestBuilder
             tweetText = tweetTexts[ 0 ];
 
         List<String> accounts = new ArrayList<String>();
-        if ( params.get(ACCOUNTS) != null ) {
-            accounts = Arrays.asList(params.get(ACCOUNTS));
+        if ( params.get(ACCOUNTLOGINS) != null ) {
+            accounts = Arrays.asList(params.get(ACCOUNTLOGINS));
         }
 
-        request = RequestImpl.create(request).buildPublishRequest(tweetText, accounts);
+        List<String> accountsTypes = new ArrayList<String>();
+        if ( params.get(ACCOUNTTYPES) != null ) {
+            accountsTypes = Arrays.asList(params.get(ACCOUNTTYPES));
+        }
+
+        List<Account> accountsWithType = new ArrayList<>();
+
+        for ( int i = 0; i < accounts.size(); i++ ) {
+            accountsWithType.add(new Account(accounts.get(i),
+                                             accounts.get(i),
+                                             AccountType.getAccountType(accountsTypes.get(i))));
+        }
+
+        request = RequestImpl.create(request).buildPublishRequest(tweetText, accountsWithType);
 
         if ( params.get(IMGNAME) != null && params.get(IMGNAME).length > 0 ) {
             String imgName = params.get(IMGNAME)[ 0 ];

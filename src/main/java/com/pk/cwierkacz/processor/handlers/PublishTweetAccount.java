@@ -11,6 +11,7 @@ import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.PublishRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
+import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
@@ -112,12 +113,12 @@ public class PublishTweetAccount extends AbstractHandler
         }
 
         if ( !errors && !deny ) {
-            for ( String accountName : publishRequest.getAccounts() ) {
+            for ( Account accountName : publishRequest.getAccounts() ) {
                 try {
                     //tranzakcyjność per jedno konto - a może inaczej?
-                    TwitterAccountDao accountDao = accountService.getAccountByName(accountName);
+                    TwitterAccountDao accountDao = accountService.getAccountByName(accountName.getLogin());
                     if ( accountDao == null ) {
-                        errorBuilder.append(accountName + " użytkownik nie istnieje.");
+                        errorBuilder.append(accountName.getLogin() + " użytkownik nie istnieje.");
                     }
                     else {
                         TweetDao newTweet = null;
@@ -144,17 +145,17 @@ public class PublishTweetAccount extends AbstractHandler
                 }
                 catch ( TwitterAuthenticationException e ) {
                     LOGGER.error(e.getMessage());
-                    errorBuilder.append("Bład autoryzacji: " + accountName + ".");
+                    errorBuilder.append("Bład autoryzacji: " + accountName.getLogin() + ".");
                     errors = true;
                 }
                 catch ( TwitterActionException e ) {
                     LOGGER.error(e.getMessage());
-                    errorBuilder.append("Bład komunikacji dla użytkownika " + accountName + ".");
+                    errorBuilder.append("Bład komunikacji dla użytkownika " + accountName.getLogin() + ".");
                     errors = true;
                 }
                 catch ( Throwable e ) {
                     LOGGER.error(e.getMessage());
-                    errorBuilder.append("Bład aplikacji dla użytkownika " + accountName + ".");
+                    errorBuilder.append("Bład aplikacji dla użytkownika " + accountName.getLogin() + ".");
                     errors = true;
                 }
             }

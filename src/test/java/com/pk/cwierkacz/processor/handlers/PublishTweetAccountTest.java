@@ -24,6 +24,8 @@ import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.request.RequestImpl;
+import com.pk.cwierkacz.http.response.dto.Account;
+import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
@@ -51,9 +53,9 @@ public class PublishTweetAccountTest extends PopulateData
         DateTime now = new DateTime();
         DateTime startDate = now.minusMillis(now.getMillisOfSecond());
         ApplicationData appData = new ApplicationData();
-        List<String> accounts = new ArrayList<String>();
-        accounts.add(username);
-        accounts.add(username2);
+        List<Account> accounts = new ArrayList<Account>();
+        accounts.add(new Account("first", "first", AccountType.TWITTER));
+        accounts.add(new Account("second", "second", AccountType.TWITTER));
         String text = "TEST OF PUBLISH TWEET HANDLER " + new Date().getTime();
 
         Request request = RequestImpl.create(Action.PUBLISHTWEET, token).buildPublishRequest(text, accounts);
@@ -110,8 +112,8 @@ public class PublishTweetAccountTest extends PopulateData
         DateTime now = new DateTime();
         DateTime startDate = now.minusMillis(now.getMillisOfSecond());
         ApplicationData appData = new ApplicationData();
-        List<String> accounts = new ArrayList<String>();
-        accounts.add(username);
+        List<Account> accounts = new ArrayList<Account>();
+        accounts.add(new Account("first", "first", AccountType.TWITTER));
         String text = "TEST OF PUBLISH TWEET HANDLER WITH IMG" + new Date().getTime();
 
         byte[] body = IOUtils.toByteArray(new FileInputStream(new File("src/test/java/com/pk/cwierkacz/processor/handlers/lena.PNG")));
@@ -159,9 +161,9 @@ public class PublishTweetAccountTest extends PopulateData
         DateTime now = new DateTime();
         DateTime startDate = now.minusMillis(now.getMillisOfSecond());
         ApplicationData appData = new ApplicationData();
-        List<String> accounts = new ArrayList<String>();
-        accounts.add(username);
-        accounts.add(username2);
+        List<Account> accounts = new ArrayList<Account>();
+        accounts.add(new Account("first", "first", AccountType.TWITTER));
+        accounts.add(new Account("second", "second", AccountType.TWITTER));
         String text = "TEST OF PUBLISH TWEET HANDLER (REPLY) " + new Date().getTime();
         String textWithReplyName = "@" + username + " " + text;
 
@@ -224,9 +226,9 @@ public class PublishTweetAccountTest extends PopulateData
         DateTime startDate = now.minusMillis(now.getMillisOfSecond());
 
         ApplicationData appData = new ApplicationData();
-        List<String> accounts = new ArrayList<String>();
-        accounts.add(username);
-        accounts.add(username2);
+        List<Account> accounts = new ArrayList<Account>();
+        accounts.add(new Account("first", "first", AccountType.TWITTER));
+        accounts.add(new Account("second", "second", AccountType.TWITTER));
 
         Request request = RequestImpl.create(Action.PUBLISHTWEET, token).buildPublishRequest(null,
                                                                                              accounts,
@@ -287,8 +289,10 @@ public class PublishTweetAccountTest extends PopulateData
         DateTime now = new DateTime();
         DateTime startDate = now.minusMillis(now.getMillisOfSecond());
         ApplicationData appData = new ApplicationData();
-        List<String> accounts = new ArrayList<String>();
-        accounts.add(username3);
+        List<Account> accounts = new ArrayList<Account>();
+        accounts.add(new Account("first", "first", AccountType.TWITTER));
+        accounts.add(new Account("second", "second", AccountType.TWITTER));
+
         String text = "TEST OF PUBLISH TWEET HANDLER " + new Date().getTime();
 
         Request request = RequestImpl.create(Action.PUBLISHTWEET, token).buildPublishRequest(text, accounts);

@@ -20,6 +20,7 @@ import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.request.RequestImpl;
 import com.pk.cwierkacz.http.response.FetchMessagesResponse;
+import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.http.response.dto.Message;
 import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.ApplicationData;
@@ -96,9 +97,9 @@ public class FetchTweetsHandlerTest extends PopulateData
         }
 
         ApplicationData appData = new ApplicationData();
-        List<String> accounts = new ArrayList<String>();
-        accounts.add(username);
-        accounts.add(username2);
+        List<Account> accounts = new ArrayList<Account>();
+        accounts.add(new Account("first", "first", AccountType.TWITTER));
+        accounts.add(new Account("second", "second", AccountType.TWITTER));
 
         Request request = RequestImpl.create(Action.FETCHMESSAGES).buildFetchRequest(accounts,
                                                                                      10,
@@ -141,9 +142,9 @@ public class FetchTweetsHandlerTest extends PopulateData
                                                      TweetAttachments.createImage(image));
 
         ApplicationData appData = new ApplicationData();
-        List<String> accounts = new ArrayList<String>();
-        accounts.add(username);
-
+        List<Account> accounts = new ArrayList<Account>();
+        accounts.add(new Account("first", "first", AccountType.TWITTER));
+        accounts.add(new Account("second", "second", AccountType.TWITTER));
         Request request = RequestImpl.create(Action.FETCHMESSAGES).buildFetchRequest(accounts,
                                                                                      5,
                                                                                      startDate,
@@ -213,8 +214,9 @@ public class FetchTweetsHandlerTest extends PopulateData
         }
 
         ApplicationData appData = new ApplicationData();
-        List<String> accounts = new ArrayList<String>();
-        accounts.add(username);
+        List<Account> accounts = new ArrayList<Account>();
+        accounts.add(new Account("first", "first", AccountType.TWITTER));
+        accounts.add(new Account("second", "second", AccountType.TWITTER));
 
         Request request = RequestImpl.create(Action.FETCHMESSAGES, token)
                                      .buildFetchRequest(accounts,
@@ -260,9 +262,9 @@ public class FetchTweetsHandlerTest extends PopulateData
         tweets.add(t2a);
 
         ApplicationData appData = new ApplicationData();
-        List<String> accounts = new ArrayList<String>();
-        accounts.add(username);
-
+        List<Account> accounts = new ArrayList<Account>();
+        accounts.add(new Account("first", "first", AccountType.TWITTER));
+        accounts.add(new Account("second", "second", AccountType.TWITTER));
         Request request = RequestImpl.create(Action.FETCHMESSAGES, token)
                                      .buildFetchRequest(accounts,
                                                         -1,

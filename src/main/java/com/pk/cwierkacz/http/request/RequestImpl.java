@@ -7,6 +7,7 @@ import java.util.List;
 import org.joda.time.DateTime;
 
 import com.pk.cwierkacz.http.Action;
+import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.model.AccountType;
 
 // login,logout,createAccount - by Action
@@ -33,7 +34,7 @@ public class RequestImpl implements
     private String passwordTweet;
 
     //FETCHTWEETS, PUBLISHTWEET
-    private List<String> accounts;
+    private List<Account> accounts;
 
     private List<Long> ids;
 
@@ -138,7 +139,7 @@ public class RequestImpl implements
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends RequestImpl > T buildPublishRequest( String tweetText, List<String> accounts ) {
+    public < T extends RequestImpl > T buildPublishRequest( String tweetText, List<Account> accounts ) {
         this.tweetText = tweetText;
         this.accounts = accounts;
         return (T) this;
@@ -152,7 +153,7 @@ public class RequestImpl implements
 
     @SuppressWarnings( "unchecked" )
     public < T extends Request > T buildPublishRequest( String tweetText,
-                                                        List<String> accounts,
+                                                        List<Account> accounts,
                                                         long replayForId,
                                                         long retweetedId ) {
         this.tweetText = tweetText;
@@ -176,9 +177,8 @@ public class RequestImpl implements
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends RequestImpl > T buildFetchRequest( List<String> accounts, AccountType accountType ) {
+    public < T extends RequestImpl > T buildFetchRequest( List<Account> accounts ) {
         this.accounts = accounts;
-        this.accountType = accountType;
         return (T) this;
     }
 
@@ -189,7 +189,7 @@ public class RequestImpl implements
     }
 
     @SuppressWarnings( "unchecked" )
-    public < T extends Request > T buildFetchRequest( List<String> accounts,
+    public < T extends Request > T buildFetchRequest( List<Account> accounts,
                                                       int size,
                                                       DateTime dateFrom,
                                                       long replayForId,
@@ -259,7 +259,7 @@ public class RequestImpl implements
     }
 
     @Override
-    public List<String> getAccounts( ) {
+    public List<Account> getAccounts( ) {
         return accounts;
     }
 

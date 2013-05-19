@@ -15,6 +15,7 @@ import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.FetchTweetsRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
+import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.http.response.dto.Message;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.dao.SessionDao;
@@ -156,12 +157,12 @@ public class FetchTweetsHandler extends AbstractHandler
             }
             else if ( fetchRequest.getAccounts().size() > 0 ) {
                 TweetsResult notReadyTweets = new TweetsResult();
-                for ( String accountName : fetchRequest.getAccounts() ) { //tranzakcyjność per jedno konto - a może inaczej?
+                for ( Account accountName : fetchRequest.getAccounts() ) { //tranzakcyjność per jedno konto - a może inaczej?
                     try {
-                        TwitterAccountDao accountDao = accountService.getAccountByName(accountName);
+                        TwitterAccountDao accountDao = accountService.getAccountByName(accountName.getLogin());
                         List<TweetDao> currentTweets = null;
                         if ( accountDao == null )
-                            errorBuilder.append("Brak konta " + accountName + ".");
+                            errorBuilder.append("Brak konta " + accountName.getLogin() + ".");
                         else {
                             TweetDao last = tweetService.getLastActualTweetForAccount(accountDao);
                             if ( last != null ) {
@@ -177,11 +178,13 @@ public class FetchTweetsHandler extends AbstractHandler
                                 }
                                 catch ( TwitterAuthenticationException e ) {
                                     LOGGER.error(e.getMessage());
-                                    errorBuilder.append("Bład autoryzacji : " + accountName + ".");
+                                    errorBuilder.append("Bład autoryzacji : " + accountName.getLogin() + ".");
                                 }
                                 catch ( TwitterActionException e ) {
                                     LOGGER.error(e.getMessage());
-                                    errorBuilder.append("Bład pobierania tweetów dla: " + accountName + ".");
+                                    errorBuilder.append("Bład pobierania tweetów dla: " +
+                                                        accountName.getLogin() +
+                                                        ".");
                                 }
                             }
 
@@ -192,7 +195,7 @@ public class FetchTweetsHandler extends AbstractHandler
                     }
                     catch ( Throwable e ) {
                         LOGGER.error(e.getMessage());
-                        errorBuilder.append("Wewnętrzny bład aplikacji dla " + accountName + " ; ");
+                        errorBuilder.append("Wewnętrzny bład aplikacji dla " + accountName.getLogin() + " ; ");
                     }
                 }
                 try {

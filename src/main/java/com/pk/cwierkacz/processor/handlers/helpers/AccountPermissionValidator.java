@@ -2,6 +2,7 @@ package com.pk.cwierkacz.processor.handlers.helpers;
 
 import java.util.List;
 
+import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.model.dao.SessionDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.dao.UserDao;
@@ -14,10 +15,10 @@ import com.pk.cwierkacz.model.service.UserService;
 public class AccountPermissionValidator
 {
 
-    public static boolean checkPermissionForName( List<String> accountsName, long tokenId ) {
+    public static boolean checkPermissionForName( List<Account> list, long tokenId ) {
         boolean perm = true;
-        for ( String name : accountsName ) {
-            if ( checkPermissionForName(name, tokenId) == false )
+        for ( Account name : list ) {
+            if ( checkPermissionForName(name.getLogin(), tokenId) == false )
                 perm = false;
         }
         return perm;
