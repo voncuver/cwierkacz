@@ -1,11 +1,11 @@
 package com.pk.cwierkacz.controller;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletInputStream;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -62,8 +62,9 @@ public class EntryServlet extends HttpServlet
         Cookie cookie = new Cookie("token", new Long(responseResult.getTokenId()).toString());
         cookie.setMaxAge(60 * 60);
         response.addCookie(cookie);
-
-        ServletOutputStream out = response.getOutputStream();
-        out.print(responseJson);
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+        Writer out = response.getWriter();
+        out.write(responseJson);
     }
 }

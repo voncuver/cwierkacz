@@ -46,7 +46,7 @@ public class CreateAccountHandler extends AbstractHandler
 
         userService.save(userDao);
 
-        Response response = ResponseImpl.create(Status.OK, "Konto utowrozne pomyślnie.", 0);
+        Response response = ResponseImpl.create(Status.OK, "Konto utworzone pomyślnie.", 0);
         appData.setResponse(response);
     }
 
