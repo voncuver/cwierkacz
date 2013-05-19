@@ -72,16 +72,16 @@ public class TweetService extends AbstractService<TweetDao>
                                                     Integer maxResult ) {
         Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("creator", account))
                                                        .add(Restrictions.eq("isDeleted", false))
-                                                       .addOrder(Order.desc("cratedDate"));
+                                                       .addOrder(Order.desc("createdDate"));
 
         if ( maxResult != null && maxResult > 0 )
             criteria = criteria.setMaxResults(maxResult);
 
         if ( since != null )
-            criteria = criteria.add(Restrictions.ge("cratedDate", since));
+            criteria = criteria.add(Restrictions.ge("createdDate", since));
 
         if ( to != null )
-            criteria = criteria.add(Restrictions.ge("cratedDate", to));
+            criteria = criteria.add(Restrictions.ge("createdDate", to));
 
         List<TweetDao> result = criteria.list();
         commit();
@@ -95,15 +95,15 @@ public class TweetService extends AbstractService<TweetDao>
                                                      Integer maxResult ) {
         Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.in("creator", accounts))
                                                        .add(Restrictions.eq("isDeleted", false))
-                                                       .addOrder(Order.desc("cratedDate"));
+                                                       .addOrder(Order.desc("createdDate"));
 
         if ( maxResult != null && maxResult > 0 )
             criteria = criteria.setMaxResults(maxResult);
         if ( since != null )
-            criteria = criteria.add(Restrictions.ge("cratedDate", since));
+            criteria = criteria.add(Restrictions.ge("createdDate", since));
 
         if ( to != null )
-            criteria = criteria.add(Restrictions.ge("cratedDate", to));
+            criteria = criteria.add(Restrictions.ge("createdDate", to));
 
         List<TweetDao> result = criteria.list();
         commit();
@@ -123,7 +123,7 @@ public class TweetService extends AbstractService<TweetDao>
     public List<TweetDao> getActualRetweets( TweetDao retweeted ) {
         Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("retweeted", retweeted))
                                                        .add(Restrictions.eq("isDeleted", false))
-                                                       .addOrder(Order.desc("cratedDate"));
+                                                       .addOrder(Order.desc("createdDate"));
 
         List<TweetDao> result = criteria.list();
         commit();
@@ -151,7 +151,7 @@ public class TweetService extends AbstractService<TweetDao>
     public List<TweetDao> getActualReplies( TweetDao inReplyTo ) {
         Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("inReplyTo", inReplyTo))
                                                        .add(Restrictions.eq("isDeleted", false))
-                                                       .addOrder(Order.desc("cratedDate"));
+                                                       .addOrder(Order.desc("createdDate"));
 
         List<TweetDao> result = criteria.list();
         commit();

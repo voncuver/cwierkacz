@@ -33,8 +33,6 @@ public final class TwitterAccountDao implements Serializable
      */
     private static final long serialVersionUID = -4397008154952109275L;
 
-    //TODO 5: zmodyfikować ciało metody create tak aby nadal przyjmowala userId - ale było to mapowane na Usera - tak stworzony TwitterAccountDao powinien byc z metody crete przed zwrócieniem zapisany w DB - na poziomie DAO nie powinnismy siegac do bazy zeby uzupelnic dane, dane powinny byc raczej dostarczone
-
     @Id
     @Column( length = 255 )
     @GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -50,6 +48,8 @@ public final class TwitterAccountDao implements Serializable
     private UserDao user;
     @Column( unique = false, nullable = false )
     private String accountName;
+    @Column( nullable = false )
+    private String name;
     private String accessToken;
     private String accessTokenSecret;
 
@@ -123,6 +123,7 @@ public final class TwitterAccountDao implements Serializable
     public static TwitterAccountDao create( long externalId,
                                             UserDao user,
                                             String accountName,
+                                            String name,
                                             String accessToken,
                                             String accessTokenSecret ) {
         TwitterAccountDao dao = new TwitterAccountDao();
@@ -131,6 +132,7 @@ public final class TwitterAccountDao implements Serializable
         dao.setAccountName(accountName);
         dao.setAccessToken(accessToken);
         dao.setAccessTokenSecret(accessTokenSecret);
+        dao.setName(name);
 
         return dao;
     }
@@ -165,5 +167,13 @@ public final class TwitterAccountDao implements Serializable
     @Override
     public int hashCode( ) {
         return externalId.intValue();
+    }
+
+    public String getName( ) {
+        return name;
+    }
+
+    public void setName( String name ) {
+        this.name = name;
     }
 }

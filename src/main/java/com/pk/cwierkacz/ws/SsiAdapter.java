@@ -135,7 +135,7 @@ public class SsiAdapter
         try {
             AccountsResponse response = wsPort.accounts(accountsRequest);
             for ( String name : response.getLss() ) {
-                accounts.add(new Account(name, accountType));
+                accounts.add(new Account(name, name, accountType));
             }
         }
         catch ( TokenExpiredFault e ) {
@@ -215,7 +215,7 @@ public class SsiAdapter
         for ( Item iteam : getItemsResponse.getItemsList() ) {
             Message message = new Message();
 
-            message.setAccount(new Account(account, accountType));
+            message.setAccount(new Account(account, account, accountType));
             message.setText(iteam.getDescription());
             message.setId(iteam.getId().getId().longValue());
             messages.add(message);

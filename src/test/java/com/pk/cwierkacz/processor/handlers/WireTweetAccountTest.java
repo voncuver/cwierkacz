@@ -1,9 +1,12 @@
 package com.pk.cwierkacz.processor.handlers;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import com.pk.cwierkacz.http.Action;
+import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.AddTweeterAccountRequest;
 import com.pk.cwierkacz.http.request.LoginRequest;
 import com.pk.cwierkacz.http.request.Request;
@@ -45,5 +48,9 @@ public class WireTweetAccountTest
                                                          .withPasswordTweet("Kinia12");
         appData.setRequest(accRequest);
         tweetAccount.handle(appData);
+
+        System.out.println(appData.getResponse().getErrors());
+        assertEquals(Status.OK, appData.getResponse().getStatus());
+
     }
 }

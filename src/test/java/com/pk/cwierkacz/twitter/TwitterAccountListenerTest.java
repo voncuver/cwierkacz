@@ -32,6 +32,8 @@ public class TwitterAccountListenerTest
     private final String accessTokenSecret = "sIxeZvvJ0eSxgy3Zj27829De0KI0HytKtPcWrLK9Y";
     private final long userId = 1291752048;
 
+    private final String fullName = "Cwierkacz";
+
     private TwitterAccountListener listener;
     private MemoryTwitterStorage storage;
 
@@ -41,12 +43,14 @@ public class TwitterAccountListenerTest
     TwitterAccountDao accountDao = TwitterAccountDao.create(userId,
                                                             null,
                                                             username,
+                                                            fullName,
                                                             accessToken,
                                                             accessTokenSecret);
 
     TwitterAccountDao accountDao2 = TwitterAccountDao.create(userId2,
                                                              null,
                                                              username2,
+                                                             fullName,
                                                              accessToken2,
                                                              accessTokenSecret2);
 

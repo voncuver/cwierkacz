@@ -28,7 +28,7 @@ public class OAuthAuthenticationTest
         userDao = new UserDao();
         userDao.setId(0l);
 
-        account = TwitterAccountDao.create(22L, userDao, "cwierkacz1", null, null);
+        account = TwitterAccountDao.create(22L, userDao, "cwierkacz1", null, null, null);
         userAuthentication = new OAuthAuthentication(account);
     }
 
@@ -66,7 +66,7 @@ public class OAuthAuthenticationTest
 
         System.out.println("Enter your twitter username: for example 'cwierkacz1'");
         String username = br.readLine();
-        account = TwitterAccountDao.create(22L, userDao, username, null, null);
+        account = TwitterAccountDao.create(22L, userDao, username, null, null, null);
         userAuthentication = new OAuthAuthentication(account);
 
         String url = userAuthentication.getAuthenticationURL();

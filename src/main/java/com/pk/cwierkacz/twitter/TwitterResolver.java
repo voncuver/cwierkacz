@@ -31,13 +31,17 @@ public abstract class TwitterResolver
         }
     }
 
+    public Twitter createTwitter( AccessToken token ) {
+        return factory.getInstance(token);
+    }
+
     public Twitter createTwitter( TwitterAccountDao account, boolean emptyAuth ) throws TwitterAuthenticationException {
 
         Twitter twitter = null;
 
         if ( account.isOAuthAvailable() ) {
             AccessToken token = new AccessToken(account.getAccessToken(), account.getAccessTokenSecret());
-            twitter = factory.getInstance(token);
+            twitter = createTwitter(token);
 
         }
         else if ( emptyAuth ) {

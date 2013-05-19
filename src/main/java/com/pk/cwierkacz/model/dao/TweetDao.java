@@ -67,7 +67,7 @@ public class TweetDao
 
     @Column
     @Type( type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime" )
-    private DateTime cratedDate;
+    private DateTime createdDate;
     private String text;
 
     private String imagePath;
@@ -122,11 +122,11 @@ public class TweetDao
     @Column
     @Type( type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime" )
     public DateTime getCratedDate( ) {
-        return cratedDate;
+        return createdDate;
     }
 
-    public void setCratedDate( DateTime cratedDate ) {
-        this.cratedDate = cratedDate;
+    public void setCratedDate( DateTime createdDate ) {
+        this.createdDate = createdDate;
     }
 
     public String getText( ) {

@@ -32,7 +32,7 @@ public class Message
 
     private Long nbOfReplies;
 
-    private DateTime cratedDate;
+    private DateTime createdDate;
 
     public Long getId( ) {
         return Id;
@@ -106,12 +106,12 @@ public class Message
         this.account = account;
     }
 
-    public DateTime getCratedDate( ) {
-        return cratedDate;
+    public DateTime getCreatedDate( ) {
+        return createdDate;
     }
 
-    public void setCratedDate( DateTime cratedDate ) {
-        this.cratedDate = cratedDate;
+    public void setCreatedDate( DateTime createdDate ) {
+        this.createdDate = createdDate;
     }
 
     public static Message apply( TweetDao tweetDao ) {
@@ -120,10 +120,11 @@ public class Message
         Account account = new Account();
         if ( tweetDao.getCreator() != null ) {
             account.setLogin(tweetDao.getCreator().getAccountName());
+            account.setName(tweetDao.getCreator().getName());
         }
         account.setType(AccountType.TWITTER);
         tweet.setAccount(account);
-        tweet.setCratedDate(tweetDao.getCratedDate());
+        tweet.setCreatedDate(tweetDao.getCratedDate());
         tweet.setDeleted(tweetDao.isDeleted());
         tweet.setId(tweetDao.getId());
         tweet.setImagePath(tweetDao.getImagePath());
@@ -152,9 +153,9 @@ public class Message
 
         //TODO przed uzyciem tego zastanowic sie nad tym,pewnie trzeba cos tu pozmienia, chocby ten file?
         Message tweet = new Message();
-        Account account = new Account(accountName, accountType);
+        Account account = new Account(accountName, null, accountType);//TODO czy nie mamy pełnej nazwy, moze mamy?
         tweet.setAccount(account);
-        tweet.setCratedDate(null); //brak daty - przejebane
+        tweet.setCreatedDate(null); //brak daty - przejebane
         tweet.setDeleted(false);
         tweet.setId(item.getId().getId().longValue());
         tweet.setImagePath(null); //TODO co z tym imagem? jak to robic?

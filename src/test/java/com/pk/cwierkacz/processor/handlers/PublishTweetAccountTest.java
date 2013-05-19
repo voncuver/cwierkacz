@@ -241,7 +241,7 @@ public class PublishTweetAccountTest extends PopulateData
         assertEquals(Status.ERROR, appData.getResponse().getStatus());
         assertTrue(appData.getResponse()
                           .getErrors()
-                          .contains("fail while add tweet for " +
+                          .contains("Bład komunikacji dla użytkownika " +
                                     twitterAccount.getAccount().getAccountName())); //cannot retweet himself
 
         assertTrue(!appData.getResponse().getErrors().contains(twitterAccount2.getAccount().getAccountName()));
@@ -282,30 +282,30 @@ public class PublishTweetAccountTest extends PopulateData
 
     }
 
-    /* @Test
-     public void addTweetWithNoRights( ) throws TwitterActionException {
-         DateTime now = new DateTime();
-         DateTime startDate = now.minusMillis(now.getMillisOfSecond());
-         ApplicationData appData = new ApplicationData();
-         List<String> accounts = new ArrayList<String>();
-         accounts.add(username3);
-         String text = "TEST OF PUBLISH TWEET HANDLER " + new Date().getTime();
+    @Test
+    public void addTweetWithNoRights( ) throws TwitterActionException {
+        DateTime now = new DateTime();
+        DateTime startDate = now.minusMillis(now.getMillisOfSecond());
+        ApplicationData appData = new ApplicationData();
+        List<String> accounts = new ArrayList<String>();
+        accounts.add(username3);
+        String text = "TEST OF PUBLISH TWEET HANDLER " + new Date().getTime();
 
-         Request request = RequestImpl.create(Action.PUBLISHTWEET, token).buildPublishRequest(text, accounts);
-         appData.setRequest(request);
+        Request request = RequestImpl.create(Action.PUBLISHTWEET, token).buildPublishRequest(text, accounts);
+        appData.setRequest(request);
 
-         publishTweetAccount.handle(appData);
+        publishTweetAccount.handle(appData);
 
-         assertNotNull(appData.getResponse());
-         System.out.println("msg: " + appData.getResponse().getErrors());
-         assertEquals(Status.DENY, appData.getResponse().getStatus());
+        assertNotNull(appData.getResponse());
+        System.out.println("msg: " + appData.getResponse().getErrors());
+        assertEquals(Status.DENY, appData.getResponse().getStatus());
 
-         List<TweetDao> tweets1 = tweetService.getActualTweetForAccount(twitterAccountDao3,
-                                                                        startDate,
-                                                                        null,
-                                                                        null);
+        List<TweetDao> tweets1 = tweetService.getActualTweetForAccount(twitterAccountDao3,
+                                                                       startDate,
+                                                                       null,
+                                                                       null);
 
-         assertEquals(0, tweets1.size());
+        assertEquals(0, tweets1.size());
 
-     }*/
+    }
 }

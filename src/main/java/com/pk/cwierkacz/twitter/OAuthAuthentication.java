@@ -9,12 +9,13 @@ import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
+import com.pk.cwierkacz.twitter.converters.TwitterAcountConverter;
 
 public class OAuthAuthentication extends TwitterResolver
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuthAuthentication.class);
-    private TwitterAccountDao account;
-    private final Twitter twitter;
+    private final TwitterAccountDao account;
+    private Twitter twitter;
     private RequestToken requestToken;
 
     /**
@@ -62,7 +63,8 @@ public class OAuthAuthentication extends TwitterResolver
      * @param forceAuthorizations
      *            If false and if user is authenticate before do method do
      *            nothing.
-     * @return user with access token and access token secret
+     * @return user with access token and access token secret and with refreshed
+     *         account name, name and external id
      * @throws TwitterAuthenticationException
      */
     public TwitterAccountDao authenticate( String pin, boolean forceAuthorizations ) throws TwitterAuthenticationException {
@@ -71,13 +73,17 @@ public class OAuthAuthentication extends TwitterResolver
 
         try {
             AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, pin);
-            TwitterAccountDao authUser = TwitterAccountDao.create(account.getId(),
-                                                                  account.getUser(),
-                                                                  account.getAccountName(),
-                                                                  accessToken.getToken(),
-                                                                  accessToken.getTokenSecret());
-            this.account = authUser;
-            return authUser;
+            twitter = createTwitter(accessToken);
+            twitter4j.User tweetUser = twitter.showUser(account.getAccountName());
+            TwitterAcountConverter converter = new TwitterAcountConverter();
+            TwitterAccountDao accountFromTweet = converter.toAccountFromTwitter(tweetUser);
+            account.setAccountName(accountFromTweet.getAccountName());
+            account.setName(accountFromTweet.getName());
+            account.setExternalId(accountFromTweet.getExternalId());
+            account.setAccessToken(accessToken.getToken());
+            account.setAccessTokenSecret(accessToken.getTokenSecret());
+
+            return account;
         }
         catch ( TwitterException e ) {
             LOGGER.error(e.getMessage());

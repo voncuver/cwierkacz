@@ -36,6 +36,7 @@ public class FetchTweetByIdHandler extends AbstractHandler
         return applicationData.getRequest().getAction().equals(Action.FETCHMESSAGEBYID);
     }
 
+    //TODO a czy to na pewno nie ma byc synchronizacji z tweeterem? - co jesli chcemy pobrac tweeta po id ktorego nie ma w tej chwili jeszcze w bazie? nie wiem po co ten handler powstał - byc moze jest dobrze bo biznesowo taki przypadek jest nieuzasadniony?
     @Override
     public void handle( ApplicationData appData ) {
         FetchTweetsRequest accRequest = (FetchTweetsRequest) appData.getRequest();

@@ -32,6 +32,7 @@ public class TwitterServiceTest
         TwitterAccountDao twitterAccountDao = TwitterAccountDao.create(24,
                                                                        userDao,
                                                                        "Twitter",
+                                                                       "Twitter Name",
                                                                        "1234",
                                                                        "secret1234");
         Set<TwitterAccountDao> accounts = new HashSet<>();
@@ -49,6 +50,7 @@ public class TwitterServiceTest
         TwitterAccountDao twitterAccountDao2 = TwitterAccountDao.create(25,
                                                                         userDao,
                                                                         "Twitter2",
+                                                                        "Twitter2 Name",
                                                                         "1234",
                                                                         "secret1234");
         Set<TwitterAccountDao> accounts2 = new HashSet<>();

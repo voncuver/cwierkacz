@@ -6,13 +6,15 @@ public class Account
 {
 
     public String login;
+    public String name;
     public AccountType type;
 
     public Account() {
     }
 
-    public Account( String name, AccountType accountType ) {
-        this.login = name;
+    public Account( String login, String name, AccountType accountType ) {
+        this.login = login;
+        this.name = name;
         this.type = accountType;
     }
 
@@ -22,6 +24,14 @@ public class Account
 
     public void setLogin( String login ) {
         this.login = login;
+    }
+
+    public String getName( ) {
+        return name;
+    }
+
+    public void setName( String name ) {
+        this.name = name;
     }
 
     public AccountType getType( ) {

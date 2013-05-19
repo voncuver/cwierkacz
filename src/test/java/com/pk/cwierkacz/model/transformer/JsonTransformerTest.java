@@ -21,14 +21,14 @@ public class JsonTransformerTest
     public void LoginResponseTest( ) throws ProcessingException {
 
         Set<Account> accounts = new HashSet<>();
-        accounts.add(new Account("first", AccountType.TWITTER));
-        accounts.add(new Account("second", AccountType.FACEBOOKBRIDGE));
+        accounts.add(new Account("first", "first f", AccountType.TWITTER));
+        accounts.add(new Account("second", "second f", AccountType.FACEBOOKBRIDGE));
 
         LoginResponse response = ResponseImpl.create(Status.OK, "ok", 1234l).buildLoginResponse(accounts);
 
         String responseJson = JsonTransformer.responseToJson(response);
         System.out.println(responseJson);
-        assertEquals("{\"status\":\"OK\",\"message\":\"ok\",\"tokenId\":1234,\"accounts\":[\"First\",\"Second\"]}",
+        assertEquals("{\"status\":\"OK\",\"[errors\":\"ok\",\"accounts\":[{\"login\":\"second\",\"name\":\"second f\",\"type\":\"FACEBOOKBRIDGE\"},{\"login\":\"first\",\"name\":\"first f\",\"type\":\"TWITTER\"}]]}",
                      responseJson);
     }
 }

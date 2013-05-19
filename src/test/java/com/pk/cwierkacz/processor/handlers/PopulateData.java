@@ -24,6 +24,7 @@ abstract public class PopulateData
 
     protected final String username = "cwierkacz1";
     protected final String username2 = "cwierkacz13";
+    protected final String fullname = "Cwierkacz";
     protected final String username3 = "fake";
     protected final String sysUsername = "cwierkacz";
 
@@ -88,6 +89,7 @@ abstract public class PopulateData
                 TwitterAccountDao account = TwitterAccountDao.create(userId,
                                                                      user,
                                                                      username,
+                                                                     fullname,
                                                                      accessToken,
                                                                      accessTokenSecret);
                 user.getAccounts().add(account);
@@ -98,6 +100,7 @@ abstract public class PopulateData
                 TwitterAccountDao account = TwitterAccountDao.create(userId2,
                                                                      user,
                                                                      username2,
+                                                                     fullname,
                                                                      accessToken2,
                                                                      accessTokenSecret2);
                 user.getAccounts().add(account);
@@ -109,6 +112,7 @@ abstract public class PopulateData
                 TwitterAccountDao account = TwitterAccountDao.create(userId3,
                                                                      null,
                                                                      username3,
+                                                                     fullname,
                                                                      accessToken3,
                                                                      accessTokenSecret3);
                 user.getAccounts().add(account);

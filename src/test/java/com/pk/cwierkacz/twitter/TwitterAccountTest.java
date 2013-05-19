@@ -28,6 +28,8 @@ public class TwitterAccountTest
     private final String accessTokenSecret = "sIxeZvvJ0eSxgy3Zj27829De0KI0HytKtPcWrLK9Y";
     private final long userId = 1291752048;
 
+    private final String fullName = "Cwierkacz";
+
     /*private final String username = "cwierkacz13";
     private final String accessToken = "1291708484-x2GIuJprsYm4Wf2MWSFvsRYkdVPxUZncUxzKaJw";
     private final String accessTokenSecret = "jxqddQ8NdcFa0uqJJGuQcMgBifjj0us8BX4GNto4YQ";
@@ -44,6 +46,7 @@ public class TwitterAccountTest
         TwitterAccountDao user = TwitterAccountDao.create(userId,
                                                           null,
                                                           username,
+                                                          fullName,
                                                           accessToken,
                                                           accessTokenSecret);
 

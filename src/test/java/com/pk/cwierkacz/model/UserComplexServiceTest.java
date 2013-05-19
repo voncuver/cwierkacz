@@ -44,6 +44,7 @@ public class UserComplexServiceTest
         TwitterAccountDao twitterAccountDao = TwitterAccountDao.create(22,
                                                                        userDao,
                                                                        "Twitter",
+                                                                       "Twitter name",
                                                                        "1234",
                                                                        "secret1234");
         Set<TwitterAccountDao> accounts = new HashSet<>();

@@ -14,7 +14,16 @@ public class TwitterAcountConverter
         if ( accountDao != null )
             return accountDao;
         else {
-            return TwitterAccountDao.create(tweetUser.getId(), null, tweetUser.getScreenName(), null, null);
+            return toAccountFromTwitter(tweetUser);
         }
+    }
+
+    public TwitterAccountDao toAccountFromTwitter( twitter4j.User tweetUser ) {
+        return TwitterAccountDao.create(tweetUser.getId(),
+                                        null,
+                                        tweetUser.getScreenName(),
+                                        tweetUser.getName(),
+                                        null,
+                                        null);
     }
 }

@@ -49,7 +49,9 @@ public class ListTweetAccounts extends AbstractHandler
 
         Set<Account> accountsNames = new HashSet<>();
         for ( TwitterAccountDao accountDao : accounts ) {
-            accountsNames.add(new Account(accountDao.getAccountName(), AccountType.TWITTER));
+            accountsNames.add(new Account(accountDao.getAccountName(),
+                                          accountDao.getName(),
+                                          AccountType.TWITTER));
         }
 
         Response response = ResponseImpl.create(Status.OK, "Lista dostępnych kont.", accRequest.getTokenId())

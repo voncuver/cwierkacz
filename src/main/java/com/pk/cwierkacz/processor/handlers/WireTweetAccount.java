@@ -20,6 +20,7 @@ import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.dao.UserDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.SessionService;
+import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.model.service.UserService;
 import com.pk.cwierkacz.processor.handlers.helpers.HttpClient;
 import com.pk.cwierkacz.twitter.OAuthAuthentication;
@@ -30,12 +31,14 @@ public class WireTweetAccount extends AbstractHandler
 
     private final UserService userService;
     private final SessionService sessionService;
+    private final TwitterAccountService twitterAccountService;
 
     private final HttpClient httpClient;
 
     public WireTweetAccount() {
         userService = ServiceRepo.getInstance().getService(UserService.class);
         sessionService = ServiceRepo.getInstance().getService(SessionService.class);
+        twitterAccountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
         httpClient = new HttpClient();
     }
 
@@ -70,7 +73,12 @@ public class WireTweetAccount extends AbstractHandler
             return;
         }
 
-        TwitterAccountDao account = TwitterAccountDao.create(0, user, accRequest.getLoginTweet(), null, null);
+        TwitterAccountDao account = TwitterAccountDao.create(0,
+                                                             user,
+                                                             accRequest.getLoginTweet(),
+                                                             null,
+                                                             null,
+                                                             null);
         account.setId(1l);
         OAuthAuthentication userAuthentication = null;
         String pin = null;
@@ -134,8 +142,7 @@ public class WireTweetAccount extends AbstractHandler
             e.printStackTrace();
         }
 
-        user.getAccounts().add(account);
-        userService.saveOrUpdate(user);
+        twitterAccountService.save(account);
 
         Response response = ResponseImpl.create(Status.OK,
                                                 "Konto powiązano pomyślnie.",
