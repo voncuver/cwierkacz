@@ -58,7 +58,7 @@ public class PublishTweetAccountTest extends PopulateData
         accounts.add(new Account("second", "second", AccountType.TWITTER));
         String text = "TEST OF PUBLISH TWEET HANDLER " + new Date().getTime();
 
-        Request request = RequestImpl.create(Action.PUBLISHTWEET, token).buildPublishRequest(text, accounts);
+        Request request = RequestImpl.create(Action.PUBLISHMESSAGE, token).buildPublishRequest(text, accounts);
         appData.setRequest(request);
 
         publishTweetAccount.handle(appData);
@@ -118,7 +118,7 @@ public class PublishTweetAccountTest extends PopulateData
 
         byte[] body = IOUtils.toByteArray(new FileInputStream(new File("src/test/java/com/pk/cwierkacz/processor/handlers/lena.PNG")));
 
-        Request request = RequestImpl.create(Action.PUBLISHTWEET, token)
+        Request request = RequestImpl.create(Action.PUBLISHMESSAGE, token)
                                      .buildPublishRequest(text, accounts)
                                      .withImg(body, "lena.PNG");
         appData.setRequest(request);
@@ -167,7 +167,7 @@ public class PublishTweetAccountTest extends PopulateData
         String text = "TEST OF PUBLISH TWEET HANDLER (REPLY) " + new Date().getTime();
         String textWithReplyName = "@" + username + " " + text;
 
-        Request request = RequestImpl.create(Action.PUBLISHTWEET, token).buildPublishRequest(text,
+        Request request = RequestImpl.create(Action.PUBLISHMESSAGE, token).buildPublishRequest(text,
                                                                                              accounts,
                                                                                              tweet.getId(),
                                                                                              0);
@@ -230,7 +230,7 @@ public class PublishTweetAccountTest extends PopulateData
         accounts.add(new Account("first", "first", AccountType.TWITTER));
         accounts.add(new Account("second", "second", AccountType.TWITTER));
 
-        Request request = RequestImpl.create(Action.PUBLISHTWEET, token).buildPublishRequest(null,
+        Request request = RequestImpl.create(Action.PUBLISHMESSAGE, token).buildPublishRequest(null,
                                                                                              accounts,
                                                                                              0,
                                                                                              tweet.getId());
@@ -295,7 +295,7 @@ public class PublishTweetAccountTest extends PopulateData
 
         String text = "TEST OF PUBLISH TWEET HANDLER " + new Date().getTime();
 
-        Request request = RequestImpl.create(Action.PUBLISHTWEET, token).buildPublishRequest(text, accounts);
+        Request request = RequestImpl.create(Action.PUBLISHMESSAGE, token).buildPublishRequest(text, accounts);
         appData.setRequest(request);
 
         publishTweetAccount.handle(appData);

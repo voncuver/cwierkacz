@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
-import com.pk.cwierkacz.http.request.PublishRequest;
+import com.pk.cwierkacz.http.request.PublishMessageRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.http.response.dto.Account;
@@ -47,12 +47,12 @@ public class PublishTweetAccount extends AbstractHandler
 
     @Override
     public boolean isHandleable( ApplicationData applicationData ) {
-        return applicationData.getRequest().getAction().equals(Action.PUBLISHTWEET);
+        return applicationData.getRequest().getAction().equals(Action.PUBLISHMESSAGE);
     }
 
     @Override
     public void handle( ApplicationData appData ) {
-        PublishRequest publishRequest = (PublishRequest) appData.getRequest();
+        PublishMessageRequest publishRequest = (PublishMessageRequest) appData.getRequest();
 
         boolean errors = false;
         boolean deny = false;

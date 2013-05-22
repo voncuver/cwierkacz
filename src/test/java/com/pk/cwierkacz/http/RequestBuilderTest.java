@@ -21,8 +21,11 @@ import com.pk.cwierkacz.http.request.AccountManageRequest;
 import com.pk.cwierkacz.http.request.AddTweeterAccountRequest;
 import com.pk.cwierkacz.http.request.FetchTweetsRequest;
 import com.pk.cwierkacz.http.request.LoginRequest;
-import com.pk.cwierkacz.http.request.PublishRequest;
+import com.pk.cwierkacz.http.request.PublishMessageRequest;
+import com.pk.cwierkacz.http.request.PublishReplyRequest;
+import com.pk.cwierkacz.http.request.PublishRetweetRequest;
 import com.pk.cwierkacz.http.request.Request;
+import com.pk.cwierkacz.model.AccountType;
 
 public class RequestBuilderTest
 {
@@ -111,36 +114,39 @@ public class RequestBuilderTest
     @Test
     public void publishRequestTest( ) {
         Map<String, String[]> params = new HashMap<String, String[]>();
-        params.put("action", new String[] {Action.PUBLISHTWEET.toString()});
+        params.put("action", new String[] {Action.PUBLISHMESSAGE.toString()});
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
-        params.put("accounts", new String[] {"1234", "test"});
-        params.put("replayForId", new String[] {"1234567"});
-        params.put("retweetForId", new String[] {"123456789"});
+        params.put("accountLogins", new String[] {"1234", "test"});
+        params.put("accountTypes",
+                   new String[] {AccountType.TWITTER.getType(), AccountType.FACEBOOKBRIDGE.getType()});
         params.put("tweet", new String[] {"Testtowy test"});
 
-        PublishRequest request = RequestBuilder.buildRequest(params);
+        PublishMessageRequest request = RequestBuilder.buildRequest(params);
 
-        assertEquals(Action.PUBLISHTWEET, request.getAction());
+        assertEquals(Action.PUBLISHMESSAGE, request.getAction());
         assertEquals(1234, request.getTokenId());
         assertEquals("TEST", request.getUserName());
 
-        assertEquals("1234", request.getAccounts().get(0));
-        assertEquals("test", request.getAccounts().get(1));
+        assertEquals("1234", request.getAccounts().get(0).login);
+        assertEquals("test", request.getAccounts().get(1).login);
 
-        assertEquals(1234567, request.getReplayFor());
-        assertEquals(123456789, request.getRetweetFor());
         assertEquals("Testtowy test", request.getTweetText());
+        assertEquals(AccountType.TWITTER, request.getAccounts().get(0).type);
+        assertEquals(AccountType.FACEBOOKBRIDGE, request.getAccounts().get(1).type);
+
         assertNull(request.getBody());
     }
 
     @Test
     public void publishRequestWithBodyTest( ) throws IOException {
         Map<String, String[]> params = new HashMap<String, String[]>();
-        params.put("action", new String[] {Action.PUBLISHTWEET.toString()});
+        params.put("action", new String[] {Action.PUBLISHMESSAGE.toString()});
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
-        params.put("accounts", new String[] {"1234", "test"});
+        params.put("accountLogins", new String[] {"1234", "test"});
+        params.put("accountTypes",
+                   new String[] {AccountType.TWITTER.getType(), AccountType.FACEBOOKBRIDGE.getType()});
         params.put("tweet", new String[] {"Testtowy test"});
         params.put("imgName", new String[] {"TEST"});
 
@@ -148,14 +154,17 @@ public class RequestBuilderTest
         InputStream is = new FileInputStream(lenaFile);
         byte[] body = IOUtils.toByteArray(is);
 
-        PublishRequest request = RequestBuilder.buildRequest(params, body);
+        PublishMessageRequest request = RequestBuilder.buildRequest(params, body);
 
-        assertEquals(Action.PUBLISHTWEET, request.getAction());
+        assertEquals(Action.PUBLISHMESSAGE, request.getAction());
         assertEquals(1234, request.getTokenId());
         assertEquals("TEST", request.getUserName());
 
-        assertEquals("1234", request.getAccounts().get(0));
-        assertEquals("test", request.getAccounts().get(1));
+        assertEquals("1234", request.getAccounts().get(0).login);
+        assertEquals("test", request.getAccounts().get(1).login);
+
+        assertEquals(AccountType.TWITTER, request.getAccounts().get(0).type);
+        assertEquals(AccountType.FACEBOOKBRIDGE, request.getAccounts().get(1).type);
 
         assertEquals("Testtowy test", request.getTweetText());
 
@@ -163,6 +172,55 @@ public class RequestBuilderTest
         assertNotNull(readedBody);
         assertTrue(ArrayUtils.isEquals(body, readedBody));
 
+    }
+
+    @Test
+    public void publishReplyRequestTest( ) {
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put("action", new String[] {Action.PUBLISHREPLY.toString()});
+        params.put("username", new String[] {"TEST"});
+        params.put("token", new String[] {"1234"});
+        params.put("accountLogin", new String[] {"1234"});
+        params.put("tweet", new String[] {"Testtowy test"});
+        params.put("replayForId", new String[] {"1234567"});
+
+        PublishReplyRequest request = RequestBuilder.buildRequest(params);
+
+        assertEquals(Action.PUBLISHREPLY, request.getAction());
+        assertEquals(1234, request.getTokenId());
+        assertEquals("TEST", request.getUserName());
+
+        assertEquals("1234", request.getLoginTweet());
+
+        assertEquals(1234567, request.getReplayFor());
+        assertEquals("Testtowy test", request.getTweetText());
+        assertNull(request.getBody());
+    }
+
+    @Test
+    public void publishRetweetRequestTest( ) {
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put("action", new String[] {Action.PUBLISHRETWEET.toString()});
+        params.put("username", new String[] {"TEST"});
+        params.put("token", new String[] {"1234"});
+        params.put("accountLogins", new String[] {"1234", "test"});
+        params.put("accountTypes",
+                   new String[] {AccountType.TWITTER.getType(), AccountType.FACEBOOKBRIDGE.getType()});
+        params.put("retweetForId", new String[] {"123456789"});
+
+        PublishRetweetRequest request = RequestBuilder.buildRequest(params);
+
+        assertEquals(Action.PUBLISHRETWEET, request.getAction());
+        assertEquals(1234, request.getTokenId());
+        assertEquals("TEST", request.getUserName());
+
+        assertEquals("1234", request.getAccounts().get(0).login);
+        assertEquals("test", request.getAccounts().get(1).login);
+
+        assertEquals(AccountType.TWITTER, request.getAccounts().get(0).type);
+        assertEquals(AccountType.FACEBOOKBRIDGE, request.getAccounts().get(1).type);
+
+        assertEquals(123456789, request.getRetweetFor());
     }
 
     @Test

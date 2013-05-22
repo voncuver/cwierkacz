@@ -133,7 +133,7 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
 
         Map<String, String[]> parametersMap = new HashMap<String, String[]>();
         parametersMap.put(RequestBuilder.TOKEN, new String[] {parameters.getToken()});
-        parametersMap.put(RequestBuilder.ACTIONPARAM, new String[] {Action.PUBLISHTWEET.getActionName()});
+        parametersMap.put(RequestBuilder.ACTIONPARAM, new String[] {Action.PUBLISHMESSAGE.getActionName()});
         parametersMap.put(RequestBuilder.IMGNAME, new String[] {parameters.getFilename()});
         parametersMap.put(RequestBuilder.TWEET, new String[] {parameters.getDescription()});
         parametersMap.put(RequestBuilder.ACCOUNTS, new String[] {parameters.getLss()});

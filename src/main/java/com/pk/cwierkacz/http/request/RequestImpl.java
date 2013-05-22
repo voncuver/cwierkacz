@@ -15,9 +15,11 @@ public class RequestImpl implements
                         Request,
                         LoginRequest,
                         AddTweeterAccountRequest,
-                        PublishRequest,
+                        PublishMessageRequest,
                         FetchTweetsRequest,
-                        AccountManageRequest
+                        AccountManageRequest,
+                        PublishReplyRequest,
+                        PublishRetweetRequest
 {
     //Basic
     private Action action;
@@ -51,7 +53,9 @@ public class RequestImpl implements
     private long replayFor;
     private long retweetFor;
     private byte[] body;
-    private String imgName;
+
+    private String imgName; //imgName and imgURL is alternative param - imgURL indicates url of image but imgName indicates name of image when in request body is image 
+    private String imgURL;
 
     //PUBLISHTWEET
     private String tweetText;
@@ -93,6 +97,9 @@ public class RequestImpl implements
         requestImpl.userName = impl.getUserName();
         requestImpl.body = impl.getBody();
         requestImpl.ids = impl.getIds();
+        requestImpl.imgURL = impl.getImgURL();
+        requestImpl.imgName = impl.getImgName();
+        requestImpl.accountType = impl.getAccountType();
         return requestImpl;
     }
 
@@ -139,6 +146,12 @@ public class RequestImpl implements
     }
 
     @SuppressWarnings( "unchecked" )
+    public < T extends RequestImpl > T withLogin( String loginTweet ) {
+        this.loginTweet = loginTweet;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
     public < T extends RequestImpl > T buildPublishRequest( String tweetText, List<Account> accounts ) {
         this.tweetText = tweetText;
         this.accounts = accounts;
@@ -173,6 +186,12 @@ public class RequestImpl implements
     public < T extends RequestImpl > T withImg( byte[] body, String imgName ) {
         this.body = body;
         this.imgName = imgName;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public < T extends RequestImpl > T withImg( String imgURL ) {
+        this.imgURL = imgURL;
         return (T) this;
     }
 
@@ -321,5 +340,14 @@ public class RequestImpl implements
     @Override
     public List<Long> getIds( ) {
         return ids;
+    }
+
+    @Override
+    public String getImgURL( ) {
+        return imgURL;
+    }
+
+    public void setImgURL( String imgURL ) {
+        this.imgURL = imgURL;
     }
 }

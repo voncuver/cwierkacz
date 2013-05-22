@@ -37,6 +37,7 @@ public class RequestBuilder
     public static final String REPLAYFORID = "replayForId";
     public static final String RETWEETFORID = "retweetForId";
     public static final String IMGNAME = "imgName";
+    public static final String IMGURL = "imgURL";
 
     public static final String SIZE = "size";
     public static final String DATEFROM = "dateFrom";
@@ -55,6 +56,10 @@ public class RequestBuilder
 
         Action action = request.getAction();
 
+        byte[] bodyOrNull = null;
+        if ( body != null && body.length > 0 )
+            bodyOrNull = body;
+
         if ( action.equals(Action.SIGNIN) || action.equals(Action.SIGNOUT) ) {
             request = createLoginRequest(params, request);
         }
@@ -70,11 +75,10 @@ public class RequestBuilder
         else if ( action.equals(Action.FETCHMESSAGEBYID) ) {
             request = createFetchByIdTweetsRequest(params, request);
         }
-        else if ( action.equals(Action.PUBLISHTWEET) ) {
-            byte[] bodyOrNull = null;
-            if ( body != null && body.length > 0 )
-                bodyOrNull = body;
-            request = createPublishTweetRequest(params, request, bodyOrNull);
+        else if ( action.equals(Action.PUBLISHMESSAGE) ||
+                  action.equals(Action.PUBLISHREPLY) ||
+                  action.equals(Action.PUBLISHRETWEET) ) {
+            request = createPublishMsgRequest(action, params, request, bodyOrNull);
         }
         else if ( action.equals(Action.LINKSOCIALACCOUNT) || action.equals(Action.UNLINKSOCIALACCOUNT) ) {
             request = createAddTweeterAccountRequest(params, request);
@@ -193,46 +197,69 @@ public class RequestBuilder
         return request = RequestImpl.create(request).buildFetchByIdRequest(idsLong);
     }
 
-    private static Request createPublishTweetRequest( Map<String, String[]> params,
-                                                      Request request,
-                                                      byte[] body ) {
-        String[] tweetTexts = params.get(TWEET);
+    private static Request createPublishMsgRequest( Action action,
+                                                    Map<String, String[]> params,
+                                                    Request request,
+                                                    byte[] body ) {
         String tweetText = null;
-        if ( tweetTexts != null )
-            tweetText = tweetTexts[ 0 ];
+        List<Account> accountsWithType = null;
+        String accountLogin = null;
+        Long retweetForId = null;
+        Long replayForId = null;
+        String imgName = null;
+        String imgURL = null;
 
-        List<String> accounts = new ArrayList<String>();
-        if ( params.get(ACCOUNTLOGINS) != null ) {
-            accounts = Arrays.asList(params.get(ACCOUNTLOGINS));
+        if ( action.equals(Action.PUBLISHMESSAGE) || action.equals(Action.PUBLISHRETWEET) ) {
+
+            List<String> accounts = new ArrayList<String>();
+            if ( params.get(ACCOUNTLOGINS) != null ) {
+                accounts = Arrays.asList(params.get(ACCOUNTLOGINS));
+            }
+
+            List<String> accountsTypes = new ArrayList<String>();
+            if ( params.get(ACCOUNTTYPES) != null ) {
+                accountsTypes = Arrays.asList(params.get(ACCOUNTTYPES));
+            }
+
+            accountsWithType = new ArrayList<>();
+
+            for ( int i = 0; i < accounts.size(); i++ ) {
+                accountsWithType.add(new Account(accounts.get(i),
+                                                 accounts.get(i),
+                                                 AccountType.getAccountType(accountsTypes.get(i))));
+            }
         }
 
-        List<String> accountsTypes = new ArrayList<String>();
-        if ( params.get(ACCOUNTTYPES) != null ) {
-            accountsTypes = Arrays.asList(params.get(ACCOUNTTYPES));
-        }
+        if ( action.equals(Action.PUBLISHMESSAGE) || action.equals(Action.PUBLISHREPLY) ) {
+            String[] tweetTexts = params.get(TWEET);
+            if ( tweetTexts != null )
+                tweetText = tweetTexts[ 0 ];
 
-        List<Account> accountsWithType = new ArrayList<>();
+            if ( params.get(IMGNAME) != null && params.get(IMGNAME).length > 0 ) {
+                imgName = params.get(IMGNAME)[ 0 ];
+                request = RequestImpl.create(request).withImg(body, imgName);
+            }
 
-        for ( int i = 0; i < accounts.size(); i++ ) {
-            accountsWithType.add(new Account(accounts.get(i),
-                                             accounts.get(i),
-                                             AccountType.getAccountType(accountsTypes.get(i))));
+            if ( params.get(IMGURL) != null && params.get(IMGURL).length > 0 ) {
+                imgURL = params.get(IMGURL)[ 0 ];
+                request = RequestImpl.create(request).withImg(imgURL);
+            }
         }
 
         request = RequestImpl.create(request).buildPublishRequest(tweetText, accountsWithType);
 
-        if ( params.get(IMGNAME) != null && params.get(IMGNAME).length > 0 ) {
-            String imgName = params.get(IMGNAME)[ 0 ];
-            request = RequestImpl.create(request).withImg(body, imgName);
+        if ( action.equals(Action.PUBLISHREPLY) ) {
+            if ( params.get(REPLAYFORID) != null && params.get(REPLAYFORID).length > 0 ) {
+                replayForId = Long.parseLong(params.get(REPLAYFORID)[ 0 ]);
+                request = RequestImpl.create(request).withReplayForID(replayForId);
+            }
+            if ( params.get(ACCOUNTLOGIN) != null && params.get(ACCOUNTLOGIN).length > 0 ) {
+                accountLogin = params.get(ACCOUNTLOGIN)[ 0 ];
+                request = RequestImpl.create(request).withLogin(accountLogin);
+            }
         }
-
-        if ( params.get(REPLAYFORID) != null && params.get(REPLAYFORID).length > 0 ) {
-            Long replayForId = Long.parseLong(params.get(REPLAYFORID)[ 0 ]);
-            request = RequestImpl.create(request).withReplayForID(replayForId);
-        }
-
-        if ( params.get(RETWEETFORID) != null && params.get(RETWEETFORID).length > 0 ) {
-            Long retweetForId = Long.parseLong(params.get(RETWEETFORID)[ 0 ]);
+        else if ( action.equals(Action.PUBLISHRETWEET) ) {
+            retweetForId = Long.parseLong(params.get(RETWEETFORID)[ 0 ]);
             request = RequestImpl.create(request).withRetweetForId(retweetForId);
         }
 
