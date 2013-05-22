@@ -64,7 +64,7 @@ public class PublishTweetAccountTest extends PopulateData
         publishTweetAccount.handle(appData);
 
         assertNotNull(appData.getResponse());
-        System.out.println("msg: " + appData.getResponse().getErrors());
+        System.out.println("msg: " + appData.getResponse().getText());
         assertEquals(Status.OK, appData.getResponse().getStatus());
 
         List<TweetDao> tweets1 = tweetService.getActualTweetForAccount(twitterAccountDao,
@@ -126,7 +126,7 @@ public class PublishTweetAccountTest extends PopulateData
         publishTweetAccount.handle(appData);
 
         assertNotNull(appData.getResponse());
-        System.out.println("msg: " + appData.getResponse().getErrors());
+        System.out.println("msg: " + appData.getResponse().getText());
         assertEquals(Status.OK, appData.getResponse().getStatus());
 
         List<TweetDao> tweets1 = tweetService.getActualTweetForAccount(twitterAccountDao,
@@ -176,7 +176,7 @@ public class PublishTweetAccountTest extends PopulateData
         publishTweetAccount.handle(appData);
 
         assertNotNull(appData.getResponse());
-        System.out.println("==msg: " + appData.getResponse().getErrors());
+        System.out.println("==msg: " + appData.getResponse().getText());
         assertEquals(Status.OK, appData.getResponse().getStatus());
 
         List<TweetDao> tweets1 = tweetService.getActualReplies(tweet);
@@ -239,14 +239,14 @@ public class PublishTweetAccountTest extends PopulateData
         publishTweetAccount.handle(appData);
 
         assertNotNull(appData.getResponse());
-        System.out.println("msg: " + appData.getResponse().getErrors());
+        System.out.println("msg: " + appData.getResponse().getText());
         assertEquals(Status.ERROR, appData.getResponse().getStatus());
         assertTrue(appData.getResponse()
-                          .getErrors()
+                          .getText()
                           .contains("Bład komunikacji dla użytkownika " +
                                     twitterAccount.getAccount().getAccountName())); //cannot retweet himself
 
-        assertTrue(!appData.getResponse().getErrors().contains(twitterAccount2.getAccount().getAccountName()));
+        assertTrue(!appData.getResponse().getText().contains(twitterAccount2.getAccount().getAccountName()));
 
         List<TweetDao> tweets1 = tweetService.getActualRetweets(tweet);
 
@@ -301,7 +301,7 @@ public class PublishTweetAccountTest extends PopulateData
         publishTweetAccount.handle(appData);
 
         assertNotNull(appData.getResponse());
-        System.out.println("msg: " + appData.getResponse().getErrors());
+        System.out.println("msg: " + appData.getResponse().getText());
         assertEquals(Status.DENY, appData.getResponse().getStatus());
 
         List<TweetDao> tweets1 = tweetService.getActualTweetForAccount(twitterAccountDao3,

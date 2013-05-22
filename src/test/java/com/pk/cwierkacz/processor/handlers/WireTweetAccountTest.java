@@ -49,7 +49,7 @@ public class WireTweetAccountTest
         appData.setRequest(accRequest);
         tweetAccount.handle(appData);
 
-        System.out.println(appData.getResponse().getErrors());
+        System.out.println(appData.getResponse().getText());
         assertEquals(Status.OK, appData.getResponse().getStatus());
 
     }

@@ -7,7 +7,7 @@ public interface Response
 
     Status getStatus( );
 
-    String getErrors( );
+    String getText( );
 
     long getTokenId( );
 }

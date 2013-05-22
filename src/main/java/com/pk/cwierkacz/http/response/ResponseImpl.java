@@ -16,7 +16,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchMessagesRespo
 
     private Status status;
 
-    private String errors; //TODO moze lepsza by była lista stringow? (może być wiecej iformacji o błędzie)
+    private String text;
 
     @JsonIgnore
     private long tokenId;
@@ -33,7 +33,7 @@ public class ResponseImpl implements Response, LoginResponse, FetchMessagesRespo
     public static ResponseImpl create( Status status, String errors, long tokenId ) {
         ResponseImpl responseImpl = new ResponseImpl();
         responseImpl.status = status;
-        responseImpl.setErrors(errors);
+        responseImpl.setText(errors);
         responseImpl.tokenId = tokenId;
         return responseImpl;
     }
@@ -75,12 +75,12 @@ public class ResponseImpl implements Response, LoginResponse, FetchMessagesRespo
     }
 
     @Override
-    public String getErrors( ) {
-        return errors;
+    public String getText( ) {
+        return text;
     }
 
-    public void setErrors( String errors ) {
-        this.errors = errors;
+    public void setText( String errors ) {
+        this.text = errors;
     }
 
 }

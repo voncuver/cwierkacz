@@ -112,7 +112,7 @@ public class FetchTweetsHandlerTest extends PopulateData
         fetchTweetsHandler.handle(appData);
 
         assertNotNull(appData.getResponse());
-        System.out.println("msg: " + appData.getResponse().getErrors());
+        System.out.println("msg: " + appData.getResponse().getText());
         assertEquals(Status.OK, appData.getResponse().getStatus());
         FetchMessagesResponse response = (FetchMessagesResponse) appData.getResponse();
 
@@ -156,7 +156,7 @@ public class FetchTweetsHandlerTest extends PopulateData
         fetchTweetsHandler.handle(appData);
 
         assertNotNull(appData.getResponse());
-        System.out.println("msg: " + appData.getResponse().getErrors());
+        System.out.println("msg: " + appData.getResponse().getText());
         assertEquals(Status.OK, appData.getResponse().getStatus());
         FetchMessagesResponse response = (FetchMessagesResponse) appData.getResponse();
 
@@ -230,7 +230,7 @@ public class FetchTweetsHandlerTest extends PopulateData
         fetchTweetsHandler.handle(appData);
 
         assertNotNull(appData.getResponse());
-        System.out.println("msg: " + appData.getResponse().getErrors());
+        System.out.println("msg: " + appData.getResponse().getText());
         assertEquals(Status.OK, appData.getResponse().getStatus());
         FetchMessagesResponse response = (FetchMessagesResponse) appData.getResponse();
 
@@ -278,7 +278,7 @@ public class FetchTweetsHandlerTest extends PopulateData
         fetchTweetsHandler.handle(appData);
 
         assertNotNull(appData.getResponse());
-        System.out.println("msg: " + appData.getResponse().getErrors());
+        System.out.println("msg: " + appData.getResponse().getText());
         assertEquals(Status.OK, appData.getResponse().getStatus());
         FetchMessagesResponse response = (FetchMessagesResponse) appData.getResponse();
 
