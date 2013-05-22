@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
-
 import org.joda.time.DateTime;
 
 import com.pk.cwierkacz.http.request.Request;
@@ -46,18 +44,12 @@ public class RequestBuilder
 
     public static final String IDS = "ids";
 
-    public static < T > T buildRequest( Map<String, String[]> params, Cookie[] cookies ) {
-        return buildRequest(params, cookies, null);
+    public static < T > T buildRequest( Map<String, String[]> params ) {
+        return buildRequest(params, null);
     }
 
     @SuppressWarnings( "unchecked" )
-    public static < T > T buildRequest( Map<String, String[]> params, Cookie[] cookies, byte[] body ) {
-
-        if ( cookies != null ) {
-            for ( Cookie cookie : cookies ) {
-                params.put(cookie.getName(), new String[] {cookie.getValue()});
-            }
-        }
+    public static < T > T buildRequest( Map<String, String[]> params, byte[] body ) {
 
         Request request = buildBasicRequest(params);
 
@@ -141,9 +133,20 @@ public class RequestBuilder
     }
 
     private static Request createFetchTweetsRequest( Map<String, String[]> params, Request request ) {
-        List<String> accounts = Arrays.asList(params.get(ACCOUNTS));
-        String accontTypeString = params.get(ACCOUNTTYPE)[ 0 ];
+
+        List<String> accounts = new ArrayList<>();
+        if ( params.get(ACCOUNTS) != null && params.get(ACCOUNTS).length > 0 ) {
+            accounts = Arrays.asList(params.get(ACCOUNTS));
+        }
+        String accontTypeString = null;
+        if ( params.get(ACCOUNTTYPE) != null && params.get(ACCOUNTTYPE).length > 0 ) {
+            accontTypeString = params.get(ACCOUNTTYPE)[ 0 ];
+        }
+
         AccountType accountType = AccountType.getAccountType(accontTypeString);
+        if ( accountType == null ) {
+            accountType = AccountType.TWITTER;
+        }
 
         List<Account> accountsWithType = new ArrayList<>();
         for ( String account : accounts ) {

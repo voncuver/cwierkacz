@@ -36,7 +36,7 @@ public class LoginHandler extends AbstractHandler
         UserDao user = userService.getByUserName(name);
 
         if ( user == null ) {
-            appData.setResponse(ResponseImpl.create(Status.DENY, "Nie ma takiego użytkownika.", 0));
+            appData.setResponse(ResponseImpl.create(Status.ERROR, "Nie ma takiego użytkownika.", 0));
             return;
         }
 
@@ -44,7 +44,7 @@ public class LoginHandler extends AbstractHandler
         String cadidatePass = HashUtil.hashString(loginRequest.getPassword());
 
         if ( !password.equals(cadidatePass) ) {
-            appData.setResponse(ResponseImpl.create(Status.DENY, "Złe hasło.", 0));
+            appData.setResponse(ResponseImpl.create(Status.ERROR, "Złe hasło.", 0));
             return;
         }
 

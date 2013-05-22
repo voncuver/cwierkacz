@@ -11,7 +11,6 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
-import javax.servlet.http.Cookie;
 
 import pl.edu.pk.ias.socialserviceintegration.IncorrectPasswordFault;
 import pl.edu.pk.ias.socialserviceintegration.SocialServiceIntegration;
@@ -69,8 +68,7 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
         parametersMap.put(RequestBuilder.PASSWORD, new String[] {parameters.getPassword()});
         parametersMap.put(RequestBuilder.ACTIONPARAM, new String[] {Action.SIGNIN.getActionName()});
 
-        Response response = securityController.handle(parametersMap, new Cookie[0], new byte[0])
-                                              .getResponse();
+        Response response = securityController.handle(parametersMap, new byte[0]).getResponse();
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(Long.toString(response.getTokenId()));
@@ -90,8 +88,7 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
         parametersMap.put(RequestBuilder.TOKEN, new String[] {parameters.getToken()});
         parametersMap.put(RequestBuilder.ACTIONPARAM, new String[] {Action.SIGNOUT.getActionName()});
 
-        Response response = securityController.handle(parametersMap, new Cookie[0], new byte[0])
-                                              .getResponse();
+        Response response = securityController.handle(parametersMap, new byte[0]).getResponse();
 
         LogoutResponse logoutResponse = new LogoutResponse();
         logoutResponse.setIsOperationSuccess(response.getStatus().equals(Status.OK));
@@ -112,7 +109,6 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
                           new String[] {Action.FETCHSOCIALACCOUNTS.getActionName()});
 
         com.pk.cwierkacz.http.response.LoginResponse response = (com.pk.cwierkacz.http.response.LoginResponse) securityController.handle(parametersMap,
-                                                                                                                                         new Cookie[0],
                                                                                                                                          new byte[0])
                                                                                                                                  .getResponse();
         Set<Account> accounts = response.getAccounts();
@@ -142,9 +138,7 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
         parametersMap.put(RequestBuilder.TWEET, new String[] {parameters.getDescription()});
         parametersMap.put(RequestBuilder.ACCOUNTS, new String[] {parameters.getLss()});
 
-        ApplicationData response = securityController.handle(parametersMap,
-                                                             new Cookie[0],
-                                                             parameters.getFile());
+        ApplicationData response = securityController.handle(parametersMap, parameters.getFile());
 
         List<String> ids = response.getParam("TweetId");
 
@@ -174,7 +168,6 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
         parametersMap.put(RequestBuilder.ACCOUNTS, new String[] {parameters.getLss()});
 
         FetchMessagesResponse response = (FetchMessagesResponse) securityController.handle(parametersMap,
-                                                                                           new Cookie[0],
                                                                                            new byte[0])
                                                                                    .getResponse();
 
@@ -222,7 +215,6 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
         parametersMap.put(RequestBuilder.IDS, ids.toArray(new String[0]));
 
         FetchMessagesResponse response = (FetchMessagesResponse) securityController.handle(parametersMap,
-                                                                                           new Cookie[0],
                                                                                            new byte[0])
                                                                                    .getResponse();
 

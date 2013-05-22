@@ -2,8 +2,7 @@ package com.pk.cwierkacz.controller;
 
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
-
+import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.RequestBuilder;
 import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.Request;
@@ -21,30 +20,45 @@ public class SecurityController
         mainProcessor = MainProcessor.getInstance();
     }
 
-    public ApplicationData handle( Map<String, String[]> parameters, Cookie[] cookies, byte body[] ) {
-        Result result = checkParams();
+    public ApplicationData handle( Map<String, String[]> parameters, byte body[] ) {
+        Result result = checkParams(parameters);
         if ( !result.isValid() ) {
-            Long tokenId = 0l;
-            if ( parameters.get(RequestBuilder.TOKEN) != null &&
-                 parameters.get(RequestBuilder.TOKEN).length > 0 ) {
-                tokenId = Long.parseLong(parameters.get(RequestBuilder.TOKEN)[ 0 ]);
-            }
             ApplicationData applicationData = new ApplicationData();
-            applicationData.setResponse(ResponseImpl.create(Status.DENY, result.getMessage(), tokenId));
+            applicationData.setResponse(ResponseImpl.create(Status.DENY, result.getMessage(), 0));
             return applicationData;
         }
         else {
-            return passCorrect(parameters, cookies, body);
+            return passCorrect(parameters, body);
         }
     }
 
-    private Result checkParams( ) {
-        // TODO Security check
+    private Result checkParams( Map<String, String[]> parameters ) {
+        if ( isActionRequireToken(parameters.get(RequestBuilder.ACTIONPARAM)[ 0 ]) &&
+             !isTokenValid(parameters.get(RequestBuilder.TOKEN)) ) {
+            return new Result("Użytkownik nie jest zalogowany.", false);
+        }
         return new Result("OK", true);
     }
 
-    public ApplicationData passCorrect( Map<String, String[]> parameters, Cookie[] cookies, byte body[] ) {
-        Request requestAction = RequestBuilder.buildRequest(parameters, cookies, body);
+    private boolean isActionRequireToken( String actionName ) {
+        Action action = Action.getActionByName(actionName);
+
+        boolean result = false;
+        result |= action.equals(Action.SIGNIN);
+        result |= action.equals(Action.ADDACCOUNT);
+        return !result;
+    }
+
+    private boolean isTokenValid( String[] tokenTab ) {
+        if ( tokenTab == null )
+            return false;
+        if ( tokenTab[ 0 ] == null )
+            return false;
+        return Long.parseLong(tokenTab[ 0 ]) > 0;
+    }
+
+    public ApplicationData passCorrect( Map<String, String[]> parameters, byte body[] ) {
+        Request requestAction = RequestBuilder.buildRequest(parameters, body);
         return mainProcessor.process(requestAction);
     }
 }

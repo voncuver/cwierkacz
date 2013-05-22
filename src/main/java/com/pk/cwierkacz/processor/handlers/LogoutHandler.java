@@ -41,9 +41,7 @@ public class LogoutHandler extends AbstractHandler
         userService.saveOrUpdate(userDao);
         sessionService.deleteSession(sessionDao);
 
-        appData.setResponse(ResponseImpl.create(Status.OK,
-                                                "Pomyślnie wylogowano użytkownika.",
-                                                loginRequest.getTokenId()));
+        appData.setResponse(ResponseImpl.create(Status.OK, "Pomyślnie wylogowano użytkownika.", -1));
     }
 
 }

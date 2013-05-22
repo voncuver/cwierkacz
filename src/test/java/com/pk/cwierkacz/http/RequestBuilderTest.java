@@ -12,8 +12,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.joda.time.DateTime;
@@ -38,9 +36,7 @@ public class RequestBuilderTest
         params.put("passwordOld", new String[] {"TEST"});
         params.put("passwordNew", new String[] {"TEST"});
 
-        Cookie[] cookies = new Cookie[0];
-
-        AccountManageRequest request = RequestBuilder.buildRequest(params, cookies, null);
+        AccountManageRequest request = RequestBuilder.buildRequest(params, null);
 
         assertEquals(Action.MODACCOUNT, request.getAction());
         assertEquals(1234, request.getTokenId());
@@ -58,9 +54,7 @@ public class RequestBuilderTest
         params.put("accountLogin", new String[] {"TEST"});
         params.put("accountPassword", new String[] {"TEST"});
 
-        Cookie[] cookies = new Cookie[0];
-
-        AddTweeterAccountRequest request = RequestBuilder.buildRequest(params, cookies, null);
+        AddTweeterAccountRequest request = RequestBuilder.buildRequest(params, null);
 
         assertEquals(Action.LINKSOCIALACCOUNT, request.getAction());
         assertEquals(1234, request.getTokenId());
@@ -84,9 +78,7 @@ public class RequestBuilderTest
         params.put("dateTo", new String[] {"2012-12-04"});
         params.put("accountType", new String[] {"twitter"});
 
-        Cookie[] cookies = new Cookie[0];
-
-        FetchTweetsRequest request = RequestBuilder.buildRequest(params, cookies, null);
+        FetchTweetsRequest request = RequestBuilder.buildRequest(params, null);
 
         assertEquals(Action.FETCHMESSAGES, request.getAction());
         assertEquals(1234, request.getTokenId());
@@ -108,9 +100,7 @@ public class RequestBuilderTest
         params.put("token", new String[] {"1234"});
         params.put("password", new String[] {"1111"});
 
-        Cookie[] cookies = new Cookie[0];
-
-        LoginRequest request = RequestBuilder.buildRequest(params, cookies, null);
+        LoginRequest request = RequestBuilder.buildRequest(params, null);
 
         assertEquals(Action.SIGNIN, request.getAction());
         assertEquals(1234, request.getTokenId());
@@ -129,9 +119,7 @@ public class RequestBuilderTest
         params.put("retweetForId", new String[] {"123456789"});
         params.put("tweet", new String[] {"Testtowy test"});
 
-        Cookie[] cookies = new Cookie[0];
-
-        PublishRequest request = RequestBuilder.buildRequest(params, cookies);
+        PublishRequest request = RequestBuilder.buildRequest(params);
 
         assertEquals(Action.PUBLISHTWEET, request.getAction());
         assertEquals(1234, request.getTokenId());
@@ -160,9 +148,7 @@ public class RequestBuilderTest
         InputStream is = new FileInputStream(lenaFile);
         byte[] body = IOUtils.toByteArray(is);
 
-        Cookie[] cookies = new Cookie[0];
-
-        PublishRequest request = RequestBuilder.buildRequest(params, cookies, body);
+        PublishRequest request = RequestBuilder.buildRequest(params, body);
 
         assertEquals(Action.PUBLISHTWEET, request.getAction());
         assertEquals(1234, request.getTokenId());
@@ -186,9 +172,7 @@ public class RequestBuilderTest
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
 
-        Cookie[] cookies = new Cookie[0];
-
-        Request request = RequestBuilder.buildRequest(params, cookies, null);
+        Request request = RequestBuilder.buildRequest(params, null);
 
         assertEquals(Action.FETCHSOCIALACCOUNTS, request.getAction());
         assertEquals(1234, request.getTokenId());

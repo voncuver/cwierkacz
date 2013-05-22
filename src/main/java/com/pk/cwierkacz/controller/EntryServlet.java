@@ -39,13 +39,19 @@ public class EntryServlet extends HttpServlet
         Cookie[] cookies = request.getCookies();
         Map<String, String[]> parameters = new HashMap<String, String[]>(request.getParameterMap());
 
+        if ( cookies != null ) {
+            for ( Cookie cookie : cookies ) {
+                parameters.put(cookie.getName(), new String[] {cookie.getValue()});
+            }
+        }
+
         ServletInputStream bodyStream = request.getInputStream();
 
         byte body[] = null;
         if ( bodyStream != null )
             body = IOUtils.toByteArray(bodyStream);
 
-        Response responseResult = securityController.handle(parameters, cookies, body).getResponse();
+        Response responseResult = securityController.handle(parameters, body).getResponse();
 
         String responseJson;
         try {

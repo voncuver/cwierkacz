@@ -17,6 +17,7 @@ import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.http.response.dto.Message;
+import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.dao.SessionDao;
 import com.pk.cwierkacz.model.dao.TweetDao;
@@ -155,7 +156,18 @@ public class FetchTweetsHandler extends AbstractHandler
                     }
                 }
             }
-            else if ( fetchRequest.getAccounts().size() > 0 ) {
+            else if ( fetchRequest.getAccounts().size() == 0 ) {
+                SessionDao sessionDao = sessionService.getByToken(fetchRequest.getTokenId());
+                UserDao user = userService.getBySessionId(sessionDao);
+                List<TwitterAccountDao> accountsDao = accountService.getAccountsForUser(user);
+                for ( TwitterAccountDao accountDao : accountsDao ) {
+                    fetchRequest.getAccounts().add(new Account(accountDao.getName(),
+                                                               accountDao.getAccountName(),
+                                                               AccountType.TWITTER));
+                }
+            }
+            if ( fetchRequest.getAccounts().size() > 0 ) {
+
                 TweetsResult notReadyTweets = new TweetsResult();
                 for ( Account accountName : fetchRequest.getAccounts() ) { //tranzakcyjność per jedno konto - a może inaczej?
                     try {

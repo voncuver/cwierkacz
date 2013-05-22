@@ -3,6 +3,7 @@ package com.pk.cwierkacz.controller;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,8 +41,16 @@ public class ErrorServlet extends HttpServlet
             responseJson = "Fail to creat JSON";
         }
 
+        if ( request.getParameter("callback") != null ) {
+            responseJson = request.getParameter("callback") + "(" + responseJson + ");";
+        }
+
+        Cookie cookie = new Cookie("token", "-1");
+        cookie.setMaxAge(60 * 60);
+        response.addCookie(cookie);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
+        response.setStatus(HttpServletResponse.SC_OK);
         Writer out = response.getWriter();
         out.write(responseJson);
     }
