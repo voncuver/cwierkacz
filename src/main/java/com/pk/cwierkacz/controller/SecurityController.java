@@ -35,9 +35,9 @@ public class SecurityController
     private Result checkParams( Map<String, String[]> parameters ) {
         if ( isActionRequireToken(parameters.get(RequestBuilder.ACTIONPARAM)[ 0 ]) &&
              !isTokenValid(parameters.get(RequestBuilder.TOKEN)) ) {
-            return new Result("Użytkownik nie jest zalogowany.", false);
+            return new Result("Użytkownik nie jest zalogowany.", Status.DENY);
         }
-        return new Result("OK", true);
+        return new Result("OK", Status.OK);
     }
 
     private boolean isActionRequireToken( String actionName ) {

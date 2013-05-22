@@ -23,7 +23,7 @@ public abstract class AbstractHandler implements Handler
     }
 
     public Result checkSecurity( ApplicationData appData ) {
-        return new Result("OK", true);
+        return new Result("OK", Status.OK);
     }
 
     public abstract void handle( ApplicationData appData );
