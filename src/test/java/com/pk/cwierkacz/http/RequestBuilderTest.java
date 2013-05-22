@@ -19,7 +19,10 @@ import org.junit.Test;
 
 import com.pk.cwierkacz.http.request.AccountManageRequest;
 import com.pk.cwierkacz.http.request.AddTweeterAccountRequest;
-import com.pk.cwierkacz.http.request.FetchTweetsRequest;
+import com.pk.cwierkacz.http.request.FetchMessagesRequest;
+import com.pk.cwierkacz.http.request.FetchRepliesRequest;
+import com.pk.cwierkacz.http.request.FetchRetweetsRequest;
+import com.pk.cwierkacz.http.request.GetMessagesRequest;
 import com.pk.cwierkacz.http.request.LoginRequest;
 import com.pk.cwierkacz.http.request.PublishMessageRequest;
 import com.pk.cwierkacz.http.request.PublishReplyRequest;
@@ -67,9 +70,80 @@ public class RequestBuilderTest
     }
 
     @Test
-    public void fetchTweetsRequestTest( ) {
+    public void fetchMessagesRequestTest( ) {
         Map<String, String[]> params = new HashMap<String, String[]>();
         params.put("action", new String[] {Action.FETCHMESSAGES.toString()});
+        params.put("username", new String[] {"TEST"});
+        params.put("token", new String[] {"1234"});
+        params.put("password", new String[] {"1111"});
+        params.put("accounts", new String[] {"1234", "test"});
+        params.put("size", new String[] {"15"});
+        params.put("dateFrom", new String[] {"2012-12-01"});
+        params.put("dateTo", new String[] {"2012-12-04"});
+        params.put("accountTypes",
+                   new String[] {AccountType.TWITTER.getType(), AccountType.FACEBOOKBRIDGE.getType()});
+
+        FetchMessagesRequest request = RequestBuilder.buildRequest(params, null);
+
+        assertEquals(Action.FETCHMESSAGES, request.getAction());
+        assertEquals(1234, request.getTokenId());
+        assertEquals("TEST", request.getUserName());
+
+        assertEquals("1234", request.getAccounts().get(0).login);
+        assertEquals("test", request.getAccounts().get(1).login);
+
+        assertEquals(AccountType.TWITTER, request.getAccounts().get(0).type);
+        assertEquals(AccountType.FACEBOOKBRIDGE, request.getAccounts().get(1).type);
+
+        assertEquals(15, request.getSize());
+        assertEquals(DateTime.parse("2012-12-01"), request.getDateFrom());
+        assertEquals(DateTime.parse("2012-12-04"), request.getDateTo());
+    }
+
+    @Test
+    public void getMessagesRequestTest( ) {
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put("action", new String[] {Action.GETMESSAGES.toString()});
+        params.put("username", new String[] {"TEST"});
+        params.put("token", new String[] {"1234"});
+        params.put("password", new String[] {"1111"});
+        params.put("ids", new String[] {"1234567", "44444"});
+        params.put("accountType", new String[] {AccountType.TWITTER.getType()});
+
+        GetMessagesRequest request = RequestBuilder.buildRequest(params, null);
+
+        assertEquals(Action.GETMESSAGES, request.getAction());
+        assertEquals(1234, request.getTokenId());
+        assertEquals("TEST", request.getUserName());
+
+        assertEquals(AccountType.TWITTER, request.getAccountType());
+        assertEquals(new Long(1234567), request.getIds().get(0));
+        assertEquals(new Long(44444), request.getIds().get(1));
+
+    }
+
+    @Test
+    public void fetchRepliesRequestTest( ) {
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put("action", new String[] {Action.FETCHREPLIES.toString()});
+        params.put("username", new String[] {"TEST"});
+        params.put("token", new String[] {"1234"});
+        params.put("password", new String[] {"1111"});
+        params.put("replayForId", new String[] {"1234567"});
+
+        FetchRepliesRequest request = RequestBuilder.buildRequest(params, null);
+
+        assertEquals(Action.FETCHREPLIES, request.getAction());
+        assertEquals(1234, request.getTokenId());
+        assertEquals("TEST", request.getUserName());
+
+        assertEquals(1234567, request.getReplayFor());
+    }
+
+    @Test
+    public void fetchRetweetsRequestTest( ) {
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put("action", new String[] {Action.FETCHRETWEETS.toString()});
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
         params.put("password", new String[] {"1111"});
@@ -81,18 +155,14 @@ public class RequestBuilderTest
         params.put("dateTo", new String[] {"2012-12-04"});
         params.put("accountType", new String[] {"twitter"});
 
-        FetchTweetsRequest request = RequestBuilder.buildRequest(params, null);
+        FetchRetweetsRequest request = RequestBuilder.buildRequest(params, null);
 
-        assertEquals(Action.FETCHMESSAGES, request.getAction());
+        assertEquals(Action.FETCHRETWEETS, request.getAction());
         assertEquals(1234, request.getTokenId());
         assertEquals("TEST", request.getUserName());
 
-        assertEquals("1234", request.getAccounts().get(0));
-        assertEquals(1234567, request.getReplayFor());
         assertEquals(123456789, request.getRetweetFor());
-        assertEquals(15, request.getSize());
-        assertEquals(DateTime.parse("2012-12-01"), request.getDateFrom());
-        assertEquals(DateTime.parse("2012-12-04"), request.getDateTo());
+
     }
 
     @Test

@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
-import com.pk.cwierkacz.http.request.FetchTweetsRequest;
+import com.pk.cwierkacz.http.request.FetchMessagesRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.http.response.dto.Message;
@@ -33,13 +33,13 @@ public class FetchTweetByIdHandler extends AbstractHandler
 
     @Override
     public boolean isHandleable( ApplicationData applicationData ) {
-        return applicationData.getRequest().getAction().equals(Action.FETCHMESSAGEBYID);
+        return applicationData.getRequest().getAction().equals(Action.GETMESSAGES);
     }
 
     //TODO a czy to na pewno nie ma byc synchronizacji z tweeterem? - co jesli chcemy pobrac tweeta po id ktorego nie ma w tej chwili jeszcze w bazie? nie wiem po co ten handler powstał - byc moze jest dobrze bo biznesowo taki przypadek jest nieuzasadniony?
     @Override
     public void handle( ApplicationData appData ) {
-        FetchTweetsRequest accRequest = (FetchTweetsRequest) appData.getRequest();
+        FetchMessagesRequest accRequest = (FetchMessagesRequest) appData.getRequest();
 
         SessionDao sessionDao = sessionService.getByToken(accRequest.getTokenId());
         UserDao user = userService.getBySessionId(sessionDao);

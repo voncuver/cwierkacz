@@ -16,10 +16,13 @@ public class RequestImpl implements
                         LoginRequest,
                         AddTweeterAccountRequest,
                         PublishMessageRequest,
-                        FetchTweetsRequest,
+                        FetchMessagesRequest,
                         AccountManageRequest,
                         PublishReplyRequest,
-                        PublishRetweetRequest
+                        PublishRetweetRequest,
+                        GetMessagesRequest,
+                        FetchRepliesRequest,
+                        FetchRetweetsRequest
 {
     //Basic
     private Action action;
@@ -244,6 +247,12 @@ public class RequestImpl implements
     @SuppressWarnings( "unchecked" )
     public < T extends RequestImpl > T withPasswordTweet( String passwordTweet ) {
         this.passwordTweet = passwordTweet;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public < T extends RequestImpl > T withAccountType( AccountType accountType ) {
+        this.accountType = accountType;
         return (T) this;
     }
 

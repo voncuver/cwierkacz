@@ -68,12 +68,21 @@ public class RequestBuilder
                   action.equals(Action.DELACCOUNT) ) {
             request = createManageRequest(params, request);
         }
-        else if ( action.equals(Action.FETCHMESSAGE) || action.equals(Action.FETCHMESSAGES) ) {
-            request = createFetchTweetsRequest(params, request);
+        else if ( action.equals(Action.FETCHMESSAGES) ) {
+            request = createFetchMsgsRequest(params, request);
 
         }
-        else if ( action.equals(Action.FETCHMESSAGEBYID) ) {
-            request = createFetchByIdTweetsRequest(params, request);
+        else if ( action.equals(Action.GETMESSAGES) ) {
+            request = createGetMsgsRequest(params, request);
+
+        }
+        else if ( action.equals(Action.FETCHREPLIES) ) {
+            request = createFetchRepliesRequest(params, request);
+
+        }
+        else if ( action.equals(Action.FETCHRETWEETS) ) {
+            request = createFetchRetweetsRequest(params, request);
+
         }
         else if ( action.equals(Action.PUBLISHMESSAGE) ||
                   action.equals(Action.PUBLISHREPLY) ||
@@ -136,25 +145,23 @@ public class RequestBuilder
         return request;
     }
 
-    private static Request createFetchTweetsRequest( Map<String, String[]> params, Request request ) {
+    private static Request createFetchMsgsRequest( Map<String, String[]> params, Request request ) {
 
         List<String> accounts = new ArrayList<>();
         if ( params.get(ACCOUNTS) != null && params.get(ACCOUNTS).length > 0 ) {
             accounts = Arrays.asList(params.get(ACCOUNTS));
         }
-        String accontTypeString = null;
-        if ( params.get(ACCOUNTTYPE) != null && params.get(ACCOUNTTYPE).length > 0 ) {
-            accontTypeString = params.get(ACCOUNTTYPE)[ 0 ];
-        }
 
-        AccountType accountType = AccountType.getAccountType(accontTypeString);
-        if ( accountType == null ) {
-            accountType = AccountType.TWITTER;
+        List<String> accontTypesString = new ArrayList<>();
+        if ( params.get(ACCOUNTTYPES) != null && params.get(ACCOUNTTYPES).length > 0 ) {
+            accontTypesString = Arrays.asList(params.get(ACCOUNTTYPES));
         }
 
         List<Account> accountsWithType = new ArrayList<>();
-        for ( String account : accounts ) {
-            accountsWithType.add(new Account(account, account, accountType));
+        for ( int i = 0; i < accounts.size(); i++ ) {
+            accountsWithType.add(new Account(accounts.get(i),
+                                             accounts.get(i),
+                                             AccountType.getAccountType(accontTypesString.get(i))));
         }
 
         request = RequestImpl.create(request).buildFetchRequest(accountsWithType);
@@ -174,19 +181,10 @@ public class RequestBuilder
             request = RequestImpl.create(request).withDateTo(dateTo);
         }
 
-        if ( params.get(REPLAYFORID) != null && params.get(REPLAYFORID).length > 0 ) {
-            Long replayForId = Long.parseLong(params.get(REPLAYFORID)[ 0 ]);
-            request = RequestImpl.create(request).withReplayForID(replayForId);
-        }
-
-        if ( params.get(RETWEETFORID) != null && params.get(RETWEETFORID).length > 0 ) {
-            Long retweetForId = Long.parseLong(params.get(RETWEETFORID)[ 0 ]);
-            request = RequestImpl.create(request).withRetweetForId(retweetForId);
-        }
         return request;
     }
 
-    private static Request createFetchByIdTweetsRequest( Map<String, String[]> params, Request request ) {
+    private static Request createGetMsgsRequest( Map<String, String[]> params, Request request ) {
         List<String> ids = Arrays.asList(params.get(IDS));
         List<Long> idsLong = new ArrayList<>();
 
@@ -194,7 +192,32 @@ public class RequestBuilder
             idsLong.add(new Long(id));
         }
 
-        return request = RequestImpl.create(request).buildFetchByIdRequest(idsLong);
+        String accontTypeString = null;
+        if ( params.get(ACCOUNTTYPE) != null && params.get(ACCOUNTTYPE).length > 0 ) {
+            accontTypeString = params.get(ACCOUNTTYPE)[ 0 ];
+        }
+
+        AccountType accountType = AccountType.getAccountType(accontTypeString);
+
+        return request = RequestImpl.create(request)
+                                    .buildFetchByIdRequest(idsLong)
+                                    .withAccountType(accountType);
+    }
+
+    private static Request createFetchRepliesRequest( Map<String, String[]> params, Request request ) {
+        Long replayForId = null;
+        if ( params.get(REPLAYFORID) != null && params.get(REPLAYFORID).length > 0 ) {
+            replayForId = Long.parseLong(params.get(REPLAYFORID)[ 0 ]);
+        }
+        return RequestImpl.create(request).withReplayForID(replayForId);
+    }
+
+    private static Request createFetchRetweetsRequest( Map<String, String[]> params, Request request ) {
+        Long retweetForId = null;
+        if ( params.get(RETWEETFORID) != null && params.get(RETWEETFORID).length > 0 ) {
+            retweetForId = Long.parseLong(params.get(RETWEETFORID)[ 0 ]);
+        }
+        return RequestImpl.create(request).withRetweetForId(retweetForId);
     }
 
     private static Request createPublishMsgRequest( Action action,

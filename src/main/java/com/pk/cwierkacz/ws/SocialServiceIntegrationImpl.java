@@ -42,6 +42,7 @@ import com.pk.cwierkacz.http.response.FetchMessagesResponse;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.http.response.dto.Message;
+import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.ApplicationData;
 
 @WebService( endpointInterface = "pl.edu.pk.ias.socialserviceintegration.SocialServiceIntegration" )
@@ -166,6 +167,12 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
         parametersMap.put(RequestBuilder.DATEFROM, new String[] {parameters.getDateFrom().toString()});
         parametersMap.put(RequestBuilder.DATETO, new String[] {parameters.getDateTo().toString()});
         parametersMap.put(RequestBuilder.ACCOUNTS, new String[] {parameters.getLss()});
+        List<String> accountTypes = new ArrayList<String>();
+        for ( int i = 0; i < parameters.getLss().length(); i++ ) {
+            accountTypes.add(AccountType.TWITTER.getType());
+        }
+
+        parametersMap.put(RequestBuilder.ACCOUNTTYPE, (String[]) accountTypes.toArray());
 
         FetchMessagesResponse response = (FetchMessagesResponse) securityController.handle(parametersMap,
                                                                                            new byte[0])
@@ -205,7 +212,7 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
 
         Map<String, String[]> parametersMap = new HashMap<String, String[]>();
         parametersMap.put(RequestBuilder.TOKEN, new String[] {parameters.getToken()});
-        parametersMap.put(RequestBuilder.ACTIONPARAM, new String[] {Action.FETCHMESSAGEBYID.getActionName()});
+        parametersMap.put(RequestBuilder.ACTIONPARAM, new String[] {Action.GETMESSAGES.getActionName()});
 
         List<String> ids = new ArrayList<>();
         for ( ItemId id : parameters.getIdsList() ) {
@@ -213,6 +220,7 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
         }
 
         parametersMap.put(RequestBuilder.IDS, ids.toArray(new String[0]));
+        parametersMap.put(RequestBuilder.ACCOUNTTYPE, new String[] {AccountType.TWITTER.getType()});
 
         FetchMessagesResponse response = (FetchMessagesResponse) securityController.handle(parametersMap,
                                                                                            new byte[0])

@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
-import com.pk.cwierkacz.http.request.FetchTweetsRequest;
+import com.pk.cwierkacz.http.request.FetchMessagesRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.http.response.dto.Account;
@@ -64,14 +64,13 @@ public class FetchTweetsHandler extends AbstractHandler
 
     @Override
     public boolean isHandleable( ApplicationData applicationData ) {
-        return applicationData.getRequest().getAction().equals(Action.FETCHMESSAGE) ||
-               applicationData.getRequest().getAction().equals(Action.FETCHMESSAGES);
+        return applicationData.getRequest().getAction().equals(Action.FETCHMESSAGES);
     }
 
     @Override
     public void handle( ApplicationData appData ) {
         //TODO może lepiej przechowywać odpowiedz jak mape list?
-        FetchTweetsRequest fetchRequest = (FetchTweetsRequest) appData.getRequest();
+        FetchMessagesRequest fetchRequest = (FetchMessagesRequest) appData.getRequest();
         List<TwitterAccountDao> acs = new ArrayList<TwitterAccountDao>();
 
         StringBuilder errorBuilder = new StringBuilder();
