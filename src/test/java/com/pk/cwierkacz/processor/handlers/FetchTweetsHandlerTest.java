@@ -38,7 +38,7 @@ public class FetchTweetsHandlerTest extends PopulateData
     FetchMessagesHandler fetchTweetsHandler;
     protected TweetService tweetService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PublishTweetAccountTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PublishTweetTest.class);
 
     @Before
     public void setUp( ) throws TwitterAuthenticationException {

@@ -11,6 +11,10 @@ public class AccountPermissionValidator
 {
 
     public static boolean checkPermissionForName( List<Account> list, long tokenId ) {
+
+        if ( list == null )
+            return true;
+
         boolean perm = true;
         for ( Account name : list ) {
             if ( checkPermissionForName(name.getLogin(), tokenId) == false )

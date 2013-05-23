@@ -17,8 +17,9 @@ public abstract class AbstractHandler implements Handler
             handle(appData);
         }
         else {
-            Response response = ResponseImpl.create(Status.DENY, result.getMessage(), appData.getRequest()
-                                                                                             .getTokenId());
+            Response response = ResponseImpl.create(result.getStatus(),
+                                                    result.getMessage(),
+                                                    appData.getRequest().getTokenId());
             appData.setResponse(response);
         }
 

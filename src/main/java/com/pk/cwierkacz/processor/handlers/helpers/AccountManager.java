@@ -1,5 +1,6 @@
 package com.pk.cwierkacz.processor.handlers.helpers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.pk.cwierkacz.http.response.dto.Account;
@@ -8,11 +9,11 @@ import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 
 public class AccountManager
 {
-    private List<Account> twitterAccounts;
+    private final List<Account> twitterAccounts = new ArrayList<Account>();
 
-    private List<Account> bridgeAccounts;
+    private final List<Account> bridgeAccounts = new ArrayList<Account>();
 
-    private List<String> twitterAccountLogins;
+    private final List<String> twitterAccountLogins = new ArrayList<String>();
 
     //
 
@@ -21,7 +22,7 @@ public class AccountManager
     }
 
     public AccountManager( List<Account> accounts, long tokenId ) {
-        if ( accounts.size() != 0 )
+        if ( accounts != null && accounts.size() != 0 )
             accountsForMultipleTypes(accounts);
         else
             allAccounts(tokenId);
