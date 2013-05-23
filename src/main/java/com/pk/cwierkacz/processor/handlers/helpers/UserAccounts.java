@@ -24,6 +24,7 @@ public class UserAccounts
         SessionDao sessionDao = sessionService.getByToken(tokenId);
         UserDao user = userService.getBySessionId(sessionDao);
         twitterAccounts = accountService.getAccountsForUser(user);
+        int s = 2;
         //TODO bridgeAccount
     }
 
