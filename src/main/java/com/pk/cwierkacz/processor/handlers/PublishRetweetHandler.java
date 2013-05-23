@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
-import com.pk.cwierkacz.http.request.PublishMessageRequest;
 import com.pk.cwierkacz.http.request.PublishRetweetRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
@@ -106,8 +105,6 @@ public class PublishRetweetHandler extends AbstractHandler
                                           TweetDao mainTweet,
                                           List<String> twitterAccountLogins ) {
 
-        PublishMessageRequest publishRequest = (PublishMessageRequest) appData.getRequest();
-
         StringBuilder errorBuilder = new StringBuilder();
 
         for ( String accountName : twitterAccountLogins ) {
@@ -123,6 +120,7 @@ public class PublishRetweetHandler extends AbstractHandler
 
                     newTweet = account.composeNewReTweet(mainTweet);
                     newTweet.setCreator(accountDao);
+                    newTweet.setImagePath(mainTweet.getImagePath());
 
                     tweetService.save(newTweet);
                     appData.setParam("TweetId", newTweet.getId().toString());

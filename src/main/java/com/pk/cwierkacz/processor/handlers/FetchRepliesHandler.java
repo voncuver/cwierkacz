@@ -70,10 +70,7 @@ public class FetchRepliesHandler extends AbstractHandler
         TwitterAccountDao accountDao = null;
         try {
             TweetDao replyTweet = tweetService.getTweetById(fetchRequest.getReplayFor());
-            if ( replyTweet == null ) {
-                errorBuilder.append("Brak tweetu, dla którego chcesz pobrać wiadomosci.");
-            }
-            else {
+            if ( replyTweet != null ) {
                 accountDao = replyTweet.getCreator();
                 TweetDao last = tweetService.getLastActualReplies(replyTweet);
                 if ( last == null )
@@ -90,6 +87,7 @@ public class FetchRepliesHandler extends AbstractHandler
 
                 mergedTweets = tweetService.getActualReplies(replyTweet);
             }
+            //else nothing to do, because we may don't know what is owner of the main tweet
         }
         catch ( TwitterAuthenticationException e ) {
             LOGGER.error(getError(e));
@@ -120,7 +118,7 @@ public class FetchRepliesHandler extends AbstractHandler
         }
         else {
             response = ResponseImpl.create(Status.ERROR,
-                                           "Bład pobierania tweetów dla. " + errors,
+                                           "Bład pobierania tweetów. " + errors,
                                            appData.getRequest().getTokenId())
                                    .buildFetchResponse(Message.apply(mergedTweets));
         }
