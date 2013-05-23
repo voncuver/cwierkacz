@@ -109,7 +109,6 @@ public class PublishRetweetHandler extends AbstractHandler
 
         for ( String accountName : twitterAccountLogins ) {
             try {
-                //tranzakcyjność per jedno konto - a może inaczej?
                 TwitterAccountDao accountDao = accountService.getAccountByName(accountName);
                 if ( accountDao == null ) {
                     errorBuilder.append(accountName + " użytkownik nie istnieje.");

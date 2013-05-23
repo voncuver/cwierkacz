@@ -73,8 +73,7 @@ public class PublishRetweetTest extends PopulateData
 
         assertEquals(1, tweets1.size());
 
-        String textWithPrefix = "RT @" + twitterAccount.getAccount().getAccountName() + ": " + text;
-        assertEquals(true, StringUtils.equals(tweets1.get(0).getText(), textWithPrefix));
+        assertEquals(true, StringUtils.equals(tweets1.get(0).getText(), text));
 
         TweetsResult tweets2a = twitterAccount2.getTweetsFromMentionsAndUserTimeline(startDate);
         TweetsResult tweets1b = twitterAccount.getRetweeted(origStartDate);
@@ -85,12 +84,12 @@ public class PublishRetweetTest extends PopulateData
         TweetDao t2 = null;
 
         for ( TweetDao t : tweets2a.getTweets() ) {
-            if ( StringUtils.equals(t.getText(), textWithPrefix) )
+            if ( StringUtils.equals(t.getText(), text) )
                 t2 = t;
         }
 
         for ( TweetDao t : tweets1a.getTweets() ) {
-            if ( StringUtils.equals(t.getText(), textWithPrefix) )
+            if ( StringUtils.equals(t.getText(), text) )
                 t1 = t;
         }
 

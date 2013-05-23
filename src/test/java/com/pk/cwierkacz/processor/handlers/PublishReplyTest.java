@@ -42,7 +42,6 @@ public class PublishReplyTest extends PopulateData
         DateTime now = new DateTime();
         DateTime startDate = now.minusMillis(now.getMillisOfSecond());
         String text = "TEST OF PUBLISH TWEET HANDLER (REPLY) " + new Date().getTime();
-        String textWithReplyName = "@" + username + " " + text;
 
         Request request = RequestImpl.create(Action.PUBLISHREPLY, token).buildReplyRequest(text,
                                                                                            "cwierkacz1",
@@ -57,14 +56,22 @@ public class PublishReplyTest extends PopulateData
 
         assertEquals(1, tweets1.size());
 
-        assertEquals(true, StringUtils.equals(tweets1.get(0).getText(), textWithReplyName));
+        assertEquals(true, StringUtils.equals(tweets1.get(0).getText(), text));
 
-        TweetsResult tweets1a = twitterAccount.getTweetsFromUserTimeline(startDate);
+        TweetsResult tweets1a = twitterAccount2.getTweetsFromUserTimeline(( new DateTime() ).minusHours(2));
+
+        for ( TweetDao dao : tweets1a.getTweets() ) {
+            System.out.println(dao.getText() +
+                               " R" +
+                               dao.getInReplyToExtId() +
+                               " RT" +
+                               dao.getRetweetedExtId());
+        }
 
         TweetDao t1 = null;
 
         for ( TweetDao t : tweets1a.getTweets() ) {
-            if ( StringUtils.equals(t.getText(), textWithReplyName) )
+            if ( StringUtils.equals(t.getText(), text) )
                 t1 = t;
         }
 

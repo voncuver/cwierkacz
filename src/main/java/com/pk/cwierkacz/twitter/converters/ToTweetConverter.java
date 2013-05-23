@@ -2,6 +2,8 @@ package com.pk.cwierkacz.twitter.converters;
 
 import twitter4j.MediaEntity;
 import twitter4j.Status;
+import twitter4j.URLEntity;
+import twitter4j.UserMentionEntity;
 
 import com.google.common.base.Function;
 import com.pk.cwierkacz.model.dao.TweetDao;
@@ -27,7 +29,7 @@ public class ToTweetConverter implements Function<Status, TweetDao>
         else {
             TweetDao tweet = new TweetDao();
 
-            tweet.setText(status.getText());
+            tweet.setText(plainText(status));
             tweet.setCratedDate(DateUtil.convertDateUTC(status.getCreatedAt()));
             tweet.setCreator(accountService.getAccountByExternalId(status.getUser().getId()));
             tweet.setExternalId(status.getId());
@@ -60,6 +62,30 @@ public class ToTweetConverter implements Function<Status, TweetDao>
         }
 
         return tweet;
+    }
+
+    public String plainText( Status status ) {
+        String fullText = status.getText();
+        String withoutRT = fullText;
+
+        if ( status.getRetweetedStatus() != null && fullText.startsWith("RT") ) {
+            withoutRT = fullText.substring(3, fullText.length());
+        }
+
+        String witoutReply = withoutRT;
+
+        for ( UserMentionEntity mention : status.getUserMentionEntities() ) {
+            witoutReply = witoutReply.replace("@" + mention.getScreenName() + ": ", "");
+            witoutReply = witoutReply.replace("@" + mention.getScreenName() + " ", "");
+        }
+
+        String withoutImg = witoutReply;
+
+        for ( URLEntity url : status.getMediaEntities() ) {
+            withoutImg = withoutImg.replace(" " + url.getURL(), "");
+        }
+
+        return withoutImg;
     }
 
 }
