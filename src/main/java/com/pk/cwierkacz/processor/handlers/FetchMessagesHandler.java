@@ -22,6 +22,7 @@ import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.processor.handlers.helpers.AccountManager;
+import com.pk.cwierkacz.processor.handlers.helpers.FetchResult;
 import com.pk.cwierkacz.processor.handlers.helpers.FileSaver;
 import com.pk.cwierkacz.twitter.TweetsResult;
 import com.pk.cwierkacz.twitter.TwitterAccount;
@@ -60,11 +61,7 @@ public class FetchMessagesHandler extends AbstractHandler
 
         FetchMessagesRequest fetchRequest = (FetchMessagesRequest) appData.getRequest();
 
-        StringBuilder errorBuilder = new StringBuilder();
-        StringBuilder twitterErrorBuilder = new StringBuilder();
-        StringBuilder bridgesErrorBuilder = new StringBuilder();
-
-        List<Message> messages = new ArrayList<>();
+        FetchResult fetchResult = new FetchResult();
 
         try {
 
@@ -73,39 +70,38 @@ public class FetchMessagesHandler extends AbstractHandler
 
             List<String> twitterLogins = accountManager.getTwitterAccountLogins();
             List<Account> bridgeAccounts = accountManager.getBridgeAccounts();
-            twitterErrorBuilder = handleToTwitter(appData, twitterLogins, messages);
-            bridgesErrorBuilder = handleToBridges(appData, bridgeAccounts, messages);
 
-            errorBuilder = errorBuilder.append(twitterErrorBuilder).append(bridgesErrorBuilder);
+            fetchResult.add(handleToTwitter(appData, twitterLogins));
+            fetchResult.add(handleToBridges(appData, bridgeAccounts));
+            fetchResult.sort();
 
         }
         catch ( Throwable e ) {
             LOGGER.error(getError(e));
-            errorBuilder = appendError(errorBuilder, "Wewnętrzny bład aplikacji.", e);
+            fetchResult.appendBuilder(appendError("Wewnętrzny bład aplikacji.", e));
         }
 
         Response response;
 
-        String errors = errorBuilder.toString();
+        String errors = fetchResult.getErrorBuilder().toString();
+        List<Message> limitedMsgs = fetchResult.getMessages(fetchRequest.getSize());
         if ( StringUtils.isEmpty(errors) ) {
             response = ResponseImpl.create(Status.OK,
                                            "Pobrano pomyślnie wszystkie tweety.",
-                                           appData.getRequest().getTokenId()).buildFetchResponse(messages);
+                                           appData.getRequest().getTokenId()).buildFetchResponse(limitedMsgs);
             ;
         }
         else {
             response = ResponseImpl.create(Status.ERROR,
                                            "Bład pobierania tweetów dla: " + errors,
-                                           appData.getRequest().getTokenId()).buildFetchResponse(messages);
+                                           appData.getRequest().getTokenId()).buildFetchResponse(limitedMsgs);
         }
 
         appData.setResponse(response);
 
     }
 
-    public StringBuilder handleToTwitter( ApplicationData appData,
-                                          List<String> twitterAccountLogins,
-                                          List<Message> messages ) {
+    public FetchResult handleToTwitter( ApplicationData appData, List<String> twitterAccountLogins ) {
 
         FetchMessagesRequest fetchRequest = (FetchMessagesRequest) appData.getRequest();
 
@@ -170,17 +166,16 @@ public class FetchMessagesHandler extends AbstractHandler
                                                               fetchRequest.getDateTo(),
                                                               fetchRequest.getSize());
 
-        messages = Message.apply(mergedTweets);
+        List<Message> messages = Message.apply(mergedTweets);
 
-        return errorBuilder;
+        return new FetchResult(messages, errorBuilder);
 
     }
 
-    public StringBuilder handleToBridges( ApplicationData appData,
-                                          List<Account> accounts,
-                                          List<Message> messages ) {
+    public FetchResult handleToBridges( ApplicationData appData, List<Account> accounts ) {
 
-        return new StringBuilder();
+        //TODO
+        return new FetchResult(new ArrayList<Message>(), new StringBuilder());
 
     }
 }

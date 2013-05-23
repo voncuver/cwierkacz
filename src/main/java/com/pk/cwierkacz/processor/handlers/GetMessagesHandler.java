@@ -18,6 +18,7 @@ import com.pk.cwierkacz.model.Result;
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
+import com.pk.cwierkacz.processor.handlers.helpers.FetchResult;
 
 public class GetMessagesHandler extends AbstractHandler
 {
@@ -56,32 +57,34 @@ public class GetMessagesHandler extends AbstractHandler
         GetMessagesRequest accRequest = (GetMessagesRequest) appData.getRequest();
 
         Response response;
-        StringBuilder errorBuilder = new StringBuilder();
-        List<Message> messages = null;
+        FetchResult fetchResult = null;
 
         if ( accRequest.getAccountType() == AccountType.TWITTER ) {
-            messages = getMessageForTweeter(accRequest.getIds(), errorBuilder);
+            fetchResult = getMessageForTweeter(accRequest.getIds());
         }
         else {
-            messages = getMessageForBridges(accRequest.getIds(), errorBuilder, accRequest.getAccountType());
+            fetchResult = getMessageForBridges(accRequest.getIds(), accRequest.getAccountType());
+            fetchResult.sort();
         }
 
-        String errors = errorBuilder.toString();
+        String errors = fetchResult.getErrorBuilder().toString();
         if ( errors.isEmpty() ) {
             response = ResponseImpl.create(Status.OK,
                                            "Pobrano pomyślnie wszystkie tweety.",
-                                           appData.getRequest().getTokenId()).buildFetchResponse(messages);
+                                           appData.getRequest().getTokenId())
+                                   .buildFetchResponse(fetchResult.getMessages());
         }
         else {
             response = ResponseImpl.create(Status.ERROR, errors, appData.getRequest().getTokenId())
-                                   .buildFetchResponse(messages);
+                                   .buildFetchResponse(fetchResult.getMessages());
         }
 
         appData.setResponse(response);
         return;
     }
 
-    public List<Message> getMessageForTweeter( List<Long> ids, StringBuilder errorBuilder ) {
+    public FetchResult getMessageForTweeter( List<Long> ids ) {
+        StringBuilder errorBuilder = new StringBuilder();
         List<TweetDao> mergedTweets = new ArrayList<TweetDao>();
         try {
             mergedTweets = tweetService.getByIds(ids);
@@ -90,13 +93,11 @@ public class GetMessagesHandler extends AbstractHandler
             LOGGER.error(getError(e));
             errorBuilder = appendError("Wewnętrzny bład aplikacji.", e);
         }
-        return Message.apply(mergedTweets);
+        return new FetchResult(Message.apply(mergedTweets), errorBuilder);
     }
 
-    public List<Message> getMessageForBridges( List<Long> ids,
-                                               StringBuilder errorBuilder,
-                                               AccountType accountType ) {
+    public FetchResult getMessageForBridges( List<Long> ids, AccountType accountType ) {
         //TODO
-        return new ArrayList<Message>();
+        return new FetchResult();
     }
 }

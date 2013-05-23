@@ -1,5 +1,6 @@
 package com.pk.cwierkacz.model.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -59,7 +60,8 @@ public class TweetService extends AbstractService<TweetDao>
 
     @SuppressWarnings( "unchecked" )
     public List<TweetDao> getByIds( List<Long> ids ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.in("Id", ids));
+        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.in("Id", ids))
+                                                       .addOrder(Order.desc("createdDate"));
         List<TweetDao> result = criteria.list();
         commit();
         return result;
@@ -101,6 +103,11 @@ public class TweetService extends AbstractService<TweetDao>
                                                      DateTime since,
                                                      DateTime to,
                                                      Integer maxResult ) {
+
+        if ( accounts == null || accounts.size() == 0 ) {
+            return new ArrayList<TweetDao>();
+        }
+
         Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.in("creator", accounts))
                                                        .add(Restrictions.eq("isDeleted", false))
                                                        .addOrder(Order.desc("createdDate"));

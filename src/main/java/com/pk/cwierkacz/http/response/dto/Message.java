@@ -12,7 +12,7 @@ import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
 
-public class Message
+public class Message implements Comparable<Message>
 {
     private Long Id;
 
@@ -166,6 +166,24 @@ public class Message
         tweet.setNbOfRetweets(0L);
 
         return tweet;
+
+    }
+
+    @Override
+    public int compareTo( Message o ) {
+        if ( this.createdDate == null && o.createdDate == null )
+            return 0;
+        if ( this.createdDate == null && o.createdDate != null )
+            return 1;
+        if ( this.createdDate != null && o.createdDate == null )
+            return -1;
+
+        if ( this.createdDate.isEqual(o.createdDate) )
+            return 0;
+        else if ( this.createdDate.isBefore(o.createdDate) )
+            return 1;
+        else
+            return -1;
 
     }
 

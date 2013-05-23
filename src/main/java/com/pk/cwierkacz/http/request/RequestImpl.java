@@ -230,6 +230,13 @@ public class RequestImpl implements
     }
 
     @SuppressWarnings( "unchecked" )
+    public < T extends Request > T buildGetRequest( AccountType accountType, List<Long> ids ) {
+        this.accountType = accountType;
+        this.ids = ids;
+        return (T) this;
+    }
+
+    @SuppressWarnings( "unchecked" )
     public < T extends Request > T withSize( int size ) {
         this.size = size;
         return (T) this;
