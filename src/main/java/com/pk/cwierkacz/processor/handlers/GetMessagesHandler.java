@@ -19,13 +19,13 @@ import com.pk.cwierkacz.model.service.SessionService;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.UserService;
 
-public class FetchTweetByIdHandler extends AbstractHandler
+public class GetMessagesHandler extends AbstractHandler
 {
     private final UserService userService;
     private final SessionService sessionService;
     private final TweetService tweetService;
 
-    public FetchTweetByIdHandler() {
+    public GetMessagesHandler() {
         userService = ServiceRepo.getInstance().getService(UserService.class);
         sessionService = ServiceRepo.getInstance().getService(SessionService.class);
         tweetService = ServiceRepo.getInstance().getService(TweetService.class);

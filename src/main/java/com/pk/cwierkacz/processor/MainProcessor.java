@@ -10,8 +10,10 @@ import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.processor.handlers.CreateAccountHandler;
 import com.pk.cwierkacz.processor.handlers.DeleteAccountHandler;
-import com.pk.cwierkacz.processor.handlers.FetchTweetByIdHandler;
-import com.pk.cwierkacz.processor.handlers.FetchTweetsHandler;
+import com.pk.cwierkacz.processor.handlers.FetchMessagesHandler;
+import com.pk.cwierkacz.processor.handlers.FetchRepliesHandler;
+import com.pk.cwierkacz.processor.handlers.FetchRetweetsHandler;
+import com.pk.cwierkacz.processor.handlers.GetMessagesHandler;
 import com.pk.cwierkacz.processor.handlers.Handler;
 import com.pk.cwierkacz.processor.handlers.ListTweetAccounts;
 import com.pk.cwierkacz.processor.handlers.LoginHandler;
@@ -32,7 +34,10 @@ public class MainProcessor
         handlers.add(new CreateAccountHandler());
         handlers.add(new ModifyAccountHandler());
         handlers.add(new DeleteAccountHandler());
-        handlers.add(new FetchTweetsHandler());
+        handlers.add(new FetchMessagesHandler());
+        handlers.add(new FetchRepliesHandler());
+        handlers.add(new FetchRetweetsHandler());
+        handlers.add(new GetMessagesHandler());
         handlers.add(new LoginHandler());
         handlers.add(new LogoutHandler());
         handlers.add(new PublishMessagesHandler());
@@ -41,7 +46,7 @@ public class MainProcessor
         handlers.add(new WireTweetAccount());
         handlers.add(new UnwireTweetAcocunt());
         handlers.add(new ListTweetAccounts());
-        handlers.add(new FetchTweetByIdHandler());
+        handlers.add(new GetMessagesHandler());
 
         chainProcessor = new ChainProcessor(handlers);
     }

@@ -35,14 +35,14 @@ import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
 public class FetchTweetsHandlerTest extends PopulateData
 {
 
-    FetchTweetsHandler fetchTweetsHandler;
+    FetchMessagesHandler fetchTweetsHandler;
     protected TweetService tweetService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishTweetAccountTest.class);
 
     @Before
     public void setUp( ) throws TwitterAuthenticationException {
-        fetchTweetsHandler = new FetchTweetsHandler();
+        fetchTweetsHandler = new FetchMessagesHandler();
         tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         populateUserAndAccount();
     }

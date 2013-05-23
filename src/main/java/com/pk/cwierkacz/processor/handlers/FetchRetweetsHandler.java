@@ -35,9 +35,9 @@ import com.pk.cwierkacz.twitter.TwitterAccountMap;
 import com.pk.cwierkacz.twitter.TwitterActionException;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
 
-public class FetchTweetsHandler extends AbstractHandler
+public class FetchRetweetsHandler extends AbstractHandler
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FetchTweetsHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FetchMessagesHandler.class);
 
     private final TweetService tweetService;
 
@@ -54,7 +54,7 @@ public class FetchTweetsHandler extends AbstractHandler
         return t;
     }
 
-    public FetchTweetsHandler() {
+    public FetchRetweetsHandler() {
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
         this.userService = ServiceRepo.getInstance().getService(UserService.class);
@@ -64,7 +64,7 @@ public class FetchTweetsHandler extends AbstractHandler
 
     @Override
     public boolean isHandleable( ApplicationData applicationData ) {
-        return applicationData.getRequest().getAction().equals(Action.FETCHMESSAGES);
+        return applicationData.getRequest().getAction().equals(Action.FETCHRETWEETS);
     }
 
     @Override
