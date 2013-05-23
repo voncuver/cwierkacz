@@ -36,14 +36,14 @@ import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
 
 public class PublishTweetAccountTest extends PopulateData
 {
-    PublishTweetAccount publishTweetAccount;
+    PublishMessagesHandler publishTweetAccount;
     protected TweetService tweetService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishTweetAccountTest.class);
 
     @Before
     public void setUp( ) throws TwitterAuthenticationException {
-        publishTweetAccount = new PublishTweetAccount();
+        publishTweetAccount = new PublishMessagesHandler();
         tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         populateUserAndAccount();
     }

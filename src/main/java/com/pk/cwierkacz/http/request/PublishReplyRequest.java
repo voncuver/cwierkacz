@@ -8,5 +8,9 @@ public interface PublishReplyRequest extends Request
 
     byte[] getBody( );
 
+    String getImgName( );
+
+    String getImgURL( );
+
     String getLoginTweet( );
 }

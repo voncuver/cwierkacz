@@ -17,7 +17,9 @@ import com.pk.cwierkacz.processor.handlers.ListTweetAccounts;
 import com.pk.cwierkacz.processor.handlers.LoginHandler;
 import com.pk.cwierkacz.processor.handlers.LogoutHandler;
 import com.pk.cwierkacz.processor.handlers.ModifyAccountHandler;
-import com.pk.cwierkacz.processor.handlers.PublishTweetAccount;
+import com.pk.cwierkacz.processor.handlers.PublishMessagesHandler;
+import com.pk.cwierkacz.processor.handlers.PublishReplyHandler;
+import com.pk.cwierkacz.processor.handlers.PublishRetweetHandler;
 import com.pk.cwierkacz.processor.handlers.UnwireTweetAcocunt;
 import com.pk.cwierkacz.processor.handlers.WireTweetAccount;
 
@@ -33,7 +35,9 @@ public class MainProcessor
         handlers.add(new FetchTweetsHandler());
         handlers.add(new LoginHandler());
         handlers.add(new LogoutHandler());
-        handlers.add(new PublishTweetAccount());
+        handlers.add(new PublishMessagesHandler());
+        handlers.add(new PublishReplyHandler());
+        handlers.add(new PublishRetweetHandler());
         handlers.add(new WireTweetAccount());
         handlers.add(new UnwireTweetAcocunt());
         handlers.add(new ListTweetAccounts());
