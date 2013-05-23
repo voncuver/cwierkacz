@@ -129,16 +129,16 @@ public class PublishRetweetHandler extends AbstractHandler
                 }
             }
             catch ( TwitterAuthenticationException e ) {
-                LOGGER.error(e.getMessage());
-                errorBuilder.append("Bład autoryzacji dla konta " + accountName + ".");
+                LOGGER.error(getError(e));
+                errorBuilder = appendError(errorBuilder, "Bład autoryzacji dla konta " + accountName + ".", e);
             }
             catch ( TwitterActionException e ) {
-                LOGGER.error(e.getMessage());
-                errorBuilder.append("Bład komunikacji dla konta " + accountName + ".");
+                LOGGER.error(getError(e));
+                errorBuilder = appendError(errorBuilder, "Bład komunikacji dla konta " + accountName + ".", e);
             }
             catch ( Throwable e ) {
-                LOGGER.error(e.getMessage());
-                errorBuilder.append("Bład aplikacji dla konta " + accountName + ".");
+                LOGGER.error(getError(e));
+                errorBuilder = appendError(errorBuilder, "Bład aplikacji dla konta " + accountName + ".", e);
             }
         }
 
@@ -149,7 +149,7 @@ public class PublishRetweetHandler extends AbstractHandler
                                           TweetDao mainTweet,
                                           List<Account> twitterAccounts ) {
         //TODO
-        return null;
+        return new StringBuilder();
 
     }
 

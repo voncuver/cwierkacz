@@ -112,7 +112,8 @@ public class PublishMessagesHandler extends AbstractHandler
 
         }
         catch ( ImageSaveException ex ) {
-            errorsBuilder.append("Bład zapisu pliku.");
+            LOGGER.error(getError(ex));
+            errorsBuilder = appendError(errorsBuilder, "Bład zapisu pliku.", ex);
         }
 
         Response response;
@@ -161,16 +162,16 @@ public class PublishMessagesHandler extends AbstractHandler
                 }
             }
             catch ( TwitterAuthenticationException e ) {
-                LOGGER.error(e.getMessage());
-                errorBuilder.append("Bład autoryzacji dla konta " + accountName + ".");
+                LOGGER.error(getError(e));
+                errorBuilder = appendError(errorBuilder, "Bład autoryzacji dla konta " + accountName + ".", e);
             }
             catch ( TwitterActionException e ) {
-                LOGGER.error(e.getMessage());
-                errorBuilder.append("Bład komunikacji dla konta " + accountName + ".");
+                LOGGER.error(getError(e));
+                errorBuilder = appendError(errorBuilder, "Bład komunikacji dla konta " + accountName + ".", e);
             }
             catch ( Throwable e ) {
-                LOGGER.error(e.getMessage());
-                errorBuilder.append("Bład aplikacji dla konta " + accountName + ".");
+                LOGGER.error(getError(e));
+                errorBuilder = appendError(errorBuilder, "Bład aplikacji dla konta " + accountName + ".", e);
             }
         }
 
@@ -179,7 +180,7 @@ public class PublishMessagesHandler extends AbstractHandler
 
     public StringBuilder handleToBridges( ApplicationData appData, List<Account> twitterAccounts ) {
         //TODO
-        return null;
+        return new StringBuilder();
 
     }
 

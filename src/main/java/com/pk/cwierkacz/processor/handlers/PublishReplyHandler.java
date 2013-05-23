@@ -129,19 +129,20 @@ public class PublishReplyHandler extends AbstractHandler
 
             }
             catch ( ImageSaveException ex ) {
-                errorBuilder.append("Bład zapisu pliku.");
+                LOGGER.error(getError(ex));
+                errorBuilder = appendError(errorBuilder, "Bład zapisu pliku.", ex);
             }
             catch ( TwitterAuthenticationException e ) {
-                LOGGER.error(e.getMessage());
-                errorBuilder.append("Bład autoryzacji dla konta " + login + ".");
+                LOGGER.error(getError(e));
+                errorBuilder = appendError(errorBuilder, "Bład autoryzacji dla konta " + login + ".", e);
             }
             catch ( TwitterActionException e ) {
-                LOGGER.error(e.getMessage());
-                errorBuilder.append("Bład komunikacji dla konta " + login + ".");
+                LOGGER.error(getError(e));
+                errorBuilder = appendError(errorBuilder, "Bład autoryzacji dla konta " + login + ".", e);
             }
             catch ( Throwable e ) {
-                LOGGER.error(e.getMessage());
-                errorBuilder.append("Bład aplikacji dla konta " + login + ".");
+                LOGGER.error(getError(e));
+                errorBuilder = appendError(errorBuilder, "Bład autoryzacji dla konta " + login + ".", e);
             }
         }
 
