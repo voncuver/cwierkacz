@@ -91,7 +91,7 @@ public class TweetService extends AbstractService<TweetDao>
             criteria = criteria.add(Restrictions.ge("createdDate", since));
 
         if ( to != null )
-            criteria = criteria.add(Restrictions.ge("createdDate", to));
+            criteria = criteria.add(Restrictions.gt("createdDate", to));
 
         List<TweetDao> result = criteria.list();
         commit();
@@ -118,7 +118,7 @@ public class TweetService extends AbstractService<TweetDao>
             criteria = criteria.add(Restrictions.ge("createdDate", since));
 
         if ( to != null )
-            criteria = criteria.add(Restrictions.ge("createdDate", to));
+            criteria = criteria.add(Restrictions.gt("createdDate", to));
 
         List<TweetDao> result = criteria.list();
         commit();
