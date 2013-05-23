@@ -86,7 +86,7 @@ public class FetchRepliesTest extends PopulateData
         accounts.add(new Account("cwierkacz1", "Cwierkacz", AccountType.TWITTER));
         accounts.add(new Account("cwierkacz13", "Cwierkacz", AccountType.TWITTER));
 
-        Request request = RequestImpl.create(Action.FETCHMESSAGES, token)
+        Request request = RequestImpl.create(Action.FETCHREPLIES, token)
                                      .buildFetchRequest(accounts,
                                                         -1,
                                                         startDate,
@@ -100,9 +100,7 @@ public class FetchRepliesTest extends PopulateData
         assertEquals(Status.OK, appData.getResponse().getStatus());
         FetchMessagesResponse response = (FetchMessagesResponse) appData.getResponse();
 
-        assertEquals(9, response.getMessages().size());
-
-        assertEquals(mainTweet.getText(), response.getMessages().get(8).getText());
+        assertEquals(8, response.getMessages().size());
 
         for ( int i = 0; i < 8; i++ ) {
             assertEquals(tweets.get(7 - i).getText(), response.getMessages().get(i).getText());

@@ -58,7 +58,7 @@ public class FetchRetweetsTest extends PopulateData
         List<Account> accounts = new ArrayList<Account>();
         accounts.add(new Account("cwierkacz1", "Cwierkacz", AccountType.TWITTER));
         accounts.add(new Account("cwierkacz13", "Cwierkacz", AccountType.TWITTER));
-        Request request = RequestImpl.create(Action.FETCHMESSAGES, token)
+        Request request = RequestImpl.create(Action.FETCHRETWEETS, token)
                                      .buildFetchRequest(accounts,
                                                         -1,
                                                         startDate,
@@ -73,10 +73,9 @@ public class FetchRetweetsTest extends PopulateData
         assertEquals(Status.OK, appData.getResponse().getStatus());
         FetchMessagesResponse response = (FetchMessagesResponse) appData.getResponse();
 
-        assertEquals(2, response.getMessages().size());
+        assertEquals(1, response.getMessages().size());
 
         assertEquals(tweets.get(0).getText(), response.getMessages().get(0).getText());
-        assertEquals(mainTweet.getText(), response.getMessages().get(1).getText());
 
     }
 

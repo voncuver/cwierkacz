@@ -2,7 +2,9 @@ package com.pk.cwierkacz.processor.handlers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +19,7 @@ import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.request.RequestImpl;
 import com.pk.cwierkacz.http.response.FetchMessagesResponse;
 import com.pk.cwierkacz.http.response.dto.Account;
+import com.pk.cwierkacz.http.response.dto.Message;
 import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.dao.TweetDao;
@@ -25,6 +28,8 @@ import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.processor.MainProcessor;
 import com.pk.cwierkacz.twitter.TwitterActionException;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
+import com.pk.cwierkacz.twitter.attachment.ImageAttachment;
+import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
 
 public class FetchTweetsTest extends PopulateData
 {
@@ -37,14 +42,14 @@ public class FetchTweetsTest extends PopulateData
         populateUserAndAccount();
     }
 
-    /* @Test
-     public void fetchTweetForAccounts( ) throws TwitterActionException, InterruptedException {
-         List<Account> accounts = new ArrayList<Account>();
-         accounts.add(new Account("cwierkacz1", "Cwierkacz", AccountType.TWITTER));
-         accounts.add(new Account("cwierkacz13", "Cwierkacz", AccountType.TWITTER));
+    @Test
+    public void fetchTweetForAccounts( ) throws TwitterActionException, InterruptedException {
+        List<Account> accounts = new ArrayList<Account>();
+        accounts.add(new Account("cwierkacz1", "Cwierkacz", AccountType.TWITTER));
+        accounts.add(new Account("cwierkacz13", "Cwierkacz", AccountType.TWITTER));
 
-         simpleFetching(accounts);
-     }*/
+        simpleFetching(accounts);
+    }
 
     @Test
     public void fetchTweetForAllAccounts( ) throws TwitterActionException, InterruptedException {
@@ -100,12 +105,8 @@ public class FetchTweetsTest extends PopulateData
             tweets.add(t3);
         }
 
-        Request request = RequestImpl.create(Action.FETCHMESSAGES).buildFetchRequest(accounts,
-                                                                                     10,
-                                                                                     startDate,
-                                                                                     -1,
-                                                                                     -1,
-                                                                                     AccountType.TWITTER);
+        Request request = RequestImpl.create(Action.FETCHMESSAGES, token)
+                                     .buildFetchRequest(accounts, 10, startDate, -1, -1, AccountType.TWITTER);
         ApplicationData appData = MainProcessor.getInstance().process(request);
 
         assertNotNull(appData.getResponse());
@@ -124,7 +125,7 @@ public class FetchTweetsTest extends PopulateData
 
     }
 
-    /*@Test
+    @Test
     public void fetchTweetWithImgForAccounts( ) throws TwitterActionException, InterruptedException {
         DateTime now = new DateTime();
         DateTime startDate = now.minusMillis(now.getMillisOfSecond());
@@ -163,5 +164,5 @@ public class FetchTweetsTest extends PopulateData
         assertNotNull(tweetNew.getImagePath());
         assertTrue(tweetNew.getImagePath().endsWith(".png"));
 
-    }*/
+    }
 }
