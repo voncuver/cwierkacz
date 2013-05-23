@@ -19,7 +19,6 @@ import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
-import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.twitter.TweetsResult;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
@@ -32,11 +31,8 @@ public class FetchRetweetsHandler extends AbstractHandler
 
     private final TweetService tweetService;
 
-    private final TwitterAccountService accountService;
-
     public FetchRetweetsHandler() {
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
-        this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
     }
 
     @Override

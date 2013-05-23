@@ -57,6 +57,14 @@ public class TweetService extends AbstractService<TweetDao>
         return result;
     }
 
+    @SuppressWarnings( "unchecked" )
+    public List<TweetDao> getByIds( List<Long> ids ) {
+        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.in("Id", ids));
+        List<TweetDao> result = criteria.list();
+        commit();
+        return result;
+    }
+
     public TweetDao getLastActualTweetForAccount( TwitterAccountDao account ) {
         List<TweetDao> t = getActualTweetForAccount(account, null, null, 1);
         if ( t.size() >= 1 )
