@@ -8,12 +8,15 @@ import java.util.Map;
 
 import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.response.Response;
+import com.pk.cwierkacz.model.dao.UserDao;
 
 public class ApplicationData
 {
     private Request request;
 
     private Response response;
+
+    private UserDao currentUser;
 
     private final Map<String, List<String>> additionalParams;
 
@@ -52,5 +55,13 @@ public class ApplicationData
 
     public void setResponse( Response response ) {
         this.response = response;
+    }
+
+    public UserDao getCurrentUser( ) {
+        return currentUser;
+    }
+
+    public void setCurrentUser( UserDao currentUser ) {
+        this.currentUser = currentUser;
     }
 }

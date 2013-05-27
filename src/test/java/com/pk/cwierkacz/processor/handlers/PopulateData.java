@@ -40,8 +40,8 @@ abstract public class PopulateData
     protected String consumerKey = "ipOt0R7N7Ds9PTnT8Usfxw";
     protected String consumerSecret = "QDcJjMxF2wx6YNuiy7msid8QV0CjfA64laKSYfihRhU";
 
-    protected String containerPath = System.getProperty("path.container");
-    protected String imgPath = System.getProperty("path.img");
+    protected String containerPath = System.getProperty("path.container", "test");
+    protected String imgPath = System.getProperty("path.img", "test");
 
     public void populateUserAndAccount( ) throws TwitterAuthenticationException {
         accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);

@@ -39,8 +39,6 @@ public class PublishReplyTest extends PopulateData
         TweetDao tweet = twitterAccount.composeNewTweet("NEW TWEET TEST " + ( new Date() ).getTime());
         tweetService.save(tweet);
 
-        DateTime now = new DateTime();
-        DateTime startDate = now.minusMillis(now.getMillisOfSecond());
         String text = "TEST OF PUBLISH TWEET HANDLER (REPLY) " + new Date().getTime();
 
         Request request = RequestImpl.create(Action.PUBLISHREPLY, token).buildReplyRequest(text,
@@ -71,6 +69,7 @@ public class PublishReplyTest extends PopulateData
         TweetDao t1 = null;
 
         for ( TweetDao t : tweets1a.getTweets() ) {
+            System.out.println(t.getText());
             if ( StringUtils.equals(t.getText(), text) )
                 t1 = t;
         }

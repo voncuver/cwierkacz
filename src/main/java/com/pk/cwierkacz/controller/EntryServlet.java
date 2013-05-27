@@ -37,11 +37,15 @@ public class EntryServlet extends HttpServlet
     public void doGet( HttpServletRequest request, HttpServletResponse response ) throws IOException {
 
         Cookie[] cookies = request.getCookies();
-        Map<String, String[]> parameters = new HashMap<String, String[]>(request.getParameterMap());
+        Map<String, String[]> parameters = new HashMap<String, String[]>();
+
+        for ( String param : request.getParameterMap().keySet() ) {
+            parameters.put(param.toLowerCase(), request.getParameterMap().get(param));
+        }
 
         if ( cookies != null ) {
             for ( Cookie cookie : cookies ) {
-                parameters.put(cookie.getName(), new String[] {cookie.getValue()});
+                parameters.put(cookie.getName().toLowerCase(), new String[] {cookie.getValue()});
             }
         }
 

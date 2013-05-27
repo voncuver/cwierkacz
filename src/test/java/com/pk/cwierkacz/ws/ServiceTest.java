@@ -1,5 +1,6 @@
 package com.pk.cwierkacz.ws;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import pl.edu.pk.ias.types.LoginRequest;
@@ -10,6 +11,7 @@ import com.pk.cwierkacz.ws.client.SocialServiceIntegration;
 import com.pk.cwierkacz.ws.client.SocialServiceIntegrationImplService;
 import com.pk.cwierkacz.ws.client.UserNotExistFault;
 
+@Ignore
 public class ServiceTest
 {
     @Test

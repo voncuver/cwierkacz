@@ -121,6 +121,7 @@ public class PublishTweetTest extends PopulateData
         Request request = RequestImpl.create(Action.PUBLISHMESSAGE, token)
                                      .buildPublishRequest(text, accounts)
                                      .withImg(body, "lena.PNG");
+
         ApplicationData appData = MainProcessor.getInstance().process(request);
 
         assertNotNull(appData.getResponse());

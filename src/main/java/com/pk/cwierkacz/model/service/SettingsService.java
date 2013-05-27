@@ -63,7 +63,6 @@ public class SettingsService extends AbstractService<SettingsDao>
 
     public String getImageAbsolutePath( ) {
         String containerPath = getContainerSettings().getAbsoluteContainerPath();
-        ;
         String imagePath = getImageSettings().getRelativeImgPath();
         String sl = "";
         if ( !containerPath.endsWith(( File.separator )) )

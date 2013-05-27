@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.pk.cwierkacz.http.request.AccountManageRequest;
@@ -39,8 +38,8 @@ public class RequestBuilderTest
         params.put("action", new String[] {Action.MODACCOUNT.toString()});
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
-        params.put("passwordOld", new String[] {"TEST"});
-        params.put("passwordNew", new String[] {"TEST"});
+        params.put("passwordold", new String[] {"TEST"});
+        params.put("passwordnew", new String[] {"TEST"});
 
         AccountManageRequest request = RequestBuilder.buildRequest(params, null);
 
@@ -57,8 +56,8 @@ public class RequestBuilderTest
         params.put("action", new String[] {Action.LINKSOCIALACCOUNT.toString()});
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
-        params.put("accountLogin", new String[] {"TEST"});
-        params.put("accountPassword", new String[] {"TEST"});
+        params.put("accountlogin", new String[] {"TEST"});
+        params.put("accountpassword", new String[] {"TEST"});
 
         AddTweeterAccountRequest request = RequestBuilder.buildRequest(params, null);
 
@@ -78,9 +77,9 @@ public class RequestBuilderTest
         params.put("password", new String[] {"1111"});
         params.put("accounts", new String[] {"1234", "test"});
         params.put("size", new String[] {"15"});
-        params.put("dateFrom", new String[] {"2012-12-01"});
-        params.put("dateTo", new String[] {"2012-12-04"});
-        params.put("accountTypes",
+        params.put("datefrom", new String[] {Long.toString(System.currentTimeMillis())});
+        params.put("dateto", new String[] {Long.toString(System.currentTimeMillis())});
+        params.put("accounttypes[]",
                    new String[] {AccountType.TWITTER.getType(), AccountType.FACEBOOKBRIDGE.getType()});
 
         FetchMessagesRequest request = RequestBuilder.buildRequest(params, null);
@@ -96,8 +95,8 @@ public class RequestBuilderTest
         assertEquals(AccountType.FACEBOOKBRIDGE, request.getAccounts().get(1).type);
 
         assertEquals(15, request.getSize());
-        assertEquals(DateTime.parse("2012-12-01"), request.getDateFrom());
-        assertEquals(DateTime.parse("2012-12-04"), request.getDateTo());
+        assertNotNull(request.getDateFrom());
+        assertNotNull(request.getDateTo());
     }
 
     @Test
@@ -107,8 +106,9 @@ public class RequestBuilderTest
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
         params.put("password", new String[] {"1111"});
-        params.put("ids", new String[] {"1234567", "44444"});
-        params.put("accountType", new String[] {AccountType.TWITTER.getType()});
+        params.put("ids[]", new String[] {"1234567", "44444"});
+        params.put("accounttype[]",
+                   new String[] {AccountType.TWITTER.getType(), AccountType.TWITTER.getType()});
 
         GetMessagesRequest request = RequestBuilder.buildRequest(params, null);
 
@@ -129,7 +129,7 @@ public class RequestBuilderTest
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
         params.put("password", new String[] {"1111"});
-        params.put("replayForId", new String[] {"1234567"});
+        params.put("replyforid", new String[] {"1234567"});
 
         FetchRepliesRequest request = RequestBuilder.buildRequest(params, null);
 
@@ -148,12 +148,12 @@ public class RequestBuilderTest
         params.put("token", new String[] {"1234"});
         params.put("password", new String[] {"1111"});
         params.put("accounts", new String[] {"1234", "test"});
-        params.put("replayForId", new String[] {"1234567"});
-        params.put("retweetForId", new String[] {"123456789"});
+        params.put("replyforid", new String[] {"1234567"});
+        params.put("retweetforid", new String[] {"123456789"});
         params.put("size", new String[] {"15"});
-        params.put("dateFrom", new String[] {"2012-12-01"});
-        params.put("dateTo", new String[] {"2012-12-04"});
-        params.put("accountType", new String[] {"twitter"});
+        params.put("datefrom", new String[] {"2012-12-01"});
+        params.put("dateto", new String[] {"2012-12-04"});
+        params.put("accounttype", new String[] {"twitter"});
 
         FetchRetweetsRequest request = RequestBuilder.buildRequest(params, null);
 
@@ -187,8 +187,8 @@ public class RequestBuilderTest
         params.put("action", new String[] {Action.PUBLISHMESSAGE.toString()});
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
-        params.put("accountLogins", new String[] {"1234", "test"});
-        params.put("accountTypes",
+        params.put("accountlogins[]", new String[] {"1234", "test"});
+        params.put("accounttypes[]",
                    new String[] {AccountType.TWITTER.getType(), AccountType.FACEBOOKBRIDGE.getType()});
         params.put("tweet", new String[] {"Testtowy test"});
 
@@ -214,11 +214,11 @@ public class RequestBuilderTest
         params.put("action", new String[] {Action.PUBLISHMESSAGE.toString()});
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
-        params.put("accountLogins", new String[] {"1234", "test"});
-        params.put("accountTypes",
+        params.put("accountlogins[]", new String[] {"1234", "test"});
+        params.put("accounttypes[]",
                    new String[] {AccountType.TWITTER.getType(), AccountType.FACEBOOKBRIDGE.getType()});
         params.put("tweet", new String[] {"Testtowy test"});
-        params.put("imgName", new String[] {"TEST"});
+        params.put("imgname", new String[] {"TEST"});
 
         File lenaFile = new File("src/test/java/com/pk/cwierkacz/http/lena.PNG");
         InputStream is = new FileInputStream(lenaFile);
@@ -250,9 +250,9 @@ public class RequestBuilderTest
         params.put("action", new String[] {Action.PUBLISHREPLY.toString()});
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
-        params.put("accountLogin", new String[] {"1234"});
+        params.put("accountlogin", new String[] {"1234"});
         params.put("tweet", new String[] {"Testtowy test"});
-        params.put("replayForId", new String[] {"1234567"});
+        params.put("replyforid", new String[] {"1234567"});
 
         PublishReplyRequest request = RequestBuilder.buildRequest(params);
 
@@ -273,10 +273,10 @@ public class RequestBuilderTest
         params.put("action", new String[] {Action.PUBLISHRETWEET.toString()});
         params.put("username", new String[] {"TEST"});
         params.put("token", new String[] {"1234"});
-        params.put("accountLogins", new String[] {"1234", "test"});
-        params.put("accountTypes",
+        params.put("accountlogins[]", new String[] {"1234", "test"});
+        params.put("accounttypes[]",
                    new String[] {AccountType.TWITTER.getType(), AccountType.FACEBOOKBRIDGE.getType()});
-        params.put("retweetForId", new String[] {"123456789"});
+        params.put("retweetforid", new String[] {"123456789"});
 
         PublishRetweetRequest request = RequestBuilder.buildRequest(params);
 

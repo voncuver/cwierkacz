@@ -38,7 +38,6 @@ public class AbstractService< T >
         session.getTransaction().commit();
     }
 
-    @Deprecated
     //rather marked that entity was deleted
     public void delete( T t ) {
         Session session = sessionFactory.getCurrentSession();

@@ -35,7 +35,7 @@ public class RequestBuilder
     public static final String ACCOUNTPASSWORD = "accountpassword";
 
     public static final String TWEET = "tweet";
-    public static final String REPLAYFORID = "replyforid";
+    public static final String REPLYFORID = "replyforid";
     public static final String RETWEETFORID = "retweetforid";
     public static final String IMGNAME = "imgname";
     public static final String IMGURL = "imgurl";
@@ -208,8 +208,8 @@ public class RequestBuilder
 
     private static Request createFetchRepliesRequest( Map<String, String[]> params, Request request ) {
         Long replayForId = null;
-        if ( params.get(REPLAYFORID) != null && params.get(REPLAYFORID).length > 0 ) {
-            replayForId = Long.parseLong(params.get(REPLAYFORID)[ 0 ]);
+        if ( params.get(REPLYFORID) != null && params.get(REPLYFORID).length > 0 ) {
+            replayForId = Long.parseLong(params.get(REPLYFORID)[ 0 ]);
         }
         return RequestImpl.create(request).withReplayForID(replayForId);
     }
@@ -274,8 +274,8 @@ public class RequestBuilder
         request = RequestImpl.create(request).buildPublishRequest(tweetText, accountsWithType);
 
         if ( action.equals(Action.PUBLISHREPLY) ) {
-            if ( params.get(REPLAYFORID) != null && params.get(REPLAYFORID).length > 0 ) {
-                replayForId = Long.parseLong(params.get(REPLAYFORID)[ 0 ]);
+            if ( params.get(REPLYFORID) != null && params.get(REPLYFORID).length > 0 ) {
+                replayForId = Long.parseLong(params.get(REPLYFORID)[ 0 ]);
                 request = RequestImpl.create(request).withReplayForID(replayForId);
             }
             if ( params.get(ACCOUNTLOGIN) != null && params.get(ACCOUNTLOGIN).length > 0 ) {
