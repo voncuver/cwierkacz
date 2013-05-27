@@ -21,29 +21,30 @@ public class RequestBuilder
     public static final String TOKEN = "token";
 
     public static final String PASSWORD = "password";
-    public static final String PASSWORDOLD = "passwordOld";
-    public static final String PASSWORDNEW = "passwordNew";
+    public static final String PASSWORDOLD = "passwordold";
+    public static final String PASSWORDNEW = "passwordnew";
 
     public static final String ACCOUNTS = "accounts";
-    public static final String ACCOUNTTYPE = "accountType";
+    public static final String ACCOUNTTYPEArr = "accounttype[]";
+    public static final String ACCOUNTTYPE = "accounttype";
 
-    public static final String ACCOUNTLOGINS = "accountLogins";
-    public static final String ACCOUNTTYPES = "accountTypes";
+    public static final String ACCOUNTLOGINS = "accountlogins[]";
+    public static final String ACCOUNTTYPES = "accounttypes[]";
 
-    public static final String ACCOUNTLOGIN = "accountLogin";
-    public static final String ACCOUNTPASSWORD = "accountPassword";
+    public static final String ACCOUNTLOGIN = "accountlogin";
+    public static final String ACCOUNTPASSWORD = "accountpassword";
 
     public static final String TWEET = "tweet";
-    public static final String REPLAYFORID = "replayForId";
-    public static final String RETWEETFORID = "retweetForId";
-    public static final String IMGNAME = "imgName";
-    public static final String IMGURL = "imgURL";
+    public static final String REPLAYFORID = "replyforid";
+    public static final String RETWEETFORID = "retweetforid";
+    public static final String IMGNAME = "imgname";
+    public static final String IMGURL = "imgurl";
 
     public static final String SIZE = "size";
-    public static final String DATEFROM = "dateFrom";
-    public static final String DATETO = "dateTo";
+    public static final String DATEFROM = "datefrom";
+    public static final String DATETO = "dateto";
 
-    public static final String IDS = "ids";
+    public static final String IDS = "ids[]";
 
     public static < T > T buildRequest( Map<String, String[]> params ) {
         return buildRequest(params, null);
@@ -172,12 +173,12 @@ public class RequestBuilder
         }
 
         if ( params.get(DATEFROM) != null && params.get(DATEFROM).length > 0 ) {
-            DateTime dateFrom = DateTime.parse(params.get(DATEFROM)[ 0 ]);
+            DateTime dateFrom = new DateTime(Long.parseLong(params.get(DATEFROM)[ 0 ]));
             request = RequestImpl.create(request).withDateFrom(dateFrom);
         }
 
         if ( params.get(DATETO) != null && params.get(DATETO).length > 0 ) {
-            DateTime dateTo = DateTime.parse(params.get(DATETO)[ 0 ]);
+            DateTime dateTo = new DateTime(Long.parseLong(params.get(DATETO)[ 0 ]));
             request = RequestImpl.create(request).withDateTo(dateTo);
         }
 
@@ -185,6 +186,7 @@ public class RequestBuilder
     }
 
     private static Request createGetMsgsRequest( Map<String, String[]> params, Request request ) {
+
         List<String> ids = Arrays.asList(params.get(IDS));
         List<Long> idsLong = new ArrayList<>();
 
@@ -193,8 +195,8 @@ public class RequestBuilder
         }
 
         String accontTypeString = null;
-        if ( params.get(ACCOUNTTYPE) != null && params.get(ACCOUNTTYPE).length > 0 ) {
-            accontTypeString = params.get(ACCOUNTTYPE)[ 0 ];
+        if ( params.get(ACCOUNTTYPEArr) != null && params.get(ACCOUNTTYPEArr).length > 0 ) {
+            accontTypeString = params.get(ACCOUNTTYPEArr)[ 0 ];
         }
 
         AccountType accountType = AccountType.getAccountType(accontTypeString);
@@ -297,6 +299,12 @@ public class RequestBuilder
         if ( params.get(ACCOUNTPASSWORD) != null && params.get(ACCOUNTPASSWORD).length > 0 ) {
             String password = params.get(ACCOUNTPASSWORD)[ 0 ];
             request = RequestImpl.create(request).withPasswordTweet(password);
+        }
+
+        if ( params.get(ACCOUNTTYPE) != null && params.get(ACCOUNTTYPE).length > 0 ) {
+            String accountType = params.get(ACCOUNTTYPE)[ 0 ];
+            AccountType type = AccountType.getAccountType(accountType);
+            request = RequestImpl.create(request).withAccountType(type);
         }
 
         return request;

@@ -14,6 +14,7 @@ import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.AddTweeterAccountRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
+import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.dao.SessionDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
@@ -51,104 +52,110 @@ public class WireTweetAccount extends AbstractHandler
 
     @Override
     public void handle( ApplicationData appData ) {
+
         AddTweeterAccountRequest accRequest = (AddTweeterAccountRequest) appData.getRequest();
 
-        SessionDao sessionDao = sessionService.getByToken(accRequest.getTokenId());
-        UserDao user = userService.getBySessionId(sessionDao);
-        if ( user != null && user.getSession().getCurrentToken() != accRequest.getTokenId() ) {
-            Response response = ResponseImpl.create(Status.DENY, "Zły token.", accRequest.getTokenId());
-            appData.setResponse(response);
-            return;
-        }
-        List<String> accountsName = new ArrayList<>();
-        for ( TwitterAccountDao accountDao : user.getAccounts() ) {
-            accountsName.add(accountDao.getAccountName());
-        }
+        if ( accRequest.getAccountType().equals(AccountType.TWITTER) ) {
 
-        if ( accountsName.contains(accRequest.getLoginTweet()) ) {
-            Response response = ResponseImpl.create(Status.DENY,
-                                                    "Konto już zostało powiązne.",
-                                                    accRequest.getTokenId());
-            appData.setResponse(response);
-            return;
-        }
-
-        TwitterAccountDao account = TwitterAccountDao.create(0,
-                                                             user,
-                                                             accRequest.getLoginTweet(),
-                                                             null,
-                                                             null,
-                                                             null);
-        account.setId(1l);
-        OAuthAuthentication userAuthentication = null;
-        String pin = null;
-        try {
-            if ( map.containsKey(accRequest.getTokenId()) ) {
-                userAuthentication = map.get(accRequest.getTokenId());
+            SessionDao sessionDao = sessionService.getByToken(accRequest.getTokenId());
+            UserDao user = userService.getBySessionId(sessionDao);
+            if ( user != null && user.getSession().getCurrentToken() != accRequest.getTokenId() ) {
+                Response response = ResponseImpl.create(Status.DENY, "Zły token.", accRequest.getTokenId());
+                appData.setResponse(response);
+                return;
             }
-            else {
-                userAuthentication = new OAuthAuthentication(account);
-                map.put(accRequest.getTokenId(), userAuthentication);
+            List<String> accountsName = new ArrayList<>();
+            for ( TwitterAccountDao accountDao : user.getAccounts() ) {
+                accountsName.add(accountDao.getAccountName());
             }
 
-            String url = userAuthentication.getAuthenticationURL();
+            if ( accountsName.contains(accRequest.getLoginTweet()) ) {
+                Response response = ResponseImpl.create(Status.DENY,
+                                                        "Konto już zostało powiązne.",
+                                                        accRequest.getTokenId());
+                appData.setResponse(response);
+                return;
+            }
 
-            String authUrl = "https://api.twitter.com/oauth/authorize";
-
-            BufferedReader reader = null;
+            TwitterAccountDao account = TwitterAccountDao.create(0,
+                                                                 user,
+                                                                 accRequest.getLoginTweet(),
+                                                                 null,
+                                                                 null,
+                                                                 null);
+            account.setId(1l);
+            OAuthAuthentication userAuthentication = null;
+            String pin = null;
             try {
-                reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(httpClient.getUrlConnection(url,
-                                                                                                                      false,
-                                                                                                                      null)
-                                                                                                    .getInputStream()),
-                                                                  HttpClient.CHARSET_UTF8));
+                if ( map.containsKey(accRequest.getTokenId()) ) {
+                    userAuthentication = map.get(accRequest.getTokenId());
+                }
+                else {
+                    userAuthentication = new OAuthAuthentication(account);
+                    map.put(accRequest.getTokenId(), userAuthentication);
+                }
 
-                String token = extractToken(reader);
-                String outhToken = url.split("=")[ 1 ];
-                String postData = "authenticity_token=" +
-                                  token +
-                                  "&oauth_token=" +
-                                  outhToken +
-                                  "&session%5Busername_or_email%5D=" +
-                                  accRequest.getLoginTweet() +
-                                  "&session%5Bpassword%5D=" +
-                                  accRequest.getPasswordTweet();
+                String url = userAuthentication.getAuthenticationURL();
 
-                reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(httpClient.getUrlConnection(authUrl,
-                                                                                                                      true,
-                                                                                                                      postData)
-                                                                                                    .getInputStream()),
-                                                                  HttpClient.CHARSET_UTF8));
-                pin = extractPin(reader);
-                reader.close();
+                String authUrl = "https://api.twitter.com/oauth/authorize";
+
+                BufferedReader reader = null;
+                try {
+                    reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(httpClient.getUrlConnection(url,
+                                                                                                                          false,
+                                                                                                                          null)
+                                                                                                        .getInputStream()),
+                                                                      HttpClient.CHARSET_UTF8));
+
+                    String token = extractToken(reader);
+                    String outhToken = url.split("=")[ 1 ];
+                    String postData = "authenticity_token=" +
+                                      token +
+                                      "&oauth_token=" +
+                                      outhToken +
+                                      "&session%5Busername_or_email%5D=" +
+                                      accRequest.getLoginTweet() +
+                                      "&session%5Bpassword%5D=" +
+                                      accRequest.getPasswordTweet();
+
+                    reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(httpClient.getUrlConnection(authUrl,
+                                                                                                                          true,
+                                                                                                                          postData)
+                                                                                                        .getInputStream()),
+                                                                      HttpClient.CHARSET_UTF8));
+                    pin = extractPin(reader);
+                    reader.close();
+                }
+                catch ( IOException e ) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
             }
-            catch ( IOException e ) {
+            catch ( TwitterAuthenticationException e ) {
+                Response response = ResponseImpl.create(Status.ERROR, e.getMessage(), accRequest.getTokenId());
+                appData.setResponse(response);
+                return;
+            }
+
+            try {
+                account = userAuthentication.authenticate(pin, true);
+            }
+            catch ( TwitterAuthenticationException e ) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
-        }
-        catch ( TwitterAuthenticationException e ) {
-            Response response = ResponseImpl.create(Status.ERROR, e.getMessage(), accRequest.getTokenId());
+            twitterAccountService.save(account);
+
+            Response response = ResponseImpl.create(Status.OK,
+                                                    "Konto powiązano pomyślnie.",
+                                                    accRequest.getTokenId());
             appData.setResponse(response);
-            return;
         }
-
-        try {
-            account = userAuthentication.authenticate(pin, true);
+        else {
+            handleBridgeAccount(appData);
         }
-        catch ( TwitterAuthenticationException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        twitterAccountService.save(account);
-
-        Response response = ResponseImpl.create(Status.OK,
-                                                "Konto powiązano pomyślnie.",
-                                                accRequest.getTokenId());
-        appData.setResponse(response);
-        return;
     }
 
     private String extractPin( BufferedReader reader ) throws IOException {
@@ -184,4 +191,10 @@ public class WireTweetAccount extends AbstractHandler
         return null;
     }
 
+    private void handleBridgeAccount( ApplicationData appData ) {
+        Response response = ResponseImpl.create(Status.OK, "Not implemented yet", appData.getRequest()
+                                                                                         .getTokenId());
+        appData.setResponse(response);
+
+    }
 }

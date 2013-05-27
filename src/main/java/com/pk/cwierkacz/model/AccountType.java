@@ -2,10 +2,10 @@ package com.pk.cwierkacz.model;
 
 public enum AccountType {
 
-    TWITTER( "twitter" ),
-    FACEBOOKBRIDGE( "facebookBridge" ),
-    TWITPICBRIDGE( "twitpicBridge" ),
-    FLICKERBRIDGE( "flickrBridge" );
+    TWITTER( "TWITTER" ),
+    FACEBOOKBRIDGE( "FACEBOOKBRIDGE" ),
+    TWITPICBRIDGE( "TWITPICBRIDGE" ),
+    FLICKERBRIDGE( "FLICKERBRIDGE" );
 
     private String type;
 
@@ -19,7 +19,7 @@ public enum AccountType {
 
     public static AccountType getAccountType( String accountType ) {
         for ( AccountType account : AccountType.values() ) {
-            if ( account.getType().equals(accountType) ) {
+            if ( account.getType().toUpperCase().equals(accountType) ) {
                 return account;
             }
         }

@@ -3,12 +3,14 @@ package com.pk.cwierkacz.controller;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.pk.cwierkacz.exception.ProcessingException;
+import com.pk.cwierkacz.http.RequestBuilder;
 import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
@@ -16,10 +18,6 @@ import com.pk.cwierkacz.model.transformer.JsonTransformer;
 
 public class ErrorServlet extends HttpServlet
 {
-
-    /**
-     * 
-     */
     private static final long serialVersionUID = -227196281703855928L;
 
     @Override
@@ -31,7 +29,19 @@ public class ErrorServlet extends HttpServlet
     @Override
     public void doGet( HttpServletRequest request, HttpServletResponse response ) throws IOException {
 
-        Response responseResult = ResponseImpl.create(Status.ERROR, "Wystąpił wewnętrzy bład aplikacji.", 0);
+        Throwable throwable = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+        String token = null;
+        Cookie[] cookies = request.getCookies();
+        for ( Cookie cookie : cookies ) {
+            if ( cookie.getName().equals(RequestBuilder.TOKEN) ) {
+                token = cookie.getValue();
+                break;
+            }
+        }
+        Response responseResult = ResponseImpl.create(Status.ERROR,
+                                                      "Wystąpił wewnętrzy bład aplikacji." +
+                                                              throwable.getMessage(),
+                                                      Long.parseLong(token));
 
         String responseJson;
         try {
@@ -45,7 +55,7 @@ public class ErrorServlet extends HttpServlet
             responseJson = request.getParameter("callback") + "(" + responseJson + ");";
         }
 
-        Cookie cookie = new Cookie("token", "-1");
+        Cookie cookie = new Cookie("token", token);
         cookie.setMaxAge(60 * 60);
         response.addCookie(cookie);
         response.setCharacterEncoding("UTF-8");

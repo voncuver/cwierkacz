@@ -3,8 +3,8 @@
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
     <appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
-        <param name="Threshold" value="INFO" />
-        <param name="File" value="cwierkacz.log" />
+        <param name="Threshold" value="DEBUG" />
+        <param name="File" value=" ${catalina.base}/logs/cwierkacz.log" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d  %-5p  [%c{1}] %m %n" />
         </layout>
@@ -17,7 +17,7 @@
     </appender>
 
     <root>
-        <priority value="debug" />
+        <priority value="DEBUG" />
         <appender-ref ref="fileAppender" />
         <appender-ref ref="consoleAppender" />
     </root>
