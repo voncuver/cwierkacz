@@ -13,7 +13,8 @@
     <property name="show_sql">false</property>
     <property name="hbm2ddl.auto">never</property>
     
-    <property name="connection.pool_size">1</property>
+    <property name="connection.pool_size">5</property>
+    <property name="connection.autoReconnect">true</property>
     <property name="current_session_context_class">thread</property>
     
     <mapping class="com.pk.cwierkacz.model.dao.SettingsDao" />

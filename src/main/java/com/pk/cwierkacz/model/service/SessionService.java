@@ -27,7 +27,9 @@ public class SessionService extends AbstractService<SessionDao>
     @SuppressWarnings( "unchecked" )
     public List<SessionDao> getAll( ) {
         Criteria criteria = getCriteria(SessionDao.class);
-        return criteria.list();
+        List<SessionDao> result = criteria.list();
+        commit();
+        return result;
     }
 
     public void deleteSession( SessionDao sessionDao ) {
