@@ -39,7 +39,7 @@ public class ErrorServlet extends HttpServlet
             }
         }
         Response responseResult = ResponseImpl.create(Status.ERROR,
-                                                      "Wystąpił wewnętrzy bład aplikacji." +
+                                                      "Wystąpił wewnętrzny błąd aplikacji." +
                                                               throwable.getMessage(),
                                                       Long.parseLong(token));
 
