@@ -21,6 +21,7 @@ public class SessionService extends AbstractService<SessionDao>
         Criteria criteria = getCriteria(UserDao.class);
         criteria.add(Restrictions.eq("id", userDao.getId()));
         UserDao dao = (UserDao) criteria.uniqueResult();
+        commit();
         return dao.getSession();
     }
 
