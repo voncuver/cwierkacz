@@ -36,6 +36,10 @@ public class PublishReplyTest extends PopulateData
 
     @Test
     public void addReplyTweet( ) throws TwitterActionException {
+
+        DateTime now = new DateTime();
+        DateTime startDate = now.minusMillis(now.getMillisOfSecond());
+
         TweetDao tweet = twitterAccount.composeNewTweet("NEW TWEET TEST " + ( new Date() ).getTime());
         tweetService.save(tweet);
 
@@ -56,15 +60,7 @@ public class PublishReplyTest extends PopulateData
 
         assertEquals(true, StringUtils.equals(tweets1.get(0).getText(), text));
 
-        TweetsResult tweets1a = twitterAccount2.getTweetsFromUserTimeline(( new DateTime() ).minusHours(2));
-
-        for ( TweetDao dao : tweets1a.getTweets() ) {
-            System.out.println(dao.getText() +
-                               " R" +
-                               dao.getInReplyToExtId() +
-                               " RT" +
-                               dao.getRetweetedExtId());
-        }
+        TweetsResult tweets1a = twitterAccount2.getTweetsFromUserTimeline(startDate);
 
         TweetDao t1 = null;
 

@@ -126,7 +126,7 @@ public class Message implements Comparable<Message>
             if ( path.endsWith(File.separator) )
                 newPath = path.substring(0, path.length() - 1);
             String partialUrl = newPath.replace(File.separator, "/");
-            return settingsService.getAppAdress() + partialUrl;
+            return settingsService.getAppAddress() + partialUrl;
 
         }
     }
