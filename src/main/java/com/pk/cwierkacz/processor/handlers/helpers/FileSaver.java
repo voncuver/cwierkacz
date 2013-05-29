@@ -53,20 +53,24 @@ public class FileSaver
 
     public AttachmentsWithResources saveFile( byte[] fileByte, String fileName ) throws IOException {
         File file = createFile(fileName);
-        IOUtils.write(fileByte, new FileOutputStream(file));
+        FileOutputStream fos = new FileOutputStream(file);
+        IOUtils.write(fileByte, fos);
+        fos.close();
         return createTweetWithAttachments(file);
 
     }
 
-    public String saveFileFromUrl( String urlPath ) throws IOException {
+    public AttachmentsWithResources saveFileFromUrl( String urlPath ) throws IOException {
         if ( urlPath == null )
             return null;
         else {
             URL url = new URL(urlPath);
             File file = createFile(trimPath(urlPath));
-            IOUtils.copy(url.openStream(), new FileOutputStream(file));
+            FileOutputStream fos = new FileOutputStream(file);
+            IOUtils.copy(url.openStream(), fos);
+            fos.close();
             AttachmentsWithResources ars = createTweetWithAttachments(file);
-            return ars.getImgPath();
+            return ars;
 
         }
     }

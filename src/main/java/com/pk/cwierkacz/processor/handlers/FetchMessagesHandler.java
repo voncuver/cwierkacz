@@ -22,6 +22,7 @@ import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.processor.handlers.helpers.AccountManager;
+import com.pk.cwierkacz.processor.handlers.helpers.AttachmentsWithResources;
 import com.pk.cwierkacz.processor.handlers.helpers.FetchResult;
 import com.pk.cwierkacz.processor.handlers.helpers.FileSaver;
 import com.pk.cwierkacz.twitter.TweetsResult;
@@ -41,7 +42,9 @@ public class FetchMessagesHandler extends AbstractHandler
     private final FileSaver fileSaver;
 
     private TweetDao tweetWithImg( TweetDao t ) throws IOException {
-        t.setImagePath(fileSaver.saveFileFromUrl(t.getTwitterImageUrl()));
+        AttachmentsWithResources awr = fileSaver.saveFileFromUrl(t.getTwitterImageUrl());
+        if ( awr != null )
+            t.setImagePath(awr.getImgPath());
         return t;
     }
 
@@ -121,12 +124,14 @@ public class FetchMessagesHandler extends AbstractHandler
                     if ( last != null ) {
                         try {
                             TwitterAccount account = TwitterAccountMap.getTwitterAccount(accountDao);
-                            TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
-                            for ( TweetDao tweet : result.getReadyTweets() ) {
-                                tweetService.save(tweetWithImg(tweet));
+                            if ( fetchRequest.getDateTo() == null ||
+                                 fetchRequest.getDateTo().isAfter(last.getCratedDate()) ) {
+                                TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
+                                for ( TweetDao tweet : result.getReadyTweets() ) {
+                                    tweetService.save(tweetWithImg(tweet));
+                                }
+                                notReadyTweets = notReadyTweets.add(result);
                             }
-                            notReadyTweets = notReadyTweets.add(result);
-
                         }
                         catch ( TwitterAuthenticationException e ) {
                             LOGGER.error(getError(e));

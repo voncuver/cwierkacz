@@ -54,6 +54,26 @@ public class SettingsService extends AbstractService<SettingsDao>
         return dao;
     }
 
+    public String getAppAddress( ) {
+        Criteria criteria = getCriteria(SettingsDao.class);
+        criteria.add(Restrictions.eq("settings", "www"));
+        SettingsDao dao = (SettingsDao) criteria.uniqueResult();
+        commit();
+        if ( dao == null )
+            return null;
+        else if ( dao.getAppAddress().endsWith("/") )
+            return dao.getAppAddress();
+        else
+            return dao.getAppAddress() + "/";
+    }
+
+    public void setAppAddess( String url ) {
+        SettingsDao dao = new SettingsDao();
+        dao.setSettings("www");
+        dao.setAppAddress(url);
+        save(dao);
+    }
+
     public void setContainerSettings( String absoluteContainerPath ) {
         SettingsDao dao = new SettingsDao();
         dao.setSettings("container");

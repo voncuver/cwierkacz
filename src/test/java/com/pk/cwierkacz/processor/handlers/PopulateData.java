@@ -41,6 +41,7 @@ abstract public class PopulateData
     protected String consumerSecret = "QDcJjMxF2wx6YNuiy7msid8QV0CjfA64laKSYfihRhU";
 
     protected String containerPath = System.getProperty("path.container", "test");
+    protected String appAddress = System.getProperty("app.address", "test");
     protected String imgPath = System.getProperty("path.img", "test");
 
     public void populateUserAndAccount( ) throws TwitterAuthenticationException {
@@ -69,6 +70,9 @@ abstract public class PopulateData
 
         if ( settingsService.getContainerSettings() == null )
             settingsService.setContainerSettings(containerPath);
+
+        if ( settingsService.getAppAddress() == null )
+            settingsService.setAppAddess(appAddress);
 
         userDao = userService.getByUserName(sysUsername);
         if ( userDao == null ) {

@@ -26,6 +26,8 @@ public class SettingsDao
 
     private String absoluteContainerPath;
 
+    private String appAddress;
+
     public Long getId( ) {
         return id;
     }
@@ -73,6 +75,14 @@ public class SettingsDao
 
     public void setAbsoluteContainerPath( String absoluteContainerPath ) {
         this.absoluteContainerPath = absoluteContainerPath;
+    }
+
+    public String getAppAddress( ) {
+        return appAddress;
+    }
+
+    public void setAppAddress( String appAddress ) {
+        this.appAddress = appAddress;
     }
 
 }
