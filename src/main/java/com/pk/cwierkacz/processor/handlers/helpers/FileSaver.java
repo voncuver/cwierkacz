@@ -58,7 +58,7 @@ public class FileSaver
 
     }
 
-    public String saveFileFromUrl( String urlPath ) throws IOException {
+    public AttachmentsWithResources saveFileFromUrl( String urlPath ) throws IOException {
         if ( urlPath == null )
             return null;
         else {
@@ -66,7 +66,7 @@ public class FileSaver
             File file = createFile(trimPath(urlPath));
             IOUtils.copy(url.openStream(), new FileOutputStream(file));
             AttachmentsWithResources ars = createTweetWithAttachments(file);
-            return ars.getImgPath();
+            return ars;
 
         }
     }

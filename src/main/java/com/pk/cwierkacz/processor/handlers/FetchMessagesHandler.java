@@ -41,7 +41,7 @@ public class FetchMessagesHandler extends AbstractHandler
     private final FileSaver fileSaver;
 
     private TweetDao tweetWithImg( TweetDao t ) throws IOException {
-        t.setImagePath(fileSaver.saveFileFromUrl(t.getTwitterImageUrl()));
+        t.setImagePath(fileSaver.saveFileFromUrl(t.getTwitterImageUrl()).getImgPath());
         return t;
     }
 
