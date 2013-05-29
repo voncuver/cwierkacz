@@ -21,13 +21,16 @@ public class SessionService extends AbstractService<SessionDao>
         Criteria criteria = getCriteria(UserDao.class);
         criteria.add(Restrictions.eq("id", userDao.getId()));
         UserDao dao = (UserDao) criteria.uniqueResult();
+        commit();
         return dao.getSession();
     }
 
     @SuppressWarnings( "unchecked" )
     public List<SessionDao> getAll( ) {
         Criteria criteria = getCriteria(SessionDao.class);
-        return criteria.list();
+        List<SessionDao> result = criteria.list();
+        commit();
+        return result;
     }
 
     public void deleteSession( SessionDao sessionDao ) {

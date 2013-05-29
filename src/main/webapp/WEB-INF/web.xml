@@ -33,23 +33,23 @@
 	    <location>/error</location>
 	</error-page>
     
-<!--     <servlet> -->
-<!--         <servlet-name>Integration</servlet-name> -->
-<!--         <servlet-class> -->
-<!--             com.sun.xml.ws.transport.http.servlet.WSServlet -->
-<!--         </servlet-class> -->
-<!--         <load-on-startup>1</load-on-startup> -->
-<!--     </servlet> -->
+    <servlet>
+        <servlet-name>Integration</servlet-name>
+        <servlet-class>
+            com.sun.xml.ws.transport.http.servlet.WSServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
 
-<!--     <servlet-mapping> -->
-<!--         <servlet-name>Integration</servlet-name> -->
-<!--         <url-pattern>/Integration</url-pattern> -->
-<!--     </servlet-mapping> -->
+    <servlet-mapping>
+        <servlet-name>Integration</servlet-name>
+        <url-pattern>/Integration</url-pattern>
+    </servlet-mapping>
 
-<!-- 	<listener> -->
-<!--         <listener-class> -->
-<!--                 com.sun.xml.ws.transport.http.servlet.WSServletContextListener -->
-<!--         </listener-class> -->
-<!--     </listener> -->
+	<listener>
+        <listener-class>
+                com.sun.xml.ws.transport.http.servlet.WSServletContextListener
+        </listener-class>
+    </listener>
 
 </web-app>
