@@ -36,6 +36,7 @@ public class PublishReplyHandler extends AbstractHandler
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishReplyHandler.class);
 
     public PublishReplyHandler() {
+        super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
         this.imageSaver = new ImageSaver();

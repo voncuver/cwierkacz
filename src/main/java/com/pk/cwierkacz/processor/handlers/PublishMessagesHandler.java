@@ -40,6 +40,7 @@ public class PublishMessagesHandler extends AbstractHandler
     private final ImageSaver imageSaver;
 
     public PublishMessagesHandler() {
+        super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
         this.imageSaver = new ImageSaver();

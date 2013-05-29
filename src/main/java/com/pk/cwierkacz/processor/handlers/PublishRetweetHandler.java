@@ -34,6 +34,7 @@ public class PublishRetweetHandler extends AbstractHandler
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishRetweetHandler.class);
 
     public PublishRetweetHandler() {
+        super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
     }

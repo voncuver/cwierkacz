@@ -20,6 +20,7 @@ public class DeleteAccountHandler extends AbstractHandler
     private final SessionService sessionService;
 
     public DeleteAccountHandler() {
+        super();
         userService = ServiceRepo.getInstance().getService(UserService.class);
         sessionService = ServiceRepo.getInstance().getService(SessionService.class);
     }

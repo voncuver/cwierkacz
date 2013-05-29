@@ -16,6 +16,7 @@ public class CreateAccountHandler extends AbstractHandler
     private final UserService userService;
 
     public CreateAccountHandler() {
+        super();
         userService = ServiceRepo.getInstance().getService(UserService.class);
     }
 

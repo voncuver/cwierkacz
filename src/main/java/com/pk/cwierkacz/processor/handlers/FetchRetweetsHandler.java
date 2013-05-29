@@ -32,6 +32,7 @@ public class FetchRetweetsHandler extends AbstractHandler
     private final TweetService tweetService;
 
     public FetchRetweetsHandler() {
+        super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
     }
 

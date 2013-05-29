@@ -46,6 +46,7 @@ public class FetchMessagesHandler extends AbstractHandler
     }
 
     public FetchMessagesHandler() {
+        super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
         this.fileSaver = new FileSaver();

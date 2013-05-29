@@ -15,8 +15,6 @@ public class AccountManager
 
     private final List<String> twitterAccountLogins = new ArrayList<String>();
 
-    //
-
     public AccountManager( List<Account> accounts ) {
         accountsForMultipleTypes(accounts);
     }

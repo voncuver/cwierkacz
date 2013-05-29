@@ -24,6 +24,7 @@ public class UnwireTweetAcocunt extends AbstractHandler
     private final TwitterAccountService accountService;
 
     public UnwireTweetAcocunt() {
+        super();
         userService = ServiceRepo.getInstance().getService(UserService.class);
         sessionService = ServiceRepo.getInstance().getService(SessionService.class);
         accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);

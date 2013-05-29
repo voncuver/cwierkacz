@@ -7,9 +7,17 @@ import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.Result;
+import com.pk.cwierkacz.ws.SsiAdapter;
 
 public abstract class AbstractHandler implements Handler
 {
+
+    protected SsiAdapter ssiAdapter;
+
+    public AbstractHandler() {
+        ssiAdapter = SsiAdapter.getInstance();
+    }
+
     @Override
     public void handleWithSecurity( ApplicationData appData ) {
         Result result = checkSecurity(appData);

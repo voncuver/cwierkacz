@@ -46,6 +46,13 @@ public class UserDao implements Serializable
                 cascade = {CascadeType.ALL} )
     private Set<TwitterAccountDao> accounts = new HashSet<TwitterAccountDao>();
 
+    @JsonBackReference
+    @OneToMany( fetch = FetchType.EAGER,
+                targetEntity = BridgeAccountDao.class,
+                mappedBy = "user",
+                cascade = {CascadeType.ALL} )
+    private final Set<BridgeAccountDao> bridgeAccounts = new HashSet<BridgeAccountDao>();
+
     private boolean isDeleted;
 
     @OneToOne( cascade = CascadeType.ALL )
@@ -74,6 +81,10 @@ public class UserDao implements Serializable
 
     public void setPassword( String password ) {
         this.password = password;
+    }
+
+    public Set<BridgeAccountDao> getBridgeAccounts( ) {
+        return bridgeAccounts;
     }
 
     public Set<TwitterAccountDao> getAccounts( ) {

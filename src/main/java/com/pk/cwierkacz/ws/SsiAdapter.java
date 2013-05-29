@@ -48,12 +48,12 @@ public class SsiAdapter
         twitpicService = new SocialServiceIntegrationImplService("http://twitpic.piotrkubowicz.pl/soap");
     }
 
-    public boolean login( String login, String password, AccountType accountType ) {
+    public Result login( String login, String password, AccountType accountType ) {
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setLogin(login);
         loginRequest.setPassword(password);
 
-        boolean result = false;
+        Result result = null;
         if ( AccountType.FACEBOOKBRIDGE.equals(accountType) ) {
             SocialServiceIntegration facePort = facebookService.getSocialServiceIntegrationImplPort();
             result = loginToPort(loginRequest, facePort, accountType);
@@ -69,18 +69,21 @@ public class SsiAdapter
         return result;
     }
 
-    private boolean loginToPort( LoginRequest loginRequest,
-                                 SocialServiceIntegration port,
-                                 AccountType accountType ) {
+    private Result loginToPort( LoginRequest loginRequest,
+                                SocialServiceIntegration port,
+                                AccountType accountType ) {
+        Result result = null;
         try {
             LoginResponse loginResponse = port.login(loginRequest);
-            //TODO: persist token
+
+            result = new Result(true, "Zalogowano pomyślnie.");
+            result.setToken(loginResponse.getToken());
         }
         catch ( IncorrectPasswordFault | UserNotExistFault e ) {
-            // TODO Auto-generated catch block
+            result = new Result(false, e.getMessage());
             e.printStackTrace();
         }
-        return true;
+        return result;
     }
 
     public boolean logout( String login, String password, AccountType accountType ) {
@@ -271,5 +274,35 @@ public class SsiAdapter
             e.printStackTrace();
         }
         return getItemsResponse;
+    }
+
+    public class Result
+    {
+        private final boolean correct;
+
+        private final String msg;
+
+        private String token;
+
+        public Result( boolean result, String msg ) {
+            this.msg = msg;
+            this.correct = result;
+        }
+
+        public String getToken( ) {
+            return token;
+        }
+
+        public void setToken( String token ) {
+            this.token = token;
+        }
+
+        public boolean isCorrect( ) {
+            return correct;
+        }
+
+        public String getMsg( ) {
+            return msg;
+        }
     }
 }

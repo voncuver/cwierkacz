@@ -27,6 +27,7 @@ public class GetMessagesHandler extends AbstractHandler
     private static final Logger LOGGER = LoggerFactory.getLogger(GetMessagesHandler.class);
 
     public GetMessagesHandler() {
+        super();
         tweetService = ServiceRepo.getInstance().getService(TweetService.class);
     }
 

@@ -11,6 +11,7 @@ import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.ApplicationData;
+import com.pk.cwierkacz.model.dao.BridgeAccountDao;
 import com.pk.cwierkacz.model.dao.SessionDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.dao.UserDao;
@@ -24,6 +25,7 @@ public class ListTweetAccounts extends AbstractHandler
     private final SessionService sessionService;
 
     public ListTweetAccounts() {
+        super();
         userService = ServiceRepo.getInstance().getService(UserService.class);
         sessionService = ServiceRepo.getInstance().getService(SessionService.class);
     }
@@ -52,6 +54,14 @@ public class ListTweetAccounts extends AbstractHandler
             accountsNames.add(new Account(accountDao.getAccountName(),
                                           accountDao.getName(),
                                           AccountType.TWITTER));
+        }
+
+        Set<BridgeAccountDao> bridgeAccounts = user.getBridgeAccounts();
+
+        for ( BridgeAccountDao accountDao : bridgeAccounts ) {
+            accountsNames.add(new Account(accountDao.getName(),
+                                          accountDao.getName(),
+                                          accountDao.getAccountType()));
         }
 
         Response response = ResponseImpl.create(Status.OK, "Lista dostępnych kont.", accRequest.getTokenId())

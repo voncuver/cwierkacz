@@ -20,6 +20,7 @@ public class LoginHandler extends AbstractHandler
     private final UserService userService;
 
     public LoginHandler() {
+        super();
         userService = ServiceRepo.getInstance().getService(UserService.class);
     }
 

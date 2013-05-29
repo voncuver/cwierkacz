@@ -41,6 +41,7 @@ public class FetchRepliesHandler extends AbstractHandler
     }
 
     public FetchRepliesHandler() {
+        super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.fileSaver = new FileSaver();
     }

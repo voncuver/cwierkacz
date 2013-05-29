@@ -20,6 +20,7 @@ public class ModifyAccountHandler extends AbstractHandler
     private final SessionService sessionService;
 
     public ModifyAccountHandler() {
+        super();
         userService = ServiceRepo.getInstance().getService(UserService.class);
         sessionService = ServiceRepo.getInstance().getService(SessionService.class);
     }
