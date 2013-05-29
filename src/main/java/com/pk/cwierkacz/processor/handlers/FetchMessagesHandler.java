@@ -120,12 +120,14 @@ public class FetchMessagesHandler extends AbstractHandler
                     if ( last != null ) {
                         try {
                             TwitterAccount account = TwitterAccountMap.getTwitterAccount(accountDao);
-                            TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
-                            for ( TweetDao tweet : result.getReadyTweets() ) {
-                                tweetService.save(tweetWithImg(tweet));
+                            if ( fetchRequest.getDateTo() == null ||
+                                 fetchRequest.getDateTo().isAfter(last.getCratedDate()) ) {
+                                TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
+                                for ( TweetDao tweet : result.getReadyTweets() ) {
+                                    tweetService.save(tweetWithImg(tweet));
+                                }
+                                notReadyTweets = notReadyTweets.add(result);
                             }
-                            notReadyTweets = notReadyTweets.add(result);
-
                         }
                         catch ( TwitterAuthenticationException e ) {
                             LOGGER.error(getError(e));
