@@ -53,7 +53,9 @@ public class FileSaver
 
     public AttachmentsWithResources saveFile( byte[] fileByte, String fileName ) throws IOException {
         File file = createFile(fileName);
-        IOUtils.write(fileByte, new FileOutputStream(file));
+        FileOutputStream fos = new FileOutputStream(file);
+        IOUtils.write(fileByte, fos);
+        fos.close();
         return createTweetWithAttachments(file);
 
     }
@@ -64,7 +66,9 @@ public class FileSaver
         else {
             URL url = new URL(urlPath);
             File file = createFile(trimPath(urlPath));
-            IOUtils.copy(url.openStream(), new FileOutputStream(file));
+            FileOutputStream fos = new FileOutputStream(file);
+            IOUtils.copy(url.openStream(), fos);
+            fos.close();
             AttachmentsWithResources ars = createTweetWithAttachments(file);
             return ars;
 

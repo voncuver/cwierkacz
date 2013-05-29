@@ -1,5 +1,6 @@
 package com.pk.cwierkacz.http.response.dto;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import pl.edu.pk.ias.types.Item;
 import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
+import com.pk.cwierkacz.model.service.SettingsService;
 import com.pk.cwierkacz.model.service.TweetService;
 
 public class Message implements Comparable<Message>
@@ -114,6 +116,21 @@ public class Message implements Comparable<Message>
         this.createdDate = createdDate;
     }
 
+    private static String pathToUrl( String path ) {
+        final SettingsService settingsService = ServiceRepo.getInstance().getService(SettingsService.class);
+
+        if ( path == null )
+            return null;
+        else {
+            String newPath = path;
+            if ( path.endsWith(File.separator) )
+                newPath = path.substring(0, path.length() - 1);
+            String partialUrl = newPath.replace(File.separator, "/");
+            return settingsService.getAppAdress() + partialUrl;
+
+        }
+    }
+
     public static Message apply( TweetDao tweetDao ) {
         TweetService tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         Message tweet = new Message();
@@ -127,7 +144,8 @@ public class Message implements Comparable<Message>
         tweet.setCreatedDate(tweetDao.getCratedDate());
         tweet.setDeleted(tweetDao.isDeleted());
         tweet.setId(tweetDao.getId());
-        tweet.setImagePath(tweetDao.getImagePath());
+
+        tweet.setImagePath(pathToUrl(tweetDao.getImagePath()));
 
         if ( tweetDao.getInReplyTo() != null )
             tweet.setInReplyToId(tweetDao.getInReplyTo().getId());
@@ -158,7 +176,7 @@ public class Message implements Comparable<Message>
         tweet.setCreatedDate(null); //brak daty - przejebane
         tweet.setDeleted(false);
         tweet.setId(item.getId().getId().longValue());
-        tweet.setImagePath(null); //TODO co z tym imagem? jak to robic?
+        tweet.setImagePath(pathToUrl(null)); //TODO co z tym imagem? jak to robic?
         tweet.setInReplyToId(null);
         tweet.setRetweetedId(null);
         tweet.setText(item.getDescription());
