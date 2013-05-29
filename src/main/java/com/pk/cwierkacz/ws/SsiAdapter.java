@@ -19,7 +19,6 @@ import pl.edu.pk.ias.types.LogoutResponse;
 import pl.edu.pk.ias.types.PublishRequest;
 
 import com.pk.cwierkacz.http.response.dto.Account;
-import com.pk.cwierkacz.http.response.dto.Message;
 import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.ws.client.IncorrectPasswordFault;
 import com.pk.cwierkacz.ws.client.SocialServiceIntegration;
@@ -184,15 +183,15 @@ public class SsiAdapter
         }
     }
 
-    public List<Message> fetchIteams( Date dateFrom, Date dateTo, String account ) {
-        List<Message> messages = new ArrayList<>();
-        messages.addAll(fetchIteams(AccountType.FACEBOOKBRIDGE, dateFrom, dateTo, account));
-        messages.addAll(fetchIteams(AccountType.FLICKERBRIDGE, dateFrom, dateTo, account));
-        messages.addAll(fetchIteams(AccountType.TWITPICBRIDGE, dateFrom, dateTo, account));
-        return messages;
+    public List<Item> fetchIteams( Date dateFrom, Date dateTo, String account ) {
+        List<Item> iteams = new ArrayList<>();
+        iteams.addAll(fetchIteams(AccountType.FACEBOOKBRIDGE, dateFrom, dateTo, account));
+        iteams.addAll(fetchIteams(AccountType.FLICKERBRIDGE, dateFrom, dateTo, account));
+        iteams.addAll(fetchIteams(AccountType.TWITPICBRIDGE, dateFrom, dateTo, account));
+        return iteams;
     }
 
-    public List<Message> fetchIteams( AccountType accountType, Date dateFrom, Date dateTo, String account ) {
+    public List<Item> fetchIteams( AccountType accountType, Date dateFrom, Date dateTo, String account ) {
         GetItemsPreviewsRequest getItemsPreviewsRequest = new GetItemsPreviewsRequest();
         getItemsPreviewsRequest.setDateFrom(dateFrom);
         getItemsPreviewsRequest.setDateTo(dateTo);
@@ -213,18 +212,7 @@ public class SsiAdapter
 
         GetItemsResponse getItemsResponse = getIteams(accountType, getItemsRequest);
 
-        List<Message> messages = new ArrayList<>();
-
-        for ( Item iteam : getItemsResponse.getItemsList() ) {
-            Message message = new Message();
-
-            message.setAccount(new Account(account, account, accountType));
-            message.setText(iteam.getDescription());
-            message.setId(iteam.getId().getId().longValue());
-            messages.add(message);
-        }
-
-        return messages;
+        return getItemsResponse.getItemsList();
     }
 
     private GetItemsPreviewsResponse getPrieviews( AccountType accountType,
