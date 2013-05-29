@@ -1,7 +1,6 @@
 
 package pl.edu.pk.ias.types;
 
-import java.math.BigInteger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -18,7 +17,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="lss" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -36,7 +35,7 @@ import javax.xml.bind.annotation.XmlType;
 public class ItemId {
 
     @XmlElement(required = true)
-    protected BigInteger id;
+    protected String id;
     @XmlElement(required = true)
     protected String lss;
 
@@ -45,10 +44,10 @@ public class ItemId {
      * 
      * @return
      *     possible object is
-     *     {@link BigInteger }
+     *     {@link String }
      *     
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
@@ -57,10 +56,10 @@ public class ItemId {
      * 
      * @param value
      *     allowed object is
-     *     {@link BigInteger }
+     *     {@link String }
      *     
      */
-    public void setId(BigInteger value) {
+    public void setId(String value) {
         this.id = value;
     }
 

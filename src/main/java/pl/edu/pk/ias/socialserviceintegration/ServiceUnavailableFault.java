@@ -10,8 +10,8 @@ import javax.xml.ws.WebFault;
  * Generated source version: 2.2
  * 
  */
-@WebFault(name = "tokenExpiredFault", targetNamespace = "http://pk.edu.pl/ias/types")
-public class TokenExpiredFault
+@WebFault(name = "serviceUnavailableFault", targetNamespace = "http://pk.edu.pl/ias/types")
+public class ServiceUnavailableFault
     extends Exception
 {
 
@@ -19,14 +19,14 @@ public class TokenExpiredFault
      * Java type that goes as soapenv:Fault detail element.
      * 
      */
-    private pl.edu.pk.ias.types.TokenExpiredFault faultInfo;
+    private pl.edu.pk.ias.types.ServiceUnavailableFault faultInfo;
 
     /**
      * 
      * @param message
      * @param faultInfo
      */
-    public TokenExpiredFault(String message, pl.edu.pk.ias.types.TokenExpiredFault faultInfo) {
+    public ServiceUnavailableFault(String message, pl.edu.pk.ias.types.ServiceUnavailableFault faultInfo) {
         super(message);
         this.faultInfo = faultInfo;
     }
@@ -37,7 +37,7 @@ public class TokenExpiredFault
      * @param faultInfo
      * @param cause
      */
-    public TokenExpiredFault(String message, pl.edu.pk.ias.types.TokenExpiredFault faultInfo, Throwable cause) {
+    public ServiceUnavailableFault(String message, pl.edu.pk.ias.types.ServiceUnavailableFault faultInfo, Throwable cause) {
         super(message, cause);
         this.faultInfo = faultInfo;
     }
@@ -45,9 +45,9 @@ public class TokenExpiredFault
     /**
      * 
      * @return
-     *     returns fault bean: pl.edu.pk.ias.types.TokenExpiredFault
+     *     returns fault bean: pl.edu.pk.ias.types.ServiceUnavailableFault
      */
-    public pl.edu.pk.ias.types.TokenExpiredFault getFaultInfo() {
+    public pl.edu.pk.ias.types.ServiceUnavailableFault getFaultInfo() {
         return faultInfo;
     }
 

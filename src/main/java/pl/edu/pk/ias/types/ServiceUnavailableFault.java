@@ -31,8 +31,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "errorMsg"
 })
-@XmlRootElement(name = "incorrectPasswordFault")
-public class IncorrectPasswordFault {
+@XmlRootElement(name = "serviceUnavailableFault")
+public class ServiceUnavailableFault {
 
     @XmlElement(required = true)
     protected String errorMsg;

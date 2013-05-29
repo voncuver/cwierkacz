@@ -13,9 +13,6 @@ import com.pk.cwierkacz.http.request.Request;
 import com.pk.cwierkacz.http.request.RequestImpl;
 import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.ApplicationData;
-import com.pk.cwierkacz.model.dao.UserDao;
-import com.pk.cwierkacz.model.service.ServiceRepo;
-import com.pk.cwierkacz.model.service.UserService;
 
 public class WireTweetAccountTest
 {
@@ -48,16 +45,11 @@ public class WireTweetAccountTest
                                                                                                .getTokenId());
         Request request4 = request3.buildBaseRequest("test");
         AddTweeterAccountRequest accRequest = RequestImpl.create(request4)
-                                                         .buildAddAccountTweetRequest("msierpien")
-                                                         .withPasswordTweet("Kinia12")
-                                                         .withAccountType(AccountType.TWITTER);
+                                                         .buildAddAccountTweetRequest("integration@test")
+                                                         .withPasswordTweet("integration")
+                                                         .withAccountType(AccountType.FACEBOOKBRIDGE);
         appData.setRequest(accRequest);
 
-        UserService service = ServiceRepo.getInstance().getService(UserService.class);
-
-        UserDao userDao = service.getByUserName("test");
-
-        appData.setCurrentUser(userDao);
         tweetAccount.handle(appData);
 
         System.out.println(appData.getResponse().getText());

@@ -17,11 +17,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="token" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="lss" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="file" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
- *         &lt;element name="filename" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="token" type="{http://pk.edu.pl/ias/types}token"/>
+ *         &lt;element name="lss" type="{http://pk.edu.pl/ias/types}lss"/>
+ *         &lt;element name="file" type="{http://pk.edu.pl/ias/types}file"/>
+ *         &lt;element name="filename" type="{http://pk.edu.pl/ias/types}filename"/>
+ *         &lt;element name="message" type="{http://pk.edu.pl/ias/types}message"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
     "lss",
     "file",
     "filename",
-    "description"
+    "message"
 })
 public class PublishRequest {
 
@@ -49,7 +49,7 @@ public class PublishRequest {
     @XmlElement(required = true)
     protected String filename;
     @XmlElement(required = true)
-    protected String description;
+    protected String message;
 
     /**
      * Gets the value of the token property.
@@ -146,27 +146,27 @@ public class PublishRequest {
     }
 
     /**
-     * Gets the value of the description property.
+     * Gets the value of the message property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDescription() {
-        return description;
+    public String getMessage() {
+        return message;
     }
 
     /**
-     * Sets the value of the description property.
+     * Sets the value of the message property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDescription(String value) {
-        this.description = value;
+    public void setMessage(String value) {
+        this.message = value;
     }
 
 }

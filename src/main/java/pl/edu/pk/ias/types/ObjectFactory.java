@@ -24,20 +24,18 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
+    private final static QName _GetItemsPreviewsRequest_QNAME = new QName("http://pk.edu.pl/ias/types", "getItemsPreviewsRequest");
     private final static QName _PublishResponse_QNAME = new QName("http://pk.edu.pl/ias/types", "publishResponse");
     private final static QName _LoginResponse_QNAME = new QName("http://pk.edu.pl/ias/types", "loginResponse");
-    private final static QName _AccountsRequest_QNAME = new QName("http://pk.edu.pl/ias/types", "accountsRequest");
-    private final static QName _RemoveResponse_QNAME = new QName("http://pk.edu.pl/ias/types", "removeResponse");
-    private final static QName _GetItemsResponse_QNAME = new QName("http://pk.edu.pl/ias/types", "getItemsResponse");
-    private final static QName _RemoveRequest_QNAME = new QName("http://pk.edu.pl/ias/types", "removeRequest");
-    private final static QName _LogoutRequest_QNAME = new QName("http://pk.edu.pl/ias/types", "logoutRequest");
-    private final static QName _GetItemsPreviewsRequest_QNAME = new QName("http://pk.edu.pl/ias/types", "getItemsPreviewsRequest");
     private final static QName _GetItemsRequest_QNAME = new QName("http://pk.edu.pl/ias/types", "getItemsRequest");
+    private final static QName _AccountsRequest_QNAME = new QName("http://pk.edu.pl/ias/types", "accountsRequest");
     private final static QName _LoginRequest_QNAME = new QName("http://pk.edu.pl/ias/types", "loginRequest");
     private final static QName _GetItemsPreviewsResponse_QNAME = new QName("http://pk.edu.pl/ias/types", "getItemsPreviewsResponse");
     private final static QName _AccountsResponse_QNAME = new QName("http://pk.edu.pl/ias/types", "accountsResponse");
+    private final static QName _GetItemsResponse_QNAME = new QName("http://pk.edu.pl/ias/types", "getItemsResponse");
     private final static QName _PublishRequest_QNAME = new QName("http://pk.edu.pl/ias/types", "publishRequest");
     private final static QName _LogoutResponse_QNAME = new QName("http://pk.edu.pl/ias/types", "logoutResponse");
+    private final static QName _LogoutRequest_QNAME = new QName("http://pk.edu.pl/ias/types", "logoutRequest");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: pl.edu.pk.ias.types
@@ -71,6 +69,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ServiceUnavailableFault }
+     * 
+     */
+    public ServiceUnavailableFault createServiceUnavailableFault() {
+        return new ServiceUnavailableFault();
+    }
+
+    /**
      * Create an instance of {@link AccountsRequest }
      * 
      */
@@ -79,27 +85,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RemoveResponse }
-     * 
-     */
-    public RemoveResponse createRemoveResponse() {
-        return new RemoveResponse();
-    }
-
-    /**
      * Create an instance of {@link TokenExpiredFault }
      * 
      */
     public TokenExpiredFault createTokenExpiredFault() {
         return new TokenExpiredFault();
-    }
-
-    /**
-     * Create an instance of {@link RemoveRequest }
-     * 
-     */
-    public RemoveRequest createRemoveRequest() {
-        return new RemoveRequest();
     }
 
     /**
@@ -143,14 +133,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IncorrectPasswordFault }
-     * 
-     */
-    public IncorrectPasswordFault createIncorrectPasswordFault() {
-        return new IncorrectPasswordFault();
-    }
-
-    /**
      * Create an instance of {@link LoginRequest }
      * 
      */
@@ -159,11 +141,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link UserNotExistFault }
+     * Create an instance of {@link InvalidLoginOrPasswordFault }
      * 
      */
-    public UserNotExistFault createUserNotExistFault() {
-        return new UserNotExistFault();
+    public InvalidLoginOrPasswordFault createInvalidLoginOrPasswordFault() {
+        return new InvalidLoginOrPasswordFault();
+    }
+
+    /**
+     * Create an instance of {@link BadRequestFault }
+     * 
+     */
+    public BadRequestFault createBadRequestFault() {
+        return new BadRequestFault();
     }
 
     /**
@@ -207,6 +197,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetItemsPreviewsRequest }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://pk.edu.pl/ias/types", name = "getItemsPreviewsRequest")
+    public JAXBElement<GetItemsPreviewsRequest> createGetItemsPreviewsRequest(GetItemsPreviewsRequest value) {
+        return new JAXBElement<GetItemsPreviewsRequest>(_GetItemsPreviewsRequest_QNAME, GetItemsPreviewsRequest.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link PublishResponse }{@code >}}
      * 
      */
@@ -225,66 +224,21 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link AccountsRequest }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://pk.edu.pl/ias/types", name = "accountsRequest")
-    public JAXBElement<AccountsRequest> createAccountsRequest(AccountsRequest value) {
-        return new JAXBElement<AccountsRequest>(_AccountsRequest_QNAME, AccountsRequest.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link RemoveResponse }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://pk.edu.pl/ias/types", name = "removeResponse")
-    public JAXBElement<RemoveResponse> createRemoveResponse(RemoveResponse value) {
-        return new JAXBElement<RemoveResponse>(_RemoveResponse_QNAME, RemoveResponse.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link GetItemsResponse }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://pk.edu.pl/ias/types", name = "getItemsResponse")
-    public JAXBElement<GetItemsResponse> createGetItemsResponse(GetItemsResponse value) {
-        return new JAXBElement<GetItemsResponse>(_GetItemsResponse_QNAME, GetItemsResponse.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link RemoveRequest }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://pk.edu.pl/ias/types", name = "removeRequest")
-    public JAXBElement<RemoveRequest> createRemoveRequest(RemoveRequest value) {
-        return new JAXBElement<RemoveRequest>(_RemoveRequest_QNAME, RemoveRequest.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link LogoutRequest }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://pk.edu.pl/ias/types", name = "logoutRequest")
-    public JAXBElement<LogoutRequest> createLogoutRequest(LogoutRequest value) {
-        return new JAXBElement<LogoutRequest>(_LogoutRequest_QNAME, LogoutRequest.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link GetItemsPreviewsRequest }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://pk.edu.pl/ias/types", name = "getItemsPreviewsRequest")
-    public JAXBElement<GetItemsPreviewsRequest> createGetItemsPreviewsRequest(GetItemsPreviewsRequest value) {
-        return new JAXBElement<GetItemsPreviewsRequest>(_GetItemsPreviewsRequest_QNAME, GetItemsPreviewsRequest.class, null, value);
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link GetItemsRequest }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://pk.edu.pl/ias/types", name = "getItemsRequest")
     public JAXBElement<GetItemsRequest> createGetItemsRequest(GetItemsRequest value) {
         return new JAXBElement<GetItemsRequest>(_GetItemsRequest_QNAME, GetItemsRequest.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link AccountsRequest }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://pk.edu.pl/ias/types", name = "accountsRequest")
+    public JAXBElement<AccountsRequest> createAccountsRequest(AccountsRequest value) {
+        return new JAXBElement<AccountsRequest>(_AccountsRequest_QNAME, AccountsRequest.class, null, value);
     }
 
     /**
@@ -315,6 +269,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetItemsResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://pk.edu.pl/ias/types", name = "getItemsResponse")
+    public JAXBElement<GetItemsResponse> createGetItemsResponse(GetItemsResponse value) {
+        return new JAXBElement<GetItemsResponse>(_GetItemsResponse_QNAME, GetItemsResponse.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link PublishRequest }{@code >}}
      * 
      */
@@ -330,6 +293,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://pk.edu.pl/ias/types", name = "logoutResponse")
     public JAXBElement<LogoutResponse> createLogoutResponse(LogoutResponse value) {
         return new JAXBElement<LogoutResponse>(_LogoutResponse_QNAME, LogoutResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link LogoutRequest }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://pk.edu.pl/ias/types", name = "logoutRequest")
+    public JAXBElement<LogoutRequest> createLogoutRequest(LogoutRequest value) {
+        return new JAXBElement<LogoutRequest>(_LogoutRequest_QNAME, LogoutRequest.class, null, value);
     }
 
 }

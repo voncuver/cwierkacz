@@ -4,7 +4,9 @@ package pl.edu.pk.ias.types;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
@@ -19,7 +21,8 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="id" type="{http://pk.edu.pl/ias/types}itemId"/>
  *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="date" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
+ *         &lt;element name="message" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="filename" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="file" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
  *       &lt;/sequence>
@@ -34,7 +37,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "item", propOrder = {
     "id",
     "name",
-    "description",
+    "date",
+    "message",
     "filename",
     "file"
 })
@@ -45,7 +49,10 @@ public class Item {
     @XmlElement(required = true)
     protected String name;
     @XmlElement(required = true)
-    protected String description;
+    @XmlSchemaType(name = "dateTime")
+    protected XMLGregorianCalendar date;
+    @XmlElement(required = true)
+    protected String message;
     @XmlElement(required = true)
     protected String filename;
     @XmlElement(required = true)
@@ -100,27 +107,51 @@ public class Item {
     }
 
     /**
-     * Gets the value of the description property.
+     * Gets the value of the date property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public XMLGregorianCalendar getDate() {
+        return date;
+    }
+
+    /**
+     * Sets the value of the date property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public void setDate(XMLGregorianCalendar value) {
+        this.date = value;
+    }
+
+    /**
+     * Gets the value of the message property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDescription() {
-        return description;
+    public String getMessage() {
+        return message;
     }
 
     /**
-     * Sets the value of the description property.
+     * Sets the value of the message property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDescription(String value) {
-        this.description = value;
+    public void setMessage(String value) {
+        this.message = value;
     }
 
     /**
