@@ -37,6 +37,10 @@ public class TweetsResult
      */
     private final ImmutableList<TweetDao> notReadyTweets;
 
+    public boolean allReady( ) {
+        return ( readyTweets.size() == 0 );
+    }
+
     public int size( ) {
         return getTweets().size();
     }
@@ -115,15 +119,24 @@ public class TweetsResult
         return notReadyTweets;
     }
 
-    public ImmutableList<TweetDao> fulfilledNoReady( ) {
-        ImmutableList.Builder<TweetDao> notReadyTweetsB = ImmutableList.builder();
+    public TweetsResult fulfilledNoReady( TwitterAccount twitterAccount ) throws TwitterActionException {
+        ImmutableList.Builder<TweetDao> allTweets = ImmutableList.builder();
         for ( int i = 0; i < notReadyTweets.size(); i++ ) {
             TweetDao t = CONVERTER.fulfill(notReadyTweets.get(i));
-            if ( notReady(t) )
-                throw new RuntimeException("You try force tweet fulfill but dependencies is not done");
-            notReadyTweetsB.add(t);
+            allTweets.add(t);
+            if ( notReady(t) ) {
+
+                if ( t.getRetweetedExtId() != null ) {
+                    TweetDao newT = twitterAccount.getTweet(t.getRetweetedExtId());
+                    allTweets.add(newT);
+                }
+                if ( t.getInReplyToExtId() != null ) {
+                    TweetDao newT = twitterAccount.getTweet(t.getInReplyToExtId());
+                    allTweets.add(newT);
+                }
+            }
         }
-        return notReadyTweetsB.build();
+        return new TweetsResult(fullResult, allTweets.build());
     }
 
     public TweetsResult add( TweetsResult in ) {

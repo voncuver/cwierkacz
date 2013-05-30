@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.pk.cwierkacz.model.dao.TweetDao;
+
 public class ImageUtil
 {
 
@@ -45,5 +47,12 @@ public class ImageUtil
             e.printStackTrace();
             throw new ImageSaveException();
         }
+    }
+
+    public TweetDao tweetWithImg( TweetDao t ) throws IOException {
+        FileData awr = fileSaver.saveFileFromUrl(t.getTwitterImageUrl());
+        if ( awr != null )
+            t.setImagePath(awr.getImgPath());
+        return t;
     }
 }

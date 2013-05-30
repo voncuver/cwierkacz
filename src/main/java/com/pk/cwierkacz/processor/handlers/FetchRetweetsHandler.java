@@ -19,6 +19,7 @@ import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
+import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
 import com.pk.cwierkacz.twitter.TweetsResult;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
@@ -31,9 +32,12 @@ public class FetchRetweetsHandler extends AbstractHandler
 
     private final TweetService tweetService;
 
+    private final ImageUtil imageUtil;
+
     public FetchRetweetsHandler() {
         super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
+        this.imageUtil = new ImageUtil();
     }
 
     @Override
@@ -71,13 +75,24 @@ public class FetchRetweetsHandler extends AbstractHandler
                     TwitterAccount account = TwitterAccountMap.getTwitterAccount(accountDao);
                     TweetsResult result = account.getRetweets(retweeted);
                     for ( TweetDao tweet : result.getReadyTweets() ) {
-                        tweet.setImagePath(tweet.getImagePath());
+                        tweet.setImagePath(retweeted.getImagePath());
                         tweetService.save(tweet);
                     }
-                    for ( TweetDao tweet : result.fulfilledNoReady() ) {
-                        tweet.setImagePath(tweet.getImagePath());
-                        tweetService.save(tweet);
+                    do {
+                        result = result.fulfilledNoReady(account);
+                        for ( TweetDao tweet : result.getReadyTweets() ) {
+                            TweetDao tweetWithData = tweet;
+                            if ( tweet.getRetweetedExtId() == retweeted.getExternalId() ) {
+                                tweetWithData.setImagePath(retweeted.getImagePath());
+                            }
+                            else {
+                                tweetWithData = imageUtil.tweetWithImg(tweetWithData);
+                            }
+                            tweetService.save(tweetWithData);
+                        }
                     }
+                    while ( result.allReady() );
+
                     mergedTweets = tweetService.getActualRetweets(retweeted);
                 }
                 //else nothing to do, because we may don't know what is owner of the main tweet

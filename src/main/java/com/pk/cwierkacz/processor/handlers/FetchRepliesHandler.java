@@ -1,6 +1,5 @@
 package com.pk.cwierkacz.processor.handlers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +19,7 @@ import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
-import com.pk.cwierkacz.processor.handlers.helpers.FileData;
-import com.pk.cwierkacz.processor.handlers.helpers.FileUtil;
+import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
 import com.pk.cwierkacz.twitter.TweetsResult;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
@@ -34,19 +32,12 @@ public class FetchRepliesHandler extends AbstractHandler
 
     private final TweetService tweetService;
 
-    private final FileUtil fileSaver;
-
-    private TweetDao tweetWithImg( TweetDao t ) throws IOException {
-        FileData awr = fileSaver.saveFileFromUrl(t.getTwitterImageUrl());
-        if ( awr != null )
-            t.setImagePath(awr.getImgPath());
-        return t;
-    }
+    private final ImageUtil imageUtil;
 
     public FetchRepliesHandler() {
         super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
-        this.fileSaver = new FileUtil();
+        this.imageUtil = new ImageUtil();
     }
 
     @Override
@@ -83,11 +74,16 @@ public class FetchRepliesHandler extends AbstractHandler
                 account = TwitterAccountMap.getTwitterAccount(accountDao);
                 TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
                 for ( TweetDao tweet : result.getReadyTweets() ) {
-                    tweetService.save(tweetWithImg(tweet));
+                    tweetService.save(imageUtil.tweetWithImg(tweet));
                 }
-                for ( TweetDao tweet : result.fulfilledNoReady() ) {
-                    tweetService.save(tweetWithImg(tweet));
+
+                do {
+                    result = result.fulfilledNoReady(account);
+                    for ( TweetDao tweet : result.getReadyTweets() ) {
+                        tweetService.save(imageUtil.tweetWithImg(tweet));
+                    }
                 }
+                while ( result.allReady() );
 
                 mergedTweets = tweetService.getActualReplies(replyTweet);
             }

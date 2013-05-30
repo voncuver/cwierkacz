@@ -1,6 +1,5 @@
 package com.pk.cwierkacz.processor.handlers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,8 +25,7 @@ import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.processor.handlers.helpers.AccountManager;
 import com.pk.cwierkacz.processor.handlers.helpers.FetchResult;
-import com.pk.cwierkacz.processor.handlers.helpers.FileData;
-import com.pk.cwierkacz.processor.handlers.helpers.FileUtil;
+import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
 import com.pk.cwierkacz.twitter.TweetsResult;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
@@ -44,22 +42,15 @@ public class FetchMessagesHandler extends FetchBridgeMessagesHandler
 
     private final TwitterAccountService accountService;
 
-    private final FileUtil fileSaver;
+    private final ImageUtil imageUtil;
 
     private final SsiAdapter ssiAdapter;
-
-    private TweetDao tweetWithImg( TweetDao t ) throws IOException {
-        FileData awr = fileSaver.saveFileFromUrl(t.getTwitterImageUrl());
-        if ( awr != null )
-            t.setImagePath(awr.getImgPath());
-        return t;
-    }
 
     public FetchMessagesHandler() {
         super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
-        this.fileSaver = new FileUtil();
+        this.imageUtil = new ImageUtil();
         this.ssiAdapter = SsiAdapter.getInstance();
     }
 
@@ -118,7 +109,6 @@ public class FetchMessagesHandler extends FetchBridgeMessagesHandler
         FetchMessagesRequest fetchRequest = (FetchMessagesRequest) appData.getRequest();
 
         StringBuilder errorBuilder = new StringBuilder();
-        TweetsResult notReadyTweets = new TweetsResult();
         List<TwitterAccountDao> acs = new ArrayList<TwitterAccountDao>();
         List<TweetDao> mergedTweets = new ArrayList<TweetDao>();
 
@@ -136,9 +126,16 @@ public class FetchMessagesHandler extends FetchBridgeMessagesHandler
                                  fetchRequest.getDateTo().isAfter(last.getCratedDate()) ) {
                                 TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
                                 for ( TweetDao tweet : result.getReadyTweets() ) {
-                                    tweetService.save(tweetWithImg(tweet));
+                                    tweetService.save(imageUtil.tweetWithImg(tweet));
                                 }
-                                notReadyTweets = notReadyTweets.add(result);
+                                do {
+                                    result = result.fulfilledNoReady(account);
+                                    for ( TweetDao tweet : result.getReadyTweets() ) {
+                                        tweetService.save(imageUtil.tweetWithImg(tweet));
+                                    }
+                                }
+                                while ( result.allReady() );
+
                             }
                         }
                         catch ( TwitterAuthenticationException e ) {
@@ -165,16 +162,6 @@ public class FetchMessagesHandler extends FetchBridgeMessagesHandler
 
             }
         }
-        try {
-            for ( TweetDao tweet : notReadyTweets.fulfilledNoReady() ) {
-                tweetService.save(tweetWithImg(tweet));
-            }
-        }
-        catch ( Exception e ) {
-            LOGGER.error(getError(e));
-            errorBuilder = appendError(errorBuilder, "Błąd przy zapisie nie gotowych tweetów. ", e);
-        }
-
         mergedTweets = tweetService.getActualTweetForAccounts(acs,
                                                               fetchRequest.getDateFrom(),
                                                               fetchRequest.getDateTo(),

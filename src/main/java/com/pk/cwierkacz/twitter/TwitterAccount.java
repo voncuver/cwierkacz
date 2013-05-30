@@ -553,4 +553,15 @@ public class TwitterAccount extends TwitterResolver
         Mentions,
         Re
     }
+
+    public TweetDao getTweet( long id ) throws TwitterActionException {
+        try {
+            Status status = twitter.showStatus(id);
+            return tweetConverter.toTweet(status);
+        }
+        catch ( TwitterException e ) {
+            e.printStackTrace();
+            throw new TwitterActionException(e.getMessage());
+        }
+    }
 }
