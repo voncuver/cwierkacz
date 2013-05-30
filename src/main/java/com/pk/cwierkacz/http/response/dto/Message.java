@@ -169,11 +169,10 @@ public class Message implements Comparable<Message>
 
     public static Message apply( String accountName, AccountType accountType, Item item ) {
 
-        //TODO przed uzyciem tego zastanowic sie nad tym,pewnie trzeba cos tu pozmienia, chocby ten file?
         Message tweet = new Message();
-        Account account = new Account(accountName, null, accountType);//TODO czy nie mamy pełnej nazwy, moze mamy?
+        Account account = new Account(accountName, accountName, accountType);
         tweet.setAccount(account);
-        tweet.setCreatedDate(null); //brak daty - przejebane
+        tweet.setCreatedDate(null); //TODO jak już będzie data w itemie to tutaj dodac!!
         tweet.setDeleted(false);
         tweet.setId(item.getId().getId().longValue());
         tweet.setImagePath(pathToUrl(null)); //TODO co z tym imagem? jak to robic?

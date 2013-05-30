@@ -53,6 +53,7 @@ public class ToTweetConverter implements Function<Status, TweetDao>
     }
 
     public TweetDao fulfill( TweetDao tweet ) {
+        //TODO obsługa sytutacji iż nie ma u nas tweeta
         if ( tweet.getRetweeted() == null && tweet.getRetweetedExtId() != null ) {
             tweet.setRetweeted(tweetService.getByExternalId(tweet.getRetweetedExtId()));
         }

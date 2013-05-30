@@ -12,7 +12,7 @@ public class ImageSaver
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageSaver.class);
 
-    public AttachmentsWithResources saveImage( byte[] image, String imgName, String imgURL ) throws ImageSaveException {
+    public FileData saveImage( byte[] image, String imgName, String imgURL ) throws ImageSaveException {
 
         try {
             if ( image != null && imgName != null ) {
@@ -22,7 +22,7 @@ public class ImageSaver
                 return fileSaver.saveFileFromUrl(imgURL);
             }
             else
-                return null;
+                return new FileData();
         }
         catch ( IOException e ) {
             LOGGER.error(e.getMessage());

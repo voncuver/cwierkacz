@@ -23,6 +23,7 @@
     <mapping class="com.pk.cwierkacz.model.dao.SessionDao" />
     <mapping class="com.pk.cwierkacz.model.dao.TwitterAccountDao" />
     <mapping class="com.pk.cwierkacz.model.dao.BridgeAccountDao" />
+    <mapping class="com.pk.cwierkacz.model.dao.BridgeImgMetadataDao" />
     
 </session-factory>
 </hibernate-configuration>

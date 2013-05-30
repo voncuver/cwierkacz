@@ -16,7 +16,7 @@ import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.processor.handlers.helpers.AccountPermissionValidator;
-import com.pk.cwierkacz.processor.handlers.helpers.AttachmentsWithResources;
+import com.pk.cwierkacz.processor.handlers.helpers.FileData;
 import com.pk.cwierkacz.processor.handlers.helpers.ImageSaveException;
 import com.pk.cwierkacz.processor.handlers.helpers.ImageSaver;
 import com.pk.cwierkacz.twitter.TwitterAccount;
@@ -100,7 +100,7 @@ public class PublishReplyHandler extends AbstractHandler
             String filename = null;
             TweetAttachments attachments = TweetAttachments.empty();
             try {
-                AttachmentsWithResources awr = imageSaver.saveImage(publishRequest.getBody(),
+                FileData awr = imageSaver.saveImage(publishRequest.getBody(),
                                                                     publishRequest.getImgName(),
                                                                     publishRequest.getImgURL());
 

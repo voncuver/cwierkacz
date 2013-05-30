@@ -3,15 +3,15 @@ package com.pk.cwierkacz.processor.handlers.helpers;
 import com.pk.cwierkacz.twitter.attachment.ImageAttachment;
 import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
 
-public class AttachmentsWithResources
+public class FileData
 {
     private String imgPath;
 
-    private TweetAttachments attachments = TweetAttachments.empty();
+    private String imgName;
 
-    public AttachmentsWithResources( String imgPath ) {
-        this.imgPath = imgPath;
-    }
+    private byte[] bytes;
+
+    private TweetAttachments attachments = TweetAttachments.empty();
 
     public TweetAttachments getAttachments( ) {
         return attachments;
@@ -31,5 +31,21 @@ public class AttachmentsWithResources
 
     public void setImgPath( String imgPath ) {
         this.imgPath = imgPath;
+    }
+
+    public String getImgName( ) {
+        return imgName;
+    }
+
+    public void setImgName( String imgName ) {
+        this.imgName = imgName;
+    }
+
+    public byte[] getBytes( ) {
+        return bytes;
+    }
+
+    public void setBytes( byte[] bytes ) {
+        this.bytes = bytes;
     }
 }

@@ -34,16 +34,19 @@ public class FileSaver
         return file;
     }
 
-    protected AttachmentsWithResources createTweetWithAttachments( File file ) {
+    protected FileData createFileData( File file, byte[] bytes ) {
         SettingsDao imgSettings = settingsService.getImageSettings();
         String sl = "";
         if ( !imgSettings.getRelativeImgPath().endsWith(File.separator) )
             sl = File.separator;
-        String filename = imgSettings.getRelativeImgPath() + sl + file.getName();
+        String filepath = imgSettings.getRelativeImgPath() + sl + file.getName();
         ImageAttachment image = new ImageAttachment(file);
         TweetAttachments attachments = TweetAttachments.createImage(image);
 
-        AttachmentsWithResources resp = new AttachmentsWithResources(filename);
+        FileData resp = new FileData();
+        resp.setImgPath(filepath);
+        resp.setImgName(file.getName());
+        resp.setBytes(bytes);
         resp.setAttachments(attachments);
         return resp;
 
@@ -51,26 +54,22 @@ public class FileSaver
 
     }
 
-    public AttachmentsWithResources saveFile( byte[] fileByte, String fileName ) throws IOException {
+    public FileData saveFile( byte[] fileBytes, String fileName ) throws IOException {
         File file = createFile(fileName);
         FileOutputStream fos = new FileOutputStream(file);
-        IOUtils.write(fileByte, fos);
+        IOUtils.write(fileBytes, fos);
         fos.close();
-        return createTweetWithAttachments(file);
+        return createFileData(file, fileBytes);
 
     }
 
-    public AttachmentsWithResources saveFileFromUrl( String urlPath ) throws IOException {
+    public FileData saveFileFromUrl( String urlPath ) throws IOException {
         if ( urlPath == null )
             return null;
         else {
             URL url = new URL(urlPath);
-            File file = createFile(trimPath(urlPath));
-            FileOutputStream fos = new FileOutputStream(file);
-            IOUtils.copy(url.openStream(), fos);
-            fos.close();
-            AttachmentsWithResources ars = createTweetWithAttachments(file);
-            return ars;
+            byte[] bytes = IOUtils.toByteArray(url);
+            return saveFile(bytes, trimPath(urlPath));
 
         }
     }
