@@ -8,6 +8,7 @@ import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.PublishReplyRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
+import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.Result;
 import com.pk.cwierkacz.model.dao.TweetDao;
@@ -52,6 +53,7 @@ public class PublishReplyHandler extends AbstractHandler
         PublishReplyRequest publishRequest = (PublishReplyRequest) appData.getRequest();
 
         if ( !AccountPermissionValidator.checkPermissionForName(publishRequest.getLoginTweet(),
+                                                                AccountType.TWITTER,
                                                                 publishRequest.getTokenId()) ) {
             return new Result("Brak uprawnień do przynajmniej jednego konta.", Status.DENY);
         }
@@ -101,8 +103,8 @@ public class PublishReplyHandler extends AbstractHandler
             TweetAttachments attachments = TweetAttachments.empty();
             try {
                 FileData awr = imageSaver.saveImage(publishRequest.getBody(),
-                                                                    publishRequest.getImgName(),
-                                                                    publishRequest.getImgURL());
+                                                    publishRequest.getImgName(),
+                                                    publishRequest.getImgURL());
 
                 if ( awr != null ) {
                     filename = awr.getImgPath();

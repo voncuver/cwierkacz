@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.model.AccountType;
+import com.pk.cwierkacz.model.dao.BridgeAccountDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 
 public class AccountManager
@@ -48,7 +49,11 @@ public class AccountManager
                                             AccountType.TWITTER));
             twitterAccountLogins.add(accountDao.getAccountName());
         }
-        //TODO for bridge accounts
+        for ( BridgeAccountDao accountDao : userAccounts.getBridgesAccounts() ) {
+            bridgeAccounts.add(new Account(accountDao.getName(),
+                                           accountDao.getName(),
+                                           accountDao.getAccountType()));
+        }
     }
 
     public AccountManager( List<String> accountNames, AccountType type ) {

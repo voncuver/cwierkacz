@@ -74,4 +74,20 @@ public class BridgeAccountDao
     public void setAccountType( AccountType accountType ) {
         this.accountType = accountType;
     }
+
+    @Override
+    public boolean equals( Object obj ) {
+        if ( this == obj )
+            return true;
+        if ( ( obj == null ) || ( obj.getClass() != this.getClass() ) )
+            return false;
+        BridgeAccountDao bridgeAccountDao = (BridgeAccountDao) obj;
+        return bridgeAccountDao.getName().equals(this.getName()) &&
+               bridgeAccountDao.getAccountType().equals(this.getAccountType());
+    }
+
+    @Override
+    public int hashCode( ) {
+        return name.hashCode();
+    }
 }
