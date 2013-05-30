@@ -13,6 +13,7 @@ import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.SettingsService;
 import com.pk.cwierkacz.model.service.TweetService;
+import com.pk.cwierkacz.utils.DateUtil;
 
 public class Message implements Comparable<Message>
 {
@@ -167,15 +168,15 @@ public class Message implements Comparable<Message>
         return msgs;
     }
 
-    public static Message apply( String accountName, AccountType accountType, Item item ) {
+    public static Message apply( String accountName, AccountType accountType, String path, Item item ) {
 
         Message tweet = new Message();
         Account account = new Account(accountName, accountName, accountType);
         tweet.setAccount(account);
-        tweet.setCreatedDate(null); //TODO jak już będzie data w itemie to tutaj dodac!!
+        tweet.setCreatedDate(DateUtil.convertDateUTC(item.getDate())); //TODO jak już będzie data w itemie to tutaj dodac!!
         tweet.setDeleted(false);
         tweet.setId(Long.parseLong(item.getId().getId()));
-        tweet.setImagePath(pathToUrl(null)); //TODO co z tym imagem? jak to robic?
+        tweet.setImagePath(pathToUrl(path));
         tweet.setInReplyToId(null);
         tweet.setRetweetedId(null);
         tweet.setText(item.getMessage());

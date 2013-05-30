@@ -24,19 +24,17 @@ public class BridgeImgMetadataService extends AbstractService<BridgeImgMetadataD
         return dao;
     }
 
-    public boolean exist( BridgeImgMetadataDao bridgeImgMetadataDao ) {
-        BridgeImgMetadataDao readed = getBridgeImgMetadata(bridgeImgMetadataDao.getBridgeId(),
-                                                           bridgeImgMetadataDao.getLss(),
-                                                           bridgeImgMetadataDao.getAccountType());
+    public String getPathAndUpdate( String bridgeId, String lss, AccountType accountType ) {
+        BridgeImgMetadataDao readed = getBridgeImgMetadata(bridgeId, lss, accountType);
 
         if ( readed == null ) {
-            return false;
+            return null;
         }
         else {
             readed.setAccessDate(new DateTime());
             saveOrUpdate(readed);
 
-            return true;
+            return readed.getPath();
         }
     }
 

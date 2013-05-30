@@ -56,7 +56,6 @@ abstract public class PublishBridgeMessagesHandler extends AbstractHandler
                                                          account.getLogin() +
                                                          ".", e);
             }
-
         }
 
         return new StringBuilder();
