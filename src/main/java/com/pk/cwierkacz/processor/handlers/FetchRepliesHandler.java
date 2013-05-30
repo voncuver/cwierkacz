@@ -21,7 +21,7 @@ import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.processor.handlers.helpers.FileData;
-import com.pk.cwierkacz.processor.handlers.helpers.FileSaver;
+import com.pk.cwierkacz.processor.handlers.helpers.FileUtil;
 import com.pk.cwierkacz.twitter.TweetsResult;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
@@ -34,7 +34,7 @@ public class FetchRepliesHandler extends AbstractHandler
 
     private final TweetService tweetService;
 
-    private final FileSaver fileSaver;
+    private final FileUtil fileSaver;
 
     private TweetDao tweetWithImg( TweetDao t ) throws IOException {
         FileData awr = fileSaver.saveFileFromUrl(t.getTwitterImageUrl());
@@ -46,7 +46,7 @@ public class FetchRepliesHandler extends AbstractHandler
     public FetchRepliesHandler() {
         super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
-        this.fileSaver = new FileSaver();
+        this.fileSaver = new FileUtil();
     }
 
     @Override

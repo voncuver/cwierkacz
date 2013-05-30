@@ -18,7 +18,7 @@ import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.processor.handlers.helpers.AccountPermissionValidator;
 import com.pk.cwierkacz.processor.handlers.helpers.FileData;
 import com.pk.cwierkacz.processor.handlers.helpers.ImageSaveException;
-import com.pk.cwierkacz.processor.handlers.helpers.ImageSaver;
+import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
 import com.pk.cwierkacz.twitter.TwitterActionException;
@@ -31,7 +31,7 @@ public class PublishReplyHandler extends AbstractHandler
 
     private final TwitterAccountService accountService;
 
-    private final ImageSaver imageSaver;
+    private final ImageUtil imageSaver;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishReplyHandler.class);
 
@@ -39,7 +39,7 @@ public class PublishReplyHandler extends AbstractHandler
         super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
-        this.imageSaver = new ImageSaver();
+        this.imageSaver = new ImageUtil();
     }
 
     @Override

@@ -2,24 +2,18 @@ package com.pk.cwierkacz.processor.handlers;
 
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import pl.edu.pk.ias.types.ItemId;
 
 import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.PublishMessageRequest;
 import com.pk.cwierkacz.http.response.Response;
 import com.pk.cwierkacz.http.response.ResponseImpl;
-import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.model.ApplicationData;
 import com.pk.cwierkacz.model.Result;
-import com.pk.cwierkacz.model.dao.BridgeImgMetadataDao;
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
-import com.pk.cwierkacz.model.service.BridgeImgMetadataService;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
@@ -27,15 +21,13 @@ import com.pk.cwierkacz.processor.handlers.helpers.AccountManager;
 import com.pk.cwierkacz.processor.handlers.helpers.AccountPermissionValidator;
 import com.pk.cwierkacz.processor.handlers.helpers.FileData;
 import com.pk.cwierkacz.processor.handlers.helpers.ImageSaveException;
-import com.pk.cwierkacz.processor.handlers.helpers.ImageSaver;
+import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
 import com.pk.cwierkacz.twitter.TwitterActionException;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
-import com.pk.cwierkacz.ws.BridgeException;
-import com.pk.cwierkacz.ws.SsiAdapter;
 
-public class PublishMessagesHandler extends AbstractHandler
+public class PublishMessagesHandler extends PublishBridgeMessagesHandler
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishMessagesHandler.class);
 
@@ -43,19 +35,13 @@ public class PublishMessagesHandler extends AbstractHandler
 
     private final TwitterAccountService accountService;
 
-    private final BridgeImgMetadataService bridgeImgMetadataService;
-
-    private final ImageSaver imageSaver;
-
-    private final SsiAdapter ssiAdapter;
+    private final ImageUtil imageSaver;
 
     public PublishMessagesHandler() {
         super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
-        this.bridgeImgMetadataService = ServiceRepo.getInstance().getService(BridgeImgMetadataService.class);
-        this.imageSaver = new ImageSaver();
-        this.ssiAdapter = SsiAdapter.getInstance();
+        this.imageSaver = new ImageUtil();
     }
 
     @Override
@@ -108,11 +94,13 @@ public class PublishMessagesHandler extends AbstractHandler
                                                      publishRequest.getImgName(),
                                                      publishRequest.getImgURL());
 
-            twitterErrorsBuilder = handleToTwitter(appData,
+            twitterErrorsBuilder = handleToTwitter(publishRequest.getTweetText(),
                                                    accountManager.getTwitterAccountLogins(),
                                                    fileData);
 
-            bridgesErrorsBuilder = handleToBridges(appData, accountManager.getBridgeAccounts(), fileData);
+            bridgesErrorsBuilder = handleToBridges(publishRequest.getTweetText(),
+                                                   accountManager.getBridgeAccounts(),
+                                                   fileData);
 
         }
         catch ( ImageSaveException ex ) {
@@ -138,11 +126,7 @@ public class PublishMessagesHandler extends AbstractHandler
         appData.setResponse(response);
     }
 
-    public StringBuilder handleToTwitter( ApplicationData appData,
-                                          List<String> twitterAccountLogins,
-                                          FileData fileData ) {
-
-        PublishMessageRequest publishRequest = (PublishMessageRequest) appData.getRequest();
+    public StringBuilder handleToTwitter( String text, List<String> twitterAccountLogins, FileData fileData ) {
 
         StringBuilder errorBuilder = new StringBuilder();
         for ( String accountName : twitterAccountLogins ) {
@@ -154,15 +138,13 @@ public class PublishMessagesHandler extends AbstractHandler
                 }
                 else {
                     TwitterAccount account = TwitterAccountMap.getTwitterAccount(accountDao);
-                    TweetDao newTweet = account.composeNewTweet(publishRequest.getTweetText(),
-                                                                fileData.getAttachments());
+                    TweetDao newTweet = account.composeNewTweet(text, fileData.getAttachments());
 
                     newTweet.setCreator(accountDao);
                     if ( fileData.getImgPath() != null )
                         newTweet.setImagePath(fileData.getImgPath());
 
                     tweetService.save(newTweet);
-                    appData.setParam("TweetId", newTweet.getId().toString());
                 }
             }
             catch ( TwitterAuthenticationException e ) {
@@ -182,46 +164,4 @@ public class PublishMessagesHandler extends AbstractHandler
         return errorBuilder;
     }
 
-    public StringBuilder handleToBridges( ApplicationData appData,
-                                          List<Account> twitterAccounts,
-                                          FileData fileData ) {
-
-        PublishMessageRequest publishRequest = (PublishMessageRequest) appData.getRequest();
-        StringBuilder errorBuilder = new StringBuilder();
-
-        for ( Account account : twitterAccounts ) {
-            try {
-                ItemId itemId = ssiAdapter.publishTweet(account.getType(),
-                                                        publishRequest.getTweetText(),
-                                                        account.getLogin(),
-                                                        fileData.getImgName(),
-                                                        Base64.encodeBase64(fileData.getBytes()));
-
-                if ( fileData.getImgPath() != null ) {
-                    BridgeImgMetadataDao bridgeImgMetadataDao = new BridgeImgMetadataDao();
-                    bridgeImgMetadataDao.setPath(fileData.getImgPath());
-                    bridgeImgMetadataDao.setLss(itemId.getLss());
-                    bridgeImgMetadataDao.setBridgeId(itemId.getId());
-                    bridgeImgMetadataDao.setAccountType(account.getType());
-                    bridgeImgMetadataService.save(bridgeImgMetadataDao);
-                }
-            }
-            catch ( BridgeException be ) {
-                LOGGER.error(getError(be));
-                errorBuilder = appendError(errorBuilder,
-                                           "Bład mostu dla konta " + account.getLogin() + ".",
-                                           be);
-            }
-            catch ( Throwable e ) {
-                LOGGER.error(getError(e));
-                errorBuilder = appendError(errorBuilder, "Bład aplikacji dla konta " +
-                                                         account.getLogin() +
-                                                         ".", e);
-            }
-
-        }
-
-        return new StringBuilder();
-
-    }
 }

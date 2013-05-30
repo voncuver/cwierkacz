@@ -20,12 +20,14 @@ import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.processor.handlers.helpers.AccountManager;
 import com.pk.cwierkacz.processor.handlers.helpers.AccountPermissionValidator;
+import com.pk.cwierkacz.processor.handlers.helpers.ImageSaveException;
+import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
 import com.pk.cwierkacz.twitter.TwitterActionException;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
 
-public class PublishRetweetHandler extends AbstractHandler
+public class PublishRetweetHandler extends PublishBridgeMessagesHandler
 {
     private final TweetService tweetService;
 
@@ -33,10 +35,13 @@ public class PublishRetweetHandler extends AbstractHandler
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishRetweetHandler.class);
 
+    private final ImageUtil imageUtil;
+
     public PublishRetweetHandler() {
         super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
+        this.imageUtil = new ImageUtil();
     }
 
     @Override
@@ -77,11 +82,9 @@ public class PublishRetweetHandler extends AbstractHandler
             errorBuilder.append("Tweet którego chcesz skopiować nie istnieje. ");
         }
         else {
-            twitterErrorsBuilder = handleToTwitter(appData,
-                                                   retweeted,
-                                                   accountManager.getTwitterAccountLogins());
+            twitterErrorsBuilder = handleToTwitter(retweeted, accountManager.getTwitterAccountLogins());
 
-            bridgesErrorsBuilder = handleToBridges(appData, retweeted, accountManager.getBridgeAccounts());
+            bridgesErrorsBuilder = handleToBridges(retweeted, accountManager.getBridgeAccounts());
         }
 
         Response response;
@@ -102,9 +105,7 @@ public class PublishRetweetHandler extends AbstractHandler
         appData.setResponse(response);
     }
 
-    public StringBuilder handleToTwitter( ApplicationData appData,
-                                          TweetDao mainTweet,
-                                          List<String> twitterAccountLogins ) {
+    public StringBuilder handleToTwitter( TweetDao mainTweet, List<String> twitterAccountLogins ) {
 
         StringBuilder errorBuilder = new StringBuilder();
 
@@ -123,7 +124,6 @@ public class PublishRetweetHandler extends AbstractHandler
                     newTweet.setImagePath(mainTweet.getImagePath());
 
                     tweetService.save(newTweet);
-                    appData.setParam("TweetId", newTweet.getId().toString());
                 }
             }
             catch ( TwitterAuthenticationException e ) {
@@ -143,12 +143,17 @@ public class PublishRetweetHandler extends AbstractHandler
         return errorBuilder;
     }
 
-    public StringBuilder handleToBridges( ApplicationData appData,
-                                          TweetDao mainTweet,
-                                          List<Account> twitterAccounts ) {
-        //TODO
-        return new StringBuilder();
-
+    public StringBuilder handleToBridges( TweetDao retweeted, List<Account> twitterAccounts ) {
+        StringBuilder errorBuilder = new StringBuilder();
+        try {
+            errorBuilder = handleToBridges(retweeted.getText(),
+                                           twitterAccounts,
+                                           imageUtil.readImage(retweeted.getImagePath()));
+        }
+        catch ( ImageSaveException e ) {
+            LOGGER.error(getError(e));
+            errorBuilder = appendError(errorBuilder, "Bład odczytu zdjęcia.", e);
+        }
+        return errorBuilder;
     }
-
 }

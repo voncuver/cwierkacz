@@ -1,6 +1,7 @@
 package com.pk.cwierkacz.processor.handlers.helpers;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -13,12 +14,12 @@ import com.pk.cwierkacz.model.service.SettingsService;
 import com.pk.cwierkacz.twitter.attachment.ImageAttachment;
 import com.pk.cwierkacz.twitter.attachment.TweetAttachments;
 
-public class FileSaver
+public class FileUtil
 {
     public final SettingsService settingsService = ServiceRepo.getInstance()
                                                               .getService(SettingsService.class);
 
-    protected String trimPath( String path ) {
+    public String trimPath( String path ) {
         int index = path.lastIndexOf('/');
         if ( index < 0 )
             return path;
@@ -40,6 +41,14 @@ public class FileSaver
         if ( !imgSettings.getRelativeImgPath().endsWith(File.separator) )
             sl = File.separator;
         String filepath = imgSettings.getRelativeImgPath() + sl + file.getName();
+
+        return createFileData(file, bytes, filepath);
+
+        //TODO DOS ATTACK DENGER - control of size image and number of trying add image per user - probably these controls not in here, but somewhere higher
+
+    }
+
+    protected FileData createFileData( File file, byte[] bytes, String filepath ) {
         ImageAttachment image = new ImageAttachment(file);
         TweetAttachments attachments = TweetAttachments.createImage(image);
 
@@ -70,6 +79,24 @@ public class FileSaver
             URL url = new URL(urlPath);
             byte[] bytes = IOUtils.toByteArray(url);
             return saveFile(bytes, trimPath(urlPath));
+
+        }
+    }
+
+    public FileData readFile( String imgPath ) throws IOException {
+        if ( imgPath == null )
+            return null;
+        else {
+            SettingsDao containerSettings = settingsService.getContainerSettings();
+            String absoluteContainerPath = containerSettings.getAbsoluteContainerPath();
+            if ( !absoluteContainerPath.endsWith(File.separator) ) {
+                absoluteContainerPath += File.separator;
+            }
+            File file = new File(absoluteContainerPath + imgPath);
+            FileInputStream fin = new FileInputStream(file);
+            byte[] bytes = IOUtils.toByteArray(fin);
+            fin.close();
+            return createFileData(file, bytes, imgPath);
 
         }
     }
