@@ -256,6 +256,22 @@ public class SsiAdapter
         }
     }
 
+    public List<Item> getItems( AccountType accountType, List<String> lss, List<Long> ids ) throws BridgeException {
+        GetItemsRequest request = new GetItemsRequest();
+        List<ItemId> itemIds = new ArrayList<ItemId>();
+        for ( int i = 0; i < ids.size(); i++ ) {
+            ItemId itemId = new ItemId();
+            itemId.setId(Long.toString(ids.get(i)));
+            itemId.setLss(lss.get(i));
+            itemIds.add(new ItemId());
+        }
+        request.setToken(null); //TODO
+        request.setIdsList(itemIds);
+
+        GetItemsResponse resp = getIteams(accountType, request);
+        return resp.getItemsList();
+    }
+
     private GetItemsResponse getIteams( AccountType accountType, GetItemsRequest getItemsRequest ) throws BridgeException {
         GetItemsResponse getItemsResponse = new GetItemsResponse();
 

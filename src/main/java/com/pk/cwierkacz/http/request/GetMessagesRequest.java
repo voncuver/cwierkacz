@@ -9,4 +9,6 @@ public interface GetMessagesRequest extends Request
     AccountType getAccountType( );
 
     List<Long> getIds( );
+
+    List<String> getAccountLogins( );
 }

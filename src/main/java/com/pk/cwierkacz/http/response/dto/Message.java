@@ -168,10 +168,10 @@ public class Message implements Comparable<Message>
         return msgs;
     }
 
-    public static Message apply( String accountName, AccountType accountType, String path, Item item ) {
+    public static Message apply( AccountType accountType, String path, Item item ) {
 
         Message tweet = new Message();
-        Account account = new Account(accountName, accountName, accountType);
+        Account account = new Account(item.getId().getLss(), item.getId().getLss(), accountType);
         tweet.setAccount(account);
         tweet.setCreatedDate(DateUtil.convertDateUTC(item.getDate())); //TODO jak już będzie data w itemie to tutaj dodac!!
         tweet.setDeleted(false);

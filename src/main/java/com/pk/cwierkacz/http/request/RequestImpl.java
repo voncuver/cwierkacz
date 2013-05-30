@@ -41,6 +41,8 @@ public class RequestImpl implements
     //FETCHTWEETS, PUBLISHTWEET
     private List<Account> accounts;
 
+    private List<String> accountLogins;
+
     private List<Long> ids;
 
     //FETCHTWEETS
@@ -266,6 +268,12 @@ public class RequestImpl implements
         return (T) this;
     }
 
+    @SuppressWarnings( "unchecked" )
+    public < T extends RequestImpl > T withAccountLogins( List<String> logins ) {
+        this.accountLogins = logins;
+        return (T) this;
+    }
+
     @Override
     public Action getAction( ) {
         return action;
@@ -369,4 +377,10 @@ public class RequestImpl implements
     public void setImgURL( String imgURL ) {
         this.imgURL = imgURL;
     }
+
+    @Override
+    public List<String> getAccountLogins( ) {
+        return accountLogins;
+    }
+
 }

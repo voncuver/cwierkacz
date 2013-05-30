@@ -203,7 +203,8 @@ public class RequestBuilder
 
         return request = RequestImpl.create(request)
                                     .buildFetchByIdRequest(idsLong)
-                                    .withAccountType(accountType);
+                                    .withAccountType(accountType)
+                                    .withAccountLogins(Arrays.asList(params.get(ACCOUNTLOGINS)));
     }
 
     private static Request createFetchRepliesRequest( Map<String, String[]> params, Request request ) {

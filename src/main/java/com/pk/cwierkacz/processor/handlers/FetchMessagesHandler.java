@@ -19,10 +19,8 @@ import com.pk.cwierkacz.http.response.ResponseImpl;
 import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.http.response.dto.Message;
 import com.pk.cwierkacz.model.ApplicationData;
-import com.pk.cwierkacz.model.dao.BridgeImgMetadataDao;
 import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
-import com.pk.cwierkacz.model.service.BridgeImgMetadataService;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
 import com.pk.cwierkacz.model.service.TwitterAccountService;
@@ -30,8 +28,6 @@ import com.pk.cwierkacz.processor.handlers.helpers.AccountManager;
 import com.pk.cwierkacz.processor.handlers.helpers.FetchResult;
 import com.pk.cwierkacz.processor.handlers.helpers.FileData;
 import com.pk.cwierkacz.processor.handlers.helpers.FileUtil;
-import com.pk.cwierkacz.processor.handlers.helpers.ImageSaveException;
-import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
 import com.pk.cwierkacz.twitter.TweetsResult;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
@@ -39,10 +35,8 @@ import com.pk.cwierkacz.twitter.TwitterActionException;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
 import com.pk.cwierkacz.ws.BridgeException;
 import com.pk.cwierkacz.ws.SsiAdapter;
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 
-public class FetchMessagesHandler extends AbstractHandler
+public class FetchMessagesHandler extends FetchBridgeMessagesHandler
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(FetchMessagesHandler.class);
 
@@ -52,11 +46,7 @@ public class FetchMessagesHandler extends AbstractHandler
 
     private final FileUtil fileSaver;
 
-    private final ImageUtil imgUtil;
-
     private final SsiAdapter ssiAdapter;
-
-    private final BridgeImgMetadataService bridgeImgMetadataService;
 
     private TweetDao tweetWithImg( TweetDao t ) throws IOException {
         FileData awr = fileSaver.saveFileFromUrl(t.getTwitterImageUrl());
@@ -70,9 +60,7 @@ public class FetchMessagesHandler extends AbstractHandler
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
         this.fileSaver = new FileUtil();
-        this.bridgeImgMetadataService = ServiceRepo.getInstance().getService(BridgeImgMetadataService.class);
         this.ssiAdapter = SsiAdapter.getInstance();
-        this.imgUtil = new ImageUtil();
     }
 
     @Override
@@ -219,44 +207,9 @@ public class FetchMessagesHandler extends AbstractHandler
                                                               dateTo,
                                                               account.getLogin());
 
-                for ( Item item : partItems ) {
-
-                    String path = bridgeImgMetadataService.getPathAndUpdate(item.getId().getId(),
-                                                                            item.getId().getLss(),
-                                                                            account.getType());
-                    if ( path == null ) {
-                        byte[] bytes = null;
-                        if ( item.getFile() != null ) {
-                            try {
-                                bytes = Base64.decode(item.getFile());
-                            }
-                            catch ( Base64DecodingException e ) {
-                                LOGGER.error(getError(e));
-                                errorBuilder = appendError(errorBuilder, "Błąd dekowania pliku z base64 " +
-                                                                         account.getLogin() +
-                                                                         ".", e);
-                            }
-                        }
-
-                        try {
-                            path = imgUtil.saveImage(bytes, item.getName(), null).getImgPath();
-                        }
-                        catch ( ImageSaveException e ) {
-                            LOGGER.error(getError(e));
-                            errorBuilder = appendError(errorBuilder, "Bład zapisu pliku.", e);
-                        }
-
-                        BridgeImgMetadataDao bridgeImgMetadataDao = new BridgeImgMetadataDao();
-                        bridgeImgMetadataDao.setBridgeId(item.getId().getId());
-                        bridgeImgMetadataDao.setAccountType(account.getType());
-                        bridgeImgMetadataDao.setLss(item.getId().getLss());
-                        bridgeImgMetadataDao.setPath(path);
-
-                        bridgeImgMetadataService.save(bridgeImgMetadataDao);
-                    }
-
-                    messages.add(Message.apply(account.getName(), account.getType(), path, item));
-                }
+                FetchResult partiallyResult = itemsToMessages(partItems, account.getType());
+                errorBuilder.append(partiallyResult.getErrorBuilder());
+                messages.addAll(partiallyResult.getMessages());
             }
             catch ( BridgeException be ) {
                 LOGGER.error(getError(be));
