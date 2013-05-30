@@ -1,7 +1,5 @@
 package com.pk.cwierkacz.model.dao;
 
-import java.math.BigInteger;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,7 +22,7 @@ public class BridgeImgMetadataDao
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Long id;
 
-    private BigInteger bridgeId;
+    private String bridgeId;
 
     private AccountType accountType;
 
@@ -36,11 +34,11 @@ public class BridgeImgMetadataDao
     @Type( type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime" )
     private DateTime accessDate = new DateTime();
 
-    public BigInteger getBridgeId( ) {
+    public String getBridgeId( ) {
         return bridgeId;
     }
 
-    public void setBridgeId( BigInteger bridgeId ) {
+    public void setBridgeId( String bridgeId ) {
         this.bridgeId = bridgeId;
     }
 

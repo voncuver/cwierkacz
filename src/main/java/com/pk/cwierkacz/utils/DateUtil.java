@@ -28,4 +28,8 @@ public final class DateUtil
     public static DateTime convertDateUTC( java.util.Date date ) {
         return new DateTime(date, DateTimeZone.UTC);
     }
+
+    public static DateTime convertDateUTC( javax.xml.datatype.XMLGregorianCalendar date ) {
+        return new DateTime(date, DateTimeZone.UTC);
+    }
 }

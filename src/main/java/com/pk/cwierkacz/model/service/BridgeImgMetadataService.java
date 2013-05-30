@@ -1,10 +1,9 @@
 package com.pk.cwierkacz.model.service;
 
-import java.math.BigInteger;
-
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.joda.time.DateTime;
 
 import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.dao.BridgeImgMetadataDao;
@@ -15,7 +14,7 @@ public class BridgeImgMetadataService extends AbstractService<BridgeImgMetadataD
         super(sessionFactory);
     }
 
-    public BridgeImgMetadataDao getBridgeImgMetadata( BigInteger id, String lss, AccountType accountType ) {
+    public BridgeImgMetadataDao getBridgeImgMetadata( String id, String lss, AccountType accountType ) {
         Criteria criteria = getCriteria(BridgeImgMetadataDao.class);
         criteria.add(Restrictions.eq("bridgeId", id));
         criteria.add(Restrictions.eq("lss", lss));
@@ -25,13 +24,19 @@ public class BridgeImgMetadataService extends AbstractService<BridgeImgMetadataD
         return dao;
     }
 
-    public void saveIfNotExist( BridgeImgMetadataDao bridgeImgMetadataDao ) {
+    public boolean exist( BridgeImgMetadataDao bridgeImgMetadataDao ) {
         BridgeImgMetadataDao readed = getBridgeImgMetadata(bridgeImgMetadataDao.getBridgeId(),
                                                            bridgeImgMetadataDao.getLss(),
                                                            bridgeImgMetadataDao.getAccountType());
 
         if ( readed == null ) {
-            save(bridgeImgMetadataDao);
+            return false;
+        }
+        else {
+            readed.setAccessDate(new DateTime());
+            saveOrUpdate(readed);
+
+            return true;
         }
     }
 

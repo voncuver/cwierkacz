@@ -1,6 +1,5 @@
 package com.pk.cwierkacz.ws;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +11,8 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 
-import pl.edu.pk.ias.socialserviceintegration.IncorrectPasswordFault;
 import pl.edu.pk.ias.socialserviceintegration.SocialServiceIntegration;
 import pl.edu.pk.ias.socialserviceintegration.TokenExpiredFault;
-import pl.edu.pk.ias.socialserviceintegration.UserNotExistFault;
 import pl.edu.pk.ias.types.AccountsRequest;
 import pl.edu.pk.ias.types.AccountsResponse;
 import pl.edu.pk.ias.types.GetItemsPreviewsRequest;
@@ -31,8 +28,6 @@ import pl.edu.pk.ias.types.LogoutRequest;
 import pl.edu.pk.ias.types.LogoutResponse;
 import pl.edu.pk.ias.types.PublishRequest;
 import pl.edu.pk.ias.types.PublishResponse;
-import pl.edu.pk.ias.types.RemoveRequest;
-import pl.edu.pk.ias.types.RemoveResponse;
 
 import com.pk.cwierkacz.controller.SecurityController;
 import com.pk.cwierkacz.http.Action;
@@ -62,8 +57,7 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
                 partName = "parameters" )
     public LoginResponse login( @WebParam( name = "loginRequest",
                                            targetNamespace = "http://pk.edu.pl/ias/types",
-                                           partName = "parameters" ) LoginRequest parameters ) throws IncorrectPasswordFault,
-                                                                                              UserNotExistFault {
+                                           partName = "parameters" ) LoginRequest parameters ) {
         Map<String, String[]> parametersMap = new HashMap<String, String[]>();
         parametersMap.put(RequestBuilder.USERNAME, new String[] {parameters.getLogin()});
         parametersMap.put(RequestBuilder.PASSWORD, new String[] {parameters.getPassword()});
@@ -136,7 +130,7 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
         parametersMap.put(RequestBuilder.TOKEN, new String[] {parameters.getToken()});
         parametersMap.put(RequestBuilder.ACTIONPARAM, new String[] {Action.PUBLISHMESSAGE.getActionName()});
         parametersMap.put(RequestBuilder.IMGNAME, new String[] {parameters.getFilename()});
-        parametersMap.put(RequestBuilder.TWEET, new String[] {parameters.getDescription()});
+        parametersMap.put(RequestBuilder.TWEET, new String[] {parameters.getMessage()});
         parametersMap.put(RequestBuilder.ACCOUNTS, new String[] {parameters.getLss()});
 
         ApplicationData response = securityController.handle(parametersMap, parameters.getFile());
@@ -144,7 +138,7 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
         List<String> ids = response.getParam("TweetId");
 
         ItemId itemId = new ItemId();
-        itemId.setId(new BigInteger(ids.get(0)));
+        itemId.setId(ids.get(0));
         itemId.setLss(parameters.getLss());
 
         PublishResponse publishResponse = new PublishResponse();
@@ -184,7 +178,7 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
 
             ItemId itemId = new ItemId();
             itemId.setLss(message.getAccount().getLogin());
-            itemId.setId(BigInteger.valueOf(message.getId()));
+            itemId.setId(message.getId().toString());
             ItemPreview itemPreview = new ItemPreview();
 
             itemPreview.setId(itemId);
@@ -232,9 +226,9 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
 
             ItemId itemId = new ItemId();
             itemId.setLss(message.getAccount().getLogin());
-            itemId.setId(BigInteger.valueOf(message.getId()));
+            itemId.setId(message.getId().toString());
             Item item = new Item();
-            item.setDescription(message.getText());
+            item.setMessage(message.getText());
             if ( message.getText().length() > 10 ) {
                 item.setName(message.getText().substring(0, 10) + "...");
             }
@@ -247,16 +241,4 @@ public class SocialServiceIntegrationImpl implements SocialServiceIntegration
         }
         return getItemsResponse;
     }
-
-    @Override
-    @WebMethod( action = "http://pk.edu.pl/ias/socialserviceintegration/action/remove" )
-    @WebResult( name = "removeResponse",
-                targetNamespace = "http://pk.edu.pl/ias/types",
-                partName = "parameters" )
-    public RemoveResponse remove( @WebParam( name = "removeRequest",
-                                             targetNamespace = "http://pk.edu.pl/ias/types",
-                                             partName = "parameters" ) RemoveRequest parameters ) throws TokenExpiredFault {
-        return null;
-    }
-
 }

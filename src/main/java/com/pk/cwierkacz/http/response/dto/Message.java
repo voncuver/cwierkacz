@@ -174,11 +174,11 @@ public class Message implements Comparable<Message>
         tweet.setAccount(account);
         tweet.setCreatedDate(null); //TODO jak już będzie data w itemie to tutaj dodac!!
         tweet.setDeleted(false);
-        tweet.setId(item.getId().getId().longValue());
+        tweet.setId(Long.parseLong(item.getId().getId()));
         tweet.setImagePath(pathToUrl(null)); //TODO co z tym imagem? jak to robic?
         tweet.setInReplyToId(null);
         tweet.setRetweetedId(null);
-        tweet.setText(item.getDescription());
+        tweet.setText(item.getMessage());
         tweet.setNbOfReplies(0L);
         tweet.setNbOfRetweets(0L);
 

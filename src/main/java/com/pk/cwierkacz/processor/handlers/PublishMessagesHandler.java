@@ -6,6 +6,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pl.edu.pk.ias.types.ItemId;
+
 import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.PublishMessageRequest;
@@ -30,6 +32,7 @@ import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
 import com.pk.cwierkacz.twitter.TwitterActionException;
 import com.pk.cwierkacz.twitter.TwitterAuthenticationException;
+import com.pk.cwierkacz.ws.BridgeException;
 import com.pk.cwierkacz.ws.SsiAdapter;
 
 public class PublishMessagesHandler extends AbstractHandler
@@ -184,22 +187,40 @@ public class PublishMessagesHandler extends AbstractHandler
                                           FileData fileData ) {
 
         PublishMessageRequest publishRequest = (PublishMessageRequest) appData.getRequest();
+        StringBuilder errorBuilder = new StringBuilder();
 
         for ( Account account : twitterAccounts ) {
-            ssiAdapter.publishTweet(account.getType(),
-                                    publishRequest.getTweetText(),
-                                    account.getLogin(),
-                                    fileData.getImgName(),
-                                    Base64.encodeBase64(fileData.getBytes()));
+            try {
+                ItemId itemId = ssiAdapter.publishTweet(account.getType(),
+                                                        publishRequest.getTweetText(),
+                                                        account.getLogin(),
+                                                        fileData.getImgName(),
+                                                        Base64.encodeBase64(fileData.getBytes()));
 
-            if ( fileData.getImgPath() != null ) {
-                BridgeImgMetadataDao bridgeImgMetadataDao = new BridgeImgMetadataDao();
-                bridgeImgMetadataDao.setPath(fileData.getImgPath());
-                //TODO reszta + zapis
+                if ( fileData.getImgPath() != null ) {
+                    BridgeImgMetadataDao bridgeImgMetadataDao = new BridgeImgMetadataDao();
+                    bridgeImgMetadataDao.setPath(fileData.getImgPath());
+                    bridgeImgMetadataDao.setLss(itemId.getLss());
+                    bridgeImgMetadataDao.setBridgeId(itemId.getId());
+                    bridgeImgMetadataDao.setAccountType(account.getType());
+                    bridgeImgMetadataService.save(bridgeImgMetadataDao);
+                }
             }
+            catch ( BridgeException be ) {
+                LOGGER.error(getError(be));
+                errorBuilder = appendError(errorBuilder,
+                                           "Bład mostu dla konta " + account.getLogin() + ".",
+                                           be);
+            }
+            catch ( Throwable e ) {
+                LOGGER.error(getError(e));
+                errorBuilder = appendError(errorBuilder, "Bład aplikacji dla konta " +
+                                                         account.getLogin() +
+                                                         ".", e);
+            }
+
         }
 
-        //ssiAdapter.publishTweet(accountType, description, account)
         return new StringBuilder();
 
     }

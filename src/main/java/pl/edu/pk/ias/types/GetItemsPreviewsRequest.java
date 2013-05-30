@@ -4,8 +4,8 @@ package pl.edu.pk.ias.types;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
@@ -18,10 +18,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="token" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="lss" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="dateFrom" type="{http://www.w3.org/2001/XMLSchema}anySimpleType"/>
- *         &lt;element name="dateTo" type="{http://www.w3.org/2001/XMLSchema}anySimpleType"/>
+ *         &lt;element name="token" type="{http://pk.edu.pl/ias/types}token"/>
+ *         &lt;element name="lss" type="{http://pk.edu.pl/ias/types}lss"/>
+ *         &lt;element name="dateFrom" type="{http://pk.edu.pl/ias/types}dateFrom"/>
+ *         &lt;element name="dateTo" type="{http://pk.edu.pl/ias/types}dateTo"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -44,11 +44,9 @@ public class GetItemsPreviewsRequest {
     @XmlElement(required = true)
     protected String lss;
     @XmlElement(required = true)
-    @XmlSchemaType(name = "anySimpleType")
-    protected Object dateFrom;
+    protected XMLGregorianCalendar dateFrom;
     @XmlElement(required = true)
-    @XmlSchemaType(name = "anySimpleType")
-    protected Object dateTo;
+    protected XMLGregorianCalendar dateTo;
 
     /**
      * Gets the value of the token property.
@@ -103,10 +101,10 @@ public class GetItemsPreviewsRequest {
      * 
      * @return
      *     possible object is
-     *     {@link Object }
+     *     {@link XMLGregorianCalendar }
      *     
      */
-    public Object getDateFrom() {
+    public XMLGregorianCalendar getDateFrom() {
         return dateFrom;
     }
 
@@ -115,10 +113,10 @@ public class GetItemsPreviewsRequest {
      * 
      * @param value
      *     allowed object is
-     *     {@link Object }
+     *     {@link XMLGregorianCalendar }
      *     
      */
-    public void setDateFrom(Object value) {
+    public void setDateFrom(XMLGregorianCalendar value) {
         this.dateFrom = value;
     }
 
@@ -127,10 +125,10 @@ public class GetItemsPreviewsRequest {
      * 
      * @return
      *     possible object is
-     *     {@link Object }
+     *     {@link XMLGregorianCalendar }
      *     
      */
-    public Object getDateTo() {
+    public XMLGregorianCalendar getDateTo() {
         return dateTo;
     }
 
@@ -139,10 +137,10 @@ public class GetItemsPreviewsRequest {
      * 
      * @param value
      *     allowed object is
-     *     {@link Object }
+     *     {@link XMLGregorianCalendar }
      *     
      */
-    public void setDateTo(Object value) {
+    public void setDateTo(XMLGregorianCalendar value) {
         this.dateTo = value;
     }
 
