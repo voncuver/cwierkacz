@@ -1,12 +1,15 @@
 package com.pk.cwierkacz.processor.handlers;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.edu.pk.ias.types.Item;
+import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub.Item;
 
 import com.pk.cwierkacz.http.response.dto.Message;
 import com.pk.cwierkacz.model.AccountType;
@@ -40,13 +43,18 @@ abstract public class FetchBridgeMessagesHandler extends AbstractHandler
                 byte[] bytes = null;
                 if ( item.getFile() != null ) {
                     try {
-                        bytes = Base64.decode(item.getFile());
+                        bytes = Base64.decode(new BufferedReader(new InputStreamReader(item.getFile()
+                                                                                           .getInputStream())));
                     }
                     catch ( Base64DecodingException e ) {
                         LOGGER.error(getError(e));
                         errorBuilder = appendError(errorBuilder, "Błąd dekowania pliku z base64 " +
                                                                  item.getId().getLss() +
                                                                  ".", e);
+                    }
+                    catch ( IOException e ) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                 }
 

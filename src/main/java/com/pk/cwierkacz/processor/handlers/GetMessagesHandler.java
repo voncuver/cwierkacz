@@ -6,7 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.edu.pk.ias.types.Item;
+import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub.Item;
 
 import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns="http://pk.edu.pl/ias/types" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://pk.edu.pl/ias/types">
+    <xs:annotation>
+        <xs:documentation xml:lang="pl">
+            Typy danych wykorzystywane przy integracji serwisów społecznościowych
+        </xs:documentation>
+    </xs:annotation>
+    <xs:element name="loginRequest" type="ns:loginRequest"/>
+    <xs:element name="loginResponse" type="ns:loginResponse"/>
+    <xs:element name="logoutRequest" type="ns:logoutRequest"/>
+    <xs:element name="logoutResponse" type="ns:logoutResponse"/>
+    <xs:element name="accountsRequest" type="ns:accountsRequest"/>
+    <xs:element name="accountsResponse" type="ns:accountsResponse"/>
+    <xs:element name="publishRequest" type="ns:publishRequest"/>
+    <xs:element name="publishResponse" type="ns:publishResponse"/>
+    <xs:element name="getItemsPreviewsRequest" type="ns:getItemsPreviewsRequest"/>
+    <xs:element name="getItemsPreviewsResponse" type="ns:getItemsPreviewsResponse"/>
+    <xs:element name="getItemsRequest" type="ns:getItemsRequest"/>
+    <xs:element name="getItemsResponse" type="ns:getItemsResponse"/>
+    <xs:element name="removeRequest" type="ns:removeRequest"/>
+    <xs:element name="removeResponse" type="ns:removeResponse"/>
+    <xs:complexType name="loginRequest">
+        <xs:sequence>
+            <xs:element name="login" type="ns:login"/>
+            <xs:element name="password" type="ns:password"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="loginResponse">
+        <xs:sequence>
+            <xs:element name="token" type="ns:token"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="logoutRequest">
+        <xs:sequence>
+            <xs:element name="token" type="ns:token"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="logoutResponse">
+        <xs:sequence>
+            <xs:element name="isOperationSuccess" type="ns:isOperationSuccess"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="accountsRequest">
+        <xs:sequence>
+            <xs:element name="token" type="ns:token"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="accountsResponse">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="lss" type="ns:lss"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="publishRequest">
+        <xs:sequence>
+            <xs:element name="token" type="ns:token"/>
+            <xs:element name="lss" type="ns:lss"/>
+            <xs:element name="file" type="ns:file"/>
+            <xs:element name="filename" type="ns:filename"/>
+            <xs:element name="message" type="ns:message"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="publishResponse">
+        <xs:sequence>
+            <xs:element name="id" type="ns:itemId"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="getItemsPreviewsRequest">
+        <xs:sequence>
+            <xs:element name="token" type="ns:token"/>
+            <xs:element name="lss" type="ns:lss"/>
+            <xs:element name="dateFrom" type="ns:dateFrom"/>
+            <xs:element name="dateTo" type="ns:dateTo"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="getItemsPreviewsResponse">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="itemPreviewsList" type="ns:itemPreview"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="getItemsRequest">
+        <xs:sequence>
+            <xs:element name="token" type="ns:token"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="idsList" type="ns:itemId"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="getItemsResponse">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="itemsList" type="ns:item"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="removeRequest">
+        <xs:sequence>
+            <xs:element name="token" type="ns:token"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="idsList" type="ns:itemId"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="removeResponse">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="idsList" type="ns:itemId"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="login">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="30"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="password">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="30"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="token">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="lss">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="filename">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="message">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="file">
+        <xs:restriction base="xs:base64Binary"/>
+    </xs:simpleType>
+    <xs:simpleType name="dateFrom">
+        <xs:restriction base="xs:dateTime"/>
+    </xs:simpleType>
+    <xs:simpleType name="dateTo">
+        <xs:restriction base="xs:dateTime"/>
+    </xs:simpleType>
+    <xs:simpleType name="isOperationSuccess">
+        <xs:restriction base="xs:boolean"/>
+    </xs:simpleType>
+    <xs:complexType name="itemPreview">
+        <xs:sequence>
+            <xs:element name="id" type="ns:itemId"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="date" type="xs:dateTime"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="itemId">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="lss" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="item">
+        <xs:sequence>
+            <xs:element name="id" type="ns:itemId"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="date" type="xs:dateTime"/>
+            <xs:element name="message" type="xs:string"/>
+            <xs:element name="filename" type="xs:string"/>
+            <xs:element name="file" type="xs:base64Binary"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="tokenExpiredFault">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="errorMsg" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="userNotExistFault">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="errorMsg" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="incorrectPasswordFault">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="errorMsg" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="invalidLoginOrPasswordFault">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="errorMsg" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="badRequestFault">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="errorMsg" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="serviceUnavailableFault">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="errorMsg" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

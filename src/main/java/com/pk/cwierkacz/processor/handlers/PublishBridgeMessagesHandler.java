@@ -6,7 +6,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.edu.pk.ias.types.ItemId;
+import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub.ItemId;
 
 import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.model.dao.BridgeImgMetadataDao;

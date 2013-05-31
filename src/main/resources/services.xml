@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- This file was auto-generated from WSDL --><!-- by the Apache Axis2 version: 1.6.2  Built on : Apr 17, 2012 (05:33:49 IST) --><serviceGroup>
+    <service name="SocialServiceIntegration">
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="pl.edu.pk.ias.socialserviceintegration.SocialServiceIntegrationMessageReceiverInOut"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">pl.edu.pk.ias.socialserviceintegration.SocialServiceIntegrationSkeleton</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="logout" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://pk.edu.pl/ias/socialserviceintegration">
+            <actionMapping>http://pk.edu.pl/ias/socialserviceintegration/action/logout</actionMapping>
+            <outputActionMapping>http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/logoutResponse</outputActionMapping>
+        </operation>
+        <operation name="getItemsPreviews" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://pk.edu.pl/ias/socialserviceintegration">
+            <actionMapping>http://pk.edu.pl/ias/socialserviceintegration/action/getItemsPreviews</actionMapping>
+            <outputActionMapping>http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/getItemsPreviewsResponse</outputActionMapping>
+            <faultActionMapping faultName="error">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/getItemsPreviews/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="TokenExpiredFault">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/getItemsPreviews/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="TokenExpiredFault_Exception">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/getItemsPreviews/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="tokenExpiredFault">urn:getItemsPreviewstokenExpiredFault</faultActionMapping>
+        </operation>
+        <operation name="accounts" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://pk.edu.pl/ias/socialserviceintegration">
+            <actionMapping>http://pk.edu.pl/ias/socialserviceintegration/action/accounts</actionMapping>
+            <outputActionMapping>http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/accountsResponse</outputActionMapping>
+            <faultActionMapping faultName="error">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/accounts/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="TokenExpiredFault">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/accounts/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="TokenExpiredFault_Exception">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/accounts/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="tokenExpiredFault">urn:accountstokenExpiredFault</faultActionMapping>
+        </operation>
+        <operation name="login" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://pk.edu.pl/ias/socialserviceintegration">
+            <actionMapping>http://pk.edu.pl/ias/socialserviceintegration/action/login</actionMapping>
+            <outputActionMapping>http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/loginResponse</outputActionMapping>
+            <faultActionMapping faultName="userNotExist">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/login/Fault/userNotExist</faultActionMapping>
+            <faultActionMapping faultName="UserNotExistFault">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/login/Fault/userNotExist</faultActionMapping>
+            <faultActionMapping faultName="UserNotExistFault_Exception">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/login/Fault/userNotExist</faultActionMapping>
+            <faultActionMapping faultName="userNotExistFault">urn:loginuserNotExistFault</faultActionMapping>
+            <faultActionMapping faultName="incorrectPassword">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/login/Fault/incorrectPassword</faultActionMapping>
+            <faultActionMapping faultName="IncorrectPasswordFault">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/login/Fault/incorrectPassword</faultActionMapping>
+            <faultActionMapping faultName="IncorrectPasswordFault_Exception">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/login/Fault/incorrectPassword</faultActionMapping>
+            <faultActionMapping faultName="incorrectPasswordFault">urn:loginincorrectPasswordFault</faultActionMapping>
+        </operation>
+        <operation name="publish" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://pk.edu.pl/ias/socialserviceintegration">
+            <actionMapping>http://pk.edu.pl/ias/socialserviceintegration/action/publish</actionMapping>
+            <outputActionMapping>http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/publishResponse</outputActionMapping>
+            <faultActionMapping faultName="error">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/publish/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="TokenExpiredFault">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/publish/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="TokenExpiredFault_Exception">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/publish/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="tokenExpiredFault">urn:publishtokenExpiredFault</faultActionMapping>
+        </operation>
+        <operation name="remove" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://pk.edu.pl/ias/socialserviceintegration">
+            <actionMapping>http://pk.edu.pl/ias/socialserviceintegration/action/remove</actionMapping>
+            <outputActionMapping>http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/removeResponse</outputActionMapping>
+            <faultActionMapping faultName="error">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/remove/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="TokenExpiredFault">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/remove/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="TokenExpiredFault_Exception">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/remove/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="tokenExpiredFault">urn:removetokenExpiredFault</faultActionMapping>
+        </operation>
+        <operation name="getItems" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://pk.edu.pl/ias/socialserviceintegration">
+            <actionMapping>http://pk.edu.pl/ias/socialserviceintegration/action/getItems</actionMapping>
+            <outputActionMapping>http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/getItemsResponse</outputActionMapping>
+            <faultActionMapping faultName="error">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/getItems/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="TokenExpiredFault">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/getItems/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="TokenExpiredFault_Exception">http://pk.edu.pl/ias/socialserviceintegration/SocialServiceIntegration/getItems/Fault/error</faultActionMapping>
+            <faultActionMapping faultName="tokenExpiredFault">urn:getItemstokenExpiredFault</faultActionMapping>
+        </operation>
+    </service>
+</serviceGroup>

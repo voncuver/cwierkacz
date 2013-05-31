@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
-import pl.edu.pk.ias.types.Item;
+import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub.Item;
 
 import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.dao.TweetDao;
@@ -173,7 +173,7 @@ public class Message implements Comparable<Message>
         Message tweet = new Message();
         Account account = new Account(item.getId().getLss(), item.getId().getLss(), accountType);
         tweet.setAccount(account);
-        tweet.setCreatedDate(DateUtil.convertDateUTC(item.getDate())); //TODO jak już będzie data w itemie to tutaj dodac!!
+        tweet.setCreatedDate(DateUtil.convertDateUTC(item.getDate().getTime())); //TODO jak już będzie data w itemie to tutaj dodac!!
         tweet.setDeleted(false);
         tweet.setId(Long.parseLong(item.getId().getId()));
         tweet.setImagePath(pathToUrl(path));

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="SocialServiceIntegration" targetNamespace="http://pk.edu.pl/ias/socialserviceintegration" xmlns:schema="http://pk.edu.pl/ias/types" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://pk.edu.pl/ias/socialserviceintegration" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+<wsdl:documentation> 
+        Interfejs integrujący kilka serwisów społecznościowych 
+    </wsdl:documentation>
+  <wsdl:types>
+    <xs:schema xmlns:schema="http://pk.edu.pl/ias/types" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://pk.edu.pl/ias/socialserviceintegration" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"> 
+            <xs:import namespace="http://pk.edu.pl/ias/types" schemaLocation="types.xsd"/> 
+        </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="logoutResponse">
+    <wsdl:part name="parameters" element="schema:logoutResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="publishRequest">
+    <wsdl:part name="parameters" element="schema:publishRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="userNotExistFault">
+    <wsdl:part name="error" element="schema:userNotExistFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getItemsPreviewsRequest">
+    <wsdl:part name="parameters" element="schema:getItemsPreviewsRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="loginRequest">
+    <wsdl:part name="parameters" element="schema:loginRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getItemsRequest">
+    <wsdl:part name="parameters" element="schema:getItemsRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="incorrectPasswordFault">
+    <wsdl:part name="error" element="schema:incorrectPasswordFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="accountsResponse">
+    <wsdl:part name="parameters" element="schema:accountsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getItemsPreviewsResponse">
+    <wsdl:part name="parameters" element="schema:getItemsPreviewsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="logoutRequest">
+    <wsdl:part name="parameters" element="schema:logoutRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeRequest">
+    <wsdl:part name="parameters" element="schema:removeRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="tokenExpiredFault">
+    <wsdl:part name="error" element="schema:tokenExpiredFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="loginResponse">
+    <wsdl:part name="parameters" element="schema:loginResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="publishResponse">
+    <wsdl:part name="parameters" element="schema:publishResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeResponse">
+    <wsdl:part name="parameters" element="schema:removeResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="accountsRequest">
+    <wsdl:part name="parameters" element="schema:accountsRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getItemsResponse">
+    <wsdl:part name="parameters" element="schema:getItemsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="SocialServiceIntegration">
+<wsdl:documentation>Operacje pozwalające na integrację pomiędzy serwisami społecznościowymi</wsdl:documentation>
+    <wsdl:operation name="login">
+<wsdl:documentation>Logowanie do aplikacji</wsdl:documentation>
+      <wsdl:input message="tns:loginRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:loginResponse">
+    </wsdl:output>
+      <wsdl:fault name="userNotExist" message="tns:userNotExistFault">
+    </wsdl:fault>
+      <wsdl:fault name="incorrectPassword" message="tns:incorrectPasswordFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="logout">
+<wsdl:documentation>Wylogowanie z aplikacji</wsdl:documentation>
+      <wsdl:input message="tns:logoutRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:logoutResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="accounts">
+<wsdl:documentation>Pobranie list kont serwisów społecznościowych, dla zalogowanego użytkownika</wsdl:documentation>
+      <wsdl:input message="tns:accountsRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:accountsResponse">
+    </wsdl:output>
+      <wsdl:fault name="error" message="tns:tokenExpiredFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="publish">
+<wsdl:documentation>Publikacja treści w serwisie społecznościowym</wsdl:documentation>
+      <wsdl:input message="tns:publishRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:publishResponse">
+    </wsdl:output>
+      <wsdl:fault name="error" message="tns:tokenExpiredFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getItemsPreviews">
+<wsdl:documentation>Pobranie listy dostępnych elementów ( ID + Name). Element jest bytem różniącym się dla każdego serwisu społecznościowego</wsdl:documentation>
+      <wsdl:input message="tns:getItemsPreviewsRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:getItemsPreviewsResponse">
+    </wsdl:output>
+      <wsdl:fault name="error" message="tns:tokenExpiredFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getItems">
+<wsdl:documentation>Pobranie kompletnych elementów. Element jest bytem różniącym się dla każdego serwisu społecznościowego</wsdl:documentation>
+      <wsdl:input message="tns:getItemsRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:getItemsResponse">
+    </wsdl:output>
+      <wsdl:fault name="error" message="tns:tokenExpiredFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="remove">
+<wsdl:documentation>Usunięcie wybranych elementów</wsdl:documentation>
+      <wsdl:input message="tns:removeRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:removeResponse">
+    </wsdl:output>
+      <wsdl:fault name="error" message="tns:tokenExpiredFault">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SocialServiceIntegrationBinding" type="tns:SocialServiceIntegration">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="login">
+      <soap:operation soapAction="http://pk.edu.pl/ias/socialserviceintegration/action/login"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="userNotExist">
+        <soap:fault name="userNotExist" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="incorrectPassword">
+        <soap:fault name="incorrectPassword" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="logout">
+      <soap:operation soapAction="http://pk.edu.pl/ias/socialserviceintegration/action/logout"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="accounts">
+      <soap:operation soapAction="http://pk.edu.pl/ias/socialserviceintegration/action/accounts"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="error">
+        <soap:fault name="error" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="publish">
+      <soap:operation soapAction="http://pk.edu.pl/ias/socialserviceintegration/action/publish"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="error">
+        <soap:fault name="error" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getItemsPreviews">
+      <soap:operation soapAction="http://pk.edu.pl/ias/socialserviceintegration/action/getItemsPreviews"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="error">
+        <soap:fault name="error" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getItems">
+      <soap:operation soapAction="http://pk.edu.pl/ias/socialserviceintegration/action/getItems"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="error">
+        <soap:fault name="error" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="remove">
+      <soap:operation soapAction="http://pk.edu.pl/ias/socialserviceintegration/action/remove"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="error">
+        <soap:fault name="error" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SocialServiceIntegration">
+    <wsdl:port name="SocialServiceIntegrationEndpoint" binding="tns:SocialServiceIntegrationBinding">
+      <soap:address location="http://cwierkacz.tk:8080/cwierkacz-0.0.1-SNAPSHOT/Integration"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

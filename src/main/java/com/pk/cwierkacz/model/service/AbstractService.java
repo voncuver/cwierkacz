@@ -64,13 +64,14 @@ public class AbstractService< T >
     @SuppressWarnings( "rawtypes" )
     public Criteria getCriteria( Class className ) {
 
-        Session session = sessionFactory.getCurrentSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
         return session.createCriteria(className);
     }
 
     public void commit( ) {
         sessionFactory.getCurrentSession().getTransaction().commit();
+        sessionFactory.getCurrentSession().close();
     }
 
 }
