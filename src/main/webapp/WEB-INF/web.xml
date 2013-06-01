@@ -9,9 +9,9 @@
     <servlet-name>EntryServlet</servlet-name>
     <url-pattern>*.do</url-pattern>
   </servlet-mapping>
-  <listener>
-    <listener-class>com.pk.cwierkacz.appBuilder.ContextBuilder</listener-class>
-  </listener>
+<!--   <listener> -->
+<!--     <listener-class>com.pk.cwierkacz.appBuilder.ContextBuilder</listener-class> -->
+<!--   </listener> -->
   <servlet>
     <servlet-name>ErrorServlet</servlet-name>
     <servlet-class>com.pk.cwierkacz.controller.ErrorServlet</servlet-class>

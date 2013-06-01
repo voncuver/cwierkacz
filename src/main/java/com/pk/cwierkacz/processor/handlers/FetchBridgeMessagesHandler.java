@@ -1,10 +1,11 @@
 package com.pk.cwierkacz.processor.handlers;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.activation.DataHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +20,6 @@ import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.processor.handlers.helpers.FetchResult;
 import com.pk.cwierkacz.processor.handlers.helpers.ImageSaveException;
 import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 abstract public class FetchBridgeMessagesHandler extends AbstractHandler
 {
@@ -42,20 +41,19 @@ abstract public class FetchBridgeMessagesHandler extends AbstractHandler
             if ( path == null ) {
                 byte[] bytes = null;
                 if ( item.getFile() != null ) {
+                    byte[] file = null;
+                    DataHandler handler = item.getFile();
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
                     try {
-                        bytes = Base64.decode(new BufferedReader(new InputStreamReader(item.getFile()
-                                                                                           .getInputStream())));
-                    }
-                    catch ( Base64DecodingException e ) {
-                        LOGGER.error(getError(e));
-                        errorBuilder = appendError(errorBuilder, "Błąd dekowania pliku z base64 " +
-                                                                 item.getId().getLss() +
-                                                                 ".", e);
+                        handler.writeTo(output);
+                        file = output.toByteArray();
                     }
                     catch ( IOException e ) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
+
+                    org.apache.commons.codec.binary.Base64.decodeBase64(file);
+
                 }
 
                 try {
