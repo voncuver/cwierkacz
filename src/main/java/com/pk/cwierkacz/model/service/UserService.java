@@ -1,9 +1,10 @@
 package com.pk.cwierkacz.model.service;
 
+import java.util.Arrays;
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
 import com.pk.cwierkacz.model.dao.SessionDao;
@@ -15,35 +16,31 @@ public class UserService extends AbstractService<UserDao>
         super(sessionFactory);
     }
 
-    @SuppressWarnings( "unchecked" )
     public List<UserDao> getAllUsers( ) {
-        Criteria criteria = getCriteria(UserDao.class);
-        List<UserDao> userDao = criteria.list();
-        commit();
-        return userDao;
+        Criterion[] criteria = new Criterion[] {};
+        List<UserDao> result = getListByCriteria(Arrays.asList(criteria), UserDao.class);
+
+        return result;
     }
 
-    @SuppressWarnings( "unchecked" )
     public List<UserDao> getActualUsers( ) {
-        Criteria criteria = getCriteria(UserDao.class).add(Restrictions.eq("isDeleted", false));
-        List<UserDao> userDao = criteria.list();
-        commit();
-        return userDao;
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("isDeleted", false)};
+        List<UserDao> result = getListByCriteria(Arrays.asList(criteria), UserDao.class);
+
+        return result;
     }
 
     public UserDao getByUserName( String name ) {
-        Criteria criteria = getCriteria(UserDao.class);
-        criteria.add(Restrictions.eq("name", name));
-        UserDao userDao = (UserDao) criteria.uniqueResult();
-        commit();
-        return userDao;
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("name", name)};
+        UserDao result = getUniqueByCriteria(Arrays.asList(criteria), UserDao.class);
+
+        return result;
     }
 
     public UserDao getBySessionId( SessionDao sessionDao ) {
-        Criteria criteria = getCriteria(UserDao.class);
-        criteria.add(Restrictions.eq("session", sessionDao));
-        UserDao userDao = (UserDao) criteria.uniqueResult();
-        commit();
-        return userDao;
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("session", sessionDao)};
+        UserDao result = getUniqueByCriteria(Arrays.asList(criteria), UserDao.class);
+
+        return result;
     }
 }

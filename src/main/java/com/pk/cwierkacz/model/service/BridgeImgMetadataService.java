@@ -1,7 +1,9 @@
 package com.pk.cwierkacz.model.service;
 
-import org.hibernate.Criteria;
+import java.util.Arrays;
+
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 
@@ -15,13 +17,12 @@ public class BridgeImgMetadataService extends AbstractService<BridgeImgMetadataD
     }
 
     public BridgeImgMetadataDao getBridgeImgMetadata( String id, String lss, AccountType accountType ) {
-        Criteria criteria = getCriteria(BridgeImgMetadataDao.class);
-        criteria.add(Restrictions.eq("bridgeId", id));
-        criteria.add(Restrictions.eq("lss", lss));
-        criteria.add(Restrictions.eq("accountType", accountType));
-        BridgeImgMetadataDao dao = (BridgeImgMetadataDao) criteria.uniqueResult();
-        commit();
-        return dao;
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("bridgeId", id),
+                                                Restrictions.eq("lss", lss),
+                                                Restrictions.eq("accountType", accountType)};
+        BridgeImgMetadataDao result = getUniqueByCriteria(Arrays.asList(criteria), BridgeImgMetadataDao.class);
+
+        return result;
     }
 
     public String getPathAndUpdate( String bridgeId, String lss, AccountType accountType ) {

@@ -110,6 +110,8 @@ public class RequestBuilderTest
         params.put("accounttype[]",
                    new String[] {AccountType.TWITTER.getType(), AccountType.TWITTER.getType()});
 
+        params.put("accountlogins[]", new String[] {"one", "two"});
+
         GetMessagesRequest request = RequestBuilder.buildRequest(params, null);
 
         assertEquals(Action.GETMESSAGES, request.getAction());

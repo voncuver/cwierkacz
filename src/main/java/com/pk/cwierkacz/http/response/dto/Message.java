@@ -31,9 +31,9 @@ public class Message implements Comparable<Message>
 
     private boolean isDeleted;
 
-    private Long nbOfRetweets;
+    private int nbOfRetweets;
 
-    private Long nbOfReplies;
+    private int nbOfReplies;
 
     private DateTime createdDate;
 
@@ -85,20 +85,20 @@ public class Message implements Comparable<Message>
         this.retweetedId = retweetedId;
     }
 
-    public Long getNbOfRetweets( ) {
+    public int getNbOfRetweets( ) {
         return nbOfRetweets;
     }
 
-    public void setNbOfRetweets( Long nbOfRetweets ) {
-        this.nbOfRetweets = nbOfRetweets;
+    public void setNbOfRetweets( int i ) {
+        this.nbOfRetweets = i;
     }
 
-    public Long getNbOfReplies( ) {
+    public int getNbOfReplies( ) {
         return nbOfReplies;
     }
 
-    public void setNbOfReplies( Long nbOfReplies ) {
-        this.nbOfReplies = nbOfReplies;
+    public void setNbOfReplies( int i ) {
+        this.nbOfReplies = i;
     }
 
     public Account getAccount( ) {
@@ -180,8 +180,8 @@ public class Message implements Comparable<Message>
         tweet.setInReplyToId(null);
         tweet.setRetweetedId(null);
         tweet.setText(item.getMessage());
-        tweet.setNbOfReplies(0L);
-        tweet.setNbOfRetweets(0L);
+        tweet.setNbOfReplies(0);
+        tweet.setNbOfRetweets(0);
 
         return tweet;
 

@@ -40,7 +40,7 @@ public class LogoutHandler extends AbstractHandler
 
         userDao.setSession(null);
         userService.saveOrUpdate(userDao);
-        sessionService.deleteSession(sessionDao);
+        sessionService.delete(sessionDao);
 
         appData.setResponse(ResponseImpl.create(Status.OK, "Pomyślnie wylogowano użytkownika.", -1));
     }

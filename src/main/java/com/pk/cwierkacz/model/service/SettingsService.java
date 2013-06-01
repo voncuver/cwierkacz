@@ -1,9 +1,10 @@
 package com.pk.cwierkacz.model.service;
 
 import java.io.File;
+import java.util.Arrays;
 
-import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
 import com.pk.cwierkacz.model.dao.SettingsDao;
@@ -16,11 +17,10 @@ public class SettingsService extends AbstractService<SettingsDao>
     }
 
     public SettingsDao getConsumerSettings( ) {
-        Criteria criteria = getCriteria(SettingsDao.class);
-        criteria.add(Restrictions.eq("settings", "consumer"));
-        SettingsDao dao = (SettingsDao) criteria.uniqueResult();
-        commit();
-        return dao;
+
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("settings", "consumer")};
+        SettingsDao result = getUniqueByCriteria(Arrays.asList(criteria), SettingsDao.class);
+        return result;
     }
 
     public void setConsumerSettings( String consumerKey, String consumerSecret ) {
@@ -32,11 +32,10 @@ public class SettingsService extends AbstractService<SettingsDao>
     }
 
     public SettingsDao getImageSettings( ) {
-        Criteria criteria = getCriteria(SettingsDao.class);
-        criteria.add(Restrictions.eq("settings", "image"));
-        SettingsDao dao = (SettingsDao) criteria.uniqueResult();
-        commit();
-        return dao;
+
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("settings", "image")};
+        SettingsDao result = getUniqueByCriteria(Arrays.asList(criteria), SettingsDao.class);
+        return result;
     }
 
     public void setImageSettings( String relativeImgPath ) {
@@ -47,18 +46,17 @@ public class SettingsService extends AbstractService<SettingsDao>
     }
 
     public SettingsDao getContainerSettings( ) {
-        Criteria criteria = getCriteria(SettingsDao.class);
-        criteria.add(Restrictions.eq("settings", "container"));
-        SettingsDao dao = (SettingsDao) criteria.uniqueResult();
-        commit();
-        return dao;
+
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("settings", "container")};
+        SettingsDao result = getUniqueByCriteria(Arrays.asList(criteria), SettingsDao.class);
+        return result;
     }
 
     public String getAppAddress( ) {
-        Criteria criteria = getCriteria(SettingsDao.class);
-        criteria.add(Restrictions.eq("settings", "www"));
-        SettingsDao dao = (SettingsDao) criteria.uniqueResult();
-        commit();
+
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("settings", "www")};
+        SettingsDao dao = getUniqueByCriteria(Arrays.asList(criteria), SettingsDao.class);
+
         if ( dao == null )
             return null;
         else if ( dao.getAppAddress().endsWith("/") )

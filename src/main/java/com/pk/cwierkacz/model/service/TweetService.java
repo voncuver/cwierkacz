@@ -1,12 +1,12 @@
 package com.pk.cwierkacz.model.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 
@@ -20,50 +20,38 @@ public class TweetService extends AbstractService<TweetDao>
         super(sessionFactory);
     }
 
-    @SuppressWarnings( "unchecked" )
     public List<TweetDao> getTweets( ) {
-        Criteria criteria = getCriteria(TweetDao.class);
-        List<TweetDao> result = criteria.list();
-        commit();
+        Criterion[] criteria = new Criterion[] {};
+        List<TweetDao> result = getListByCriteria(Arrays.asList(criteria), TweetDao.class);
         return result;
     }
 
-    @SuppressWarnings( "unchecked" )
     public List<TweetDao> getActualTweets( ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("isDeleted", false));
-        List<TweetDao> result = criteria.list();
-        commit();
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("isDeleted", false)};
+        List<TweetDao> result = getListByCriteria(Arrays.asList(criteria), TweetDao.class);
         return result;
     }
 
     public TweetDao getTweetById( Long id ) {
-        Criteria criteria = getCriteria(TweetDao.class);
-        criteria.add(Restrictions.eq("Id", id));
-        TweetDao result = (TweetDao) criteria.uniqueResult();
-        commit();
+
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("Id", id)};
+        TweetDao result = getUniqueByCriteria(Arrays.asList(criteria), TweetDao.class);
         return result;
     }
 
     public TweetDao getByExternalId( Long id ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("externalId", id));
-        TweetDao result = (TweetDao) criteria.uniqueResult();
-        commit();
+
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("externalId", id)};
+        TweetDao result = getUniqueByCriteria(Arrays.asList(criteria), TweetDao.class);
         return result;
     }
 
-    public TweetDao getById( Long id ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("Id", id));
-        TweetDao result = (TweetDao) criteria.uniqueResult();
-        commit();
-        return result;
-    }
-
-    @SuppressWarnings( "unchecked" )
     public List<TweetDao> getByIds( List<Long> ids ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.in("Id", ids))
-                                                       .addOrder(Order.desc("createdDate"));
-        List<TweetDao> result = criteria.list();
-        commit();
+
+        Criterion[] criteria = new Criterion[] {Restrictions.in("Id", ids)};
+        List<TweetDao> result = getListByCriteria(Arrays.asList(criteria),
+                                                  TweetDao.class,
+                                                  Order.desc("createdDate"));
         return result;
     }
 
@@ -75,30 +63,16 @@ public class TweetService extends AbstractService<TweetDao>
             return null;
     }
 
-    @SuppressWarnings( "unchecked" )
     public List<TweetDao> getActualTweetForAccount( TwitterAccountDao account,
                                                     DateTime since,
                                                     DateTime to,
                                                     Integer maxResult ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("creator", account))
-                                                       .add(Restrictions.eq("isDeleted", false))
-                                                       .addOrder(Order.desc("createdDate"));
 
-        if ( maxResult != null && maxResult > 0 )
-            criteria = criteria.setMaxResults(maxResult);
+        List<TweetDao> result = getActualTweetForAccounts(Arrays.asList(account), since, to, maxResult);
 
-        if ( since != null )
-            criteria = criteria.add(Restrictions.ge("createdDate", since));
-
-        if ( to != null )
-            criteria = criteria.add(Restrictions.lt("createdDate", to));
-
-        List<TweetDao> result = criteria.list();
-        commit();
         return result;
     }
 
-    @SuppressWarnings( "unchecked" )
     public List<TweetDao> getActualTweetForAccounts( List<TwitterAccountDao> accounts,
                                                      DateTime since,
                                                      DateTime to,
@@ -108,40 +82,39 @@ public class TweetService extends AbstractService<TweetDao>
             return new ArrayList<TweetDao>();
         }
 
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.in("creator", accounts))
-                                                       .add(Restrictions.eq("isDeleted", false))
-                                                       .addOrder(Order.desc("createdDate"));
+        List<Criterion> criteria = new ArrayList<>();
+        criteria.add(Restrictions.eq("creator", accounts));
+        criteria.add(Restrictions.eq("isDeleted", false));
 
-        if ( maxResult != null && maxResult > 0 )
-            criteria = criteria.setMaxResults(maxResult);
         if ( since != null )
-            criteria = criteria.add(Restrictions.ge("createdDate", since));
+            criteria.add(Restrictions.ge("createdDate", since));
 
         if ( to != null )
-            criteria = criteria.add(Restrictions.lt("createdDate", to));
+            criteria.add(Restrictions.lt("createdDate", to));
 
-        List<TweetDao> result = criteria.list();
-        commit();
+        List<TweetDao> result = getListByCriteria(criteria, TweetDao.class, Order.desc("createdDate"));
+
+        if ( maxResult != null && maxResult > 0 )
+            result = result.subList(0, maxResult);
         return result;
     }
 
-    public Long countActualRetweets( TweetDao retweeted ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("retweeted", retweeted))
-                                                       .add(Restrictions.eq("isDeleted", false));
+    public int countActualRetweets( TweetDao retweeted ) {
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("retweeted", retweeted),
+                                                Restrictions.eq("isDeleted", false)};
+        List<TweetDao> result = getListByCriteria(Arrays.asList(criteria), TweetDao.class);
 
-        Long c = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
-        commit();
-        return c;
+        return result.size();
     }
 
-    @SuppressWarnings( "unchecked" )
     public List<TweetDao> getActualRetweets( TweetDao retweeted ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("retweeted", retweeted))
-                                                       .add(Restrictions.eq("isDeleted", false))
-                                                       .addOrder(Order.desc("createdDate"));
 
-        List<TweetDao> result = criteria.list();
-        commit();
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("retweeted", retweeted),
+                                                Restrictions.eq("isDeleted", false)};
+        List<TweetDao> result = getListByCriteria(Arrays.asList(criteria),
+                                                  TweetDao.class,
+                                                  Order.desc("createdDate"));
+
         return result;
     }
 
@@ -153,23 +126,23 @@ public class TweetService extends AbstractService<TweetDao>
             return null;
     }
 
-    public Long countActualReplies( TweetDao retweeted ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("inReplyTo", retweeted))
-                                                       .add(Restrictions.eq("isDeleted", false));
+    public int countActualReplies( TweetDao retweeted ) {
 
-        Long c = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
-        commit();
-        return c;
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("inReplyTo", retweeted),
+                                                Restrictions.eq("isDeleted", false)};
+        List<TweetDao> result = getListByCriteria(Arrays.asList(criteria), TweetDao.class);
+
+        return result.size();
     }
 
-    @SuppressWarnings( "unchecked" )
     public List<TweetDao> getActualReplies( TweetDao inReplyTo ) {
-        Criteria criteria = getCriteria(TweetDao.class).add(Restrictions.eq("inReplyTo", inReplyTo))
-                                                       .add(Restrictions.eq("isDeleted", false))
-                                                       .addOrder(Order.desc("createdDate"));
 
-        List<TweetDao> result = criteria.list();
-        commit();
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("inReplyTo", inReplyTo),
+                                                Restrictions.eq("isDeleted", false)};
+        List<TweetDao> result = getListByCriteria(Arrays.asList(criteria),
+                                                  TweetDao.class,
+                                                  Order.desc("createdDate"));
+
         return result;
     }
 

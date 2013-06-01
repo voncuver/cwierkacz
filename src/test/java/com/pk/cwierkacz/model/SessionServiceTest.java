@@ -50,7 +50,7 @@ public class SessionServiceTest
         userDao.setSession(null);
 
         userService.saveOrUpdate(userDao);
-        sessionService.deleteSession(sessionDao);
+        sessionService.delete(sessionDao);
 
         assertEquals(null, userDao.getSession());
     }

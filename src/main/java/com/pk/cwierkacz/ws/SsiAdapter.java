@@ -9,7 +9,6 @@ import java.util.List;
 import javax.activation.DataHandler;
 
 import org.apache.axiom.attachments.ByteArrayDataSource;
-import org.apache.axis2.AxisFault;
 
 import pl.edu.pk.ias.socialserviceintegration.IncorrectPasswordFault;
 import pl.edu.pk.ias.socialserviceintegration.TokenExpiredFault;
@@ -49,9 +48,9 @@ import com.pk.cwierkacz.model.AccountType;
 
 public class SsiAdapter
 {
-    private SocialServiceIntegrationStub facebookService;
-    private SocialServiceIntegrationStub flickrService;
-    private SocialServiceIntegrationStub twitpicService;
+    private final SocialServiceIntegrationStub facebookService;
+    private final SocialServiceIntegrationStub flickrService;
+    private final SocialServiceIntegrationStub twitpicService;
 
     private static class InstanceHolder
     {
@@ -63,15 +62,11 @@ public class SsiAdapter
     }
 
     private SsiAdapter() {
-        try {
-            facebookService = new SocialServiceIntegrationStub("");
-            flickrService = new SocialServiceIntegrationStub("");
-            twitpicService = new SocialServiceIntegrationStub("");
-        }
-        catch ( AxisFault e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        //TODO: after some working service
+
+        facebookService = null;//= new SocialServiceIntegrationStub("");
+        flickrService = null;// = new SocialServiceIntegrationStub("");
+        twitpicService = null;// = new SocialServiceIntegrationStub("");
     }
 
     public Result login( String login, String password, AccountType accountType ) {

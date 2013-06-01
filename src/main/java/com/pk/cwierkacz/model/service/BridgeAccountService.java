@@ -1,9 +1,10 @@
 package com.pk.cwierkacz.model.service;
 
+import java.util.Arrays;
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
 import com.pk.cwierkacz.model.AccountType;
@@ -17,22 +18,21 @@ public class BridgeAccountService extends AbstractService<BridgeAccountDao>
         super(sessionFactory);
     }
 
-    @SuppressWarnings( "unchecked" )
     public List<BridgeAccountDao> getAccountsForUser( UserDao user ) {
-        Criteria criteria = getCriteria(BridgeAccountService.class);
-        criteria.add(Restrictions.eq("user", user));
-        List<BridgeAccountDao> result = criteria.list();
-        commit();
+
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("user", user)};
+
+        List<BridgeAccountDao> result = getListByCriteria(Arrays.asList(criteria), BridgeAccountDao.class);
+
         return result;
     }
 
     public BridgeAccountDao getAccountByName( String name, AccountType type ) {
-        Criteria criteria = getCriteria(BridgeAccountDao.class);
-        criteria.add(Restrictions.eq("name", name));
-        criteria.add(Restrictions.eq("accountType", type));
-        BridgeAccountDao result = (BridgeAccountDao) criteria.uniqueResult();
-        commit();
+
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("accountType", type),
+                                                Restrictions.eq("name", name)};
+        BridgeAccountDao result = getUniqueByCriteria(Arrays.asList(criteria), BridgeAccountDao.class);
+
         return result;
     }
-
 }
