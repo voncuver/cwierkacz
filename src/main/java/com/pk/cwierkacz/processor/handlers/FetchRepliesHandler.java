@@ -19,6 +19,7 @@ import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
+import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
 import com.pk.cwierkacz.twitter.TweetsResult;
 import com.pk.cwierkacz.twitter.TwitterAccount;
@@ -32,11 +33,14 @@ public class FetchRepliesHandler extends AbstractHandler
 
     private final TweetService tweetService;
 
+    private final TwitterAccountService accountService;
+
     private final ImageUtil imageUtil;
 
     public FetchRepliesHandler() {
         super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
+        this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
         this.imageUtil = new ImageUtil();
     }
 
@@ -74,12 +78,16 @@ public class FetchRepliesHandler extends AbstractHandler
                 account = TwitterAccountMap.getTwitterAccount(accountDao);
                 TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
                 for ( TweetDao tweet : result.getReadyTweets() ) {
+                    if ( tweet.getCreator().getId() == null )
+                        accountService.save(tweet.getCreator());
                     tweetService.save(imageUtil.tweetWithImg(tweet));
                 }
 
                 do {
                     result = result.fulfilledNoReady(account);
                     for ( TweetDao tweet : result.getReadyTweets() ) {
+                        if ( tweet.getCreator().getId() == null )
+                            accountService.save(tweet.getCreator());
                         tweetService.save(imageUtil.tweetWithImg(tweet));
                     }
                 }

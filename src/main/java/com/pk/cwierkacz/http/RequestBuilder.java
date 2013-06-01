@@ -201,10 +201,13 @@ public class RequestBuilder
 
         AccountType accountType = AccountType.getAccountType(accontTypeString);
 
+        List<String> accounts = null;
+        if ( params.get(ACCOUNTLOGINS) != null )
+            accounts = Arrays.asList(params.get(ACCOUNTLOGINS));
         return request = RequestImpl.create(request)
                                     .buildFetchByIdRequest(idsLong)
                                     .withAccountType(accountType)
-                                    .withAccountLogins(Arrays.asList(params.get(ACCOUNTLOGINS)));
+                                    .withAccountLogins(accounts);
     }
 
     private static Request createFetchRepliesRequest( Map<String, String[]> params, Request request ) {
