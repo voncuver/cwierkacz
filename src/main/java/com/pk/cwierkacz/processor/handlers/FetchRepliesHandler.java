@@ -83,7 +83,7 @@ public class FetchRepliesHandler extends AbstractHandler
                         tweetService.save(imageUtil.tweetWithImg(tweet));
                     }
                 }
-                while ( result.allReady() );
+                while ( !result.allReady() );
 
                 mergedTweets = tweetService.getActualReplies(replyTweet);
             }

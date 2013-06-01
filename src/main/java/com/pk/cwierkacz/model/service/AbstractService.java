@@ -103,6 +103,13 @@ public class AbstractService< T >
     }
 
     public List<T> getListByCriteria( List<Criterion> restrictions, Class className, Order order ) {
+        return getListByCriteria(restrictions, className, order, null);
+    }
+
+    public List<T> getListByCriteria( List<Criterion> restrictions,
+                                      Class className,
+                                      Order order,
+                                      Integer maxResults ) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         Criteria criteria = session.createCriteria(className);
@@ -112,6 +119,10 @@ public class AbstractService< T >
 
         if ( order != null ) {
             criteria.addOrder(order);
+        }
+
+        if ( maxResults != null ) {
+            criteria.setMaxResults(maxResults);
         }
 
         @SuppressWarnings( "unchecked" )

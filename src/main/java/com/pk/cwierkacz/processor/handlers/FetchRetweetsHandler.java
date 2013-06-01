@@ -91,7 +91,7 @@ public class FetchRetweetsHandler extends AbstractHandler
                             tweetService.save(tweetWithData);
                         }
                     }
-                    while ( result.allReady() );
+                    while ( !result.allReady() );
 
                     mergedTweets = tweetService.getActualRetweets(retweeted);
                 }

@@ -83,7 +83,7 @@ public class TweetService extends AbstractService<TweetDao>
         }
 
         List<Criterion> criteria = new ArrayList<>();
-        criteria.add(Restrictions.eq("creator", accounts));
+        criteria.add(Restrictions.in("creator", accounts));
         criteria.add(Restrictions.eq("isDeleted", false));
 
         if ( since != null )
@@ -92,10 +92,10 @@ public class TweetService extends AbstractService<TweetDao>
         if ( to != null )
             criteria.add(Restrictions.lt("createdDate", to));
 
-        List<TweetDao> result = getListByCriteria(criteria, TweetDao.class, Order.desc("createdDate"));
-
-        if ( maxResult != null && maxResult > 0 )
-            result = result.subList(0, maxResult);
+        List<TweetDao> result = getListByCriteria(criteria,
+                                                  TweetDao.class,
+                                                  Order.desc("createdDate"),
+                                                  maxResult);
         return result;
     }
 

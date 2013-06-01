@@ -134,7 +134,7 @@ public class FetchMessagesHandler extends FetchBridgeMessagesHandler
                                         tweetService.save(imageUtil.tweetWithImg(tweet));
                                     }
                                 }
-                                while ( result.allReady() );
+                                while ( !result.allReady() );
 
                             }
                         }
