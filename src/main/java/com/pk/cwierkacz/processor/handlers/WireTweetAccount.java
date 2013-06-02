@@ -79,11 +79,19 @@ public class WireTweetAccount extends AbstractHandler
             return response;
         }
         List<String> accountsName = new ArrayList<>();
+        TwitterAccountDao accountDaoLinked = null;
         for ( TwitterAccountDao accountDao : user.getAccounts() ) {
             accountsName.add(accountDao.getAccountName());
+            if ( accountDao.getName().equals(accRequest.getLoginTweet()) ) {
+                accountDaoLinked = accountDao;
+            }
         }
 
         if ( accountsName.contains(accRequest.getLoginTweet()) ) {
+            if ( accountDaoLinked != null && accountDaoLinked.isDeleted() ) {
+                accountDaoLinked.setDeleted(false);
+                twitterAccountService.saveOrUpdate(accountDaoLinked);
+            }
             Response response = ResponseImpl.create(Status.OK,
                                                     "Konto już zostało powiązne.",
                                                     accRequest.getTokenId());

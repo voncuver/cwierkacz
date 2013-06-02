@@ -51,9 +51,11 @@ public class ListTweetAccounts extends AbstractHandler
 
         Set<Account> accountsNames = new HashSet<>();
         for ( TwitterAccountDao accountDao : accounts ) {
-            accountsNames.add(new Account(accountDao.getAccountName(),
-                                          accountDao.getName(),
-                                          AccountType.TWITTER));
+            if ( !accountDao.isDeleted() ) {
+                accountsNames.add(new Account(accountDao.getAccountName(),
+                                              accountDao.getName(),
+                                              AccountType.TWITTER));
+            }
         }
 
         Set<BridgeAccountDao> bridgeAccounts = user.getBridgeAccounts();
