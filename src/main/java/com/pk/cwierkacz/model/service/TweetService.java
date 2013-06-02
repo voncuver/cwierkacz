@@ -83,7 +83,7 @@ public class TweetService extends AbstractService<TweetDao>
         }
 
         List<Criterion> criteria = new ArrayList<>();
-        criteria.add(Restrictions.eq("creator", accounts));
+        criteria.add(Restrictions.in("creator", accounts));
         criteria.add(Restrictions.eq("isDeleted", false));
 
         if ( since != null )

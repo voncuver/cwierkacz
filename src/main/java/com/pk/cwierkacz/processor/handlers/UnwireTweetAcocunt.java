@@ -1,5 +1,6 @@
 package com.pk.cwierkacz.processor.handlers;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.pk.cwierkacz.http.Action;
@@ -49,14 +50,22 @@ public class UnwireTweetAcocunt extends AbstractHandler
 
         Set<TwitterAccountDao> accounts = user.getAccounts();
 
+        Set<TwitterAccountDao> accountsNew = new HashSet<>();
         TwitterAccountDao accountDaoToRemove = null;
 
         for ( TwitterAccountDao accountDao : accounts ) {
             if ( accountDao.getAccountName().equals(accRequest.getLoginTweet()) ) {
                 accountDaoToRemove = accountDao;
             }
+            else {
+                accountsNew.add(accountDao);
+            }
         }
-        accountService.delete(accountDaoToRemove);
+
+        accountDaoToRemove.setDeleted(true);
+        user.setAccounts(accountsNew);
+        userService.saveOrUpdate(user);
+        accountService.saveOrUpdate(accountDaoToRemove);
 
         Response response = ResponseImpl.create(Status.OK, "Konto odwiązano.", accRequest.getTokenId());
         appData.setResponse(response);
