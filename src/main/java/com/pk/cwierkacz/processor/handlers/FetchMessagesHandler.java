@@ -126,15 +126,19 @@ public class FetchMessagesHandler extends FetchBridgeMessagesHandler
                                  fetchRequest.getDateTo().isAfter(last.getCratedDate()) ) {
                                 TweetsResult result = account.getTweetsFromMentionsAndUserTimeline(last);
                                 for ( TweetDao tweet : result.getReadyTweets() ) {
+                                    if ( tweet.getCreator().getId() == null )
+                                        accountService.save(tweet.getCreator());
                                     tweetService.save(imageUtil.tweetWithImg(tweet));
                                 }
                                 do {
                                     result = result.fulfilledNoReady(account);
                                     for ( TweetDao tweet : result.getReadyTweets() ) {
+                                        if ( tweet.getCreator().getId() == null )
+                                            accountService.save(tweet.getCreator());
                                         tweetService.save(imageUtil.tweetWithImg(tweet));
                                     }
                                 }
-                                while ( result.allReady() );
+                                while ( !result.allReady() );
 
                             }
                         }

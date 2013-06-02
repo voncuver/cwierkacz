@@ -19,6 +19,7 @@ import com.pk.cwierkacz.model.dao.TweetDao;
 import com.pk.cwierkacz.model.dao.TwitterAccountDao;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.model.service.TweetService;
+import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
 import com.pk.cwierkacz.twitter.TweetsResult;
 import com.pk.cwierkacz.twitter.TwitterAccount;
@@ -34,10 +35,13 @@ public class FetchRetweetsHandler extends AbstractHandler
 
     private final ImageUtil imageUtil;
 
+    private final TwitterAccountService accountService;
+
     public FetchRetweetsHandler() {
         super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.imageUtil = new ImageUtil();
+        this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
     }
 
     @Override
@@ -75,6 +79,8 @@ public class FetchRetweetsHandler extends AbstractHandler
                     TwitterAccount account = TwitterAccountMap.getTwitterAccount(accountDao);
                     TweetsResult result = account.getRetweets(retweeted);
                     for ( TweetDao tweet : result.getReadyTweets() ) {
+                        if ( tweet.getCreator().getId() == null )
+                            accountService.save(tweet.getCreator());
                         tweet.setImagePath(retweeted.getImagePath());
                         tweetService.save(tweet);
                     }
@@ -82,6 +88,8 @@ public class FetchRetweetsHandler extends AbstractHandler
                         result = result.fulfilledNoReady(account);
                         for ( TweetDao tweet : result.getReadyTweets() ) {
                             TweetDao tweetWithData = tweet;
+                            if ( tweet.getCreator().getId() == null )
+                                accountService.save(tweet.getCreator());
                             if ( tweet.getRetweetedExtId() == retweeted.getExternalId() ) {
                                 tweetWithData.setImagePath(retweeted.getImagePath());
                             }
@@ -91,7 +99,7 @@ public class FetchRetweetsHandler extends AbstractHandler
                             tweetService.save(tweetWithData);
                         }
                     }
-                    while ( result.allReady() );
+                    while ( !result.allReady() );
 
                     mergedTweets = tweetService.getActualRetweets(retweeted);
                 }

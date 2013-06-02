@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -61,7 +62,8 @@ public class TweetDao
                 cascade = {CascadeType.ALL} )
     private List<TweetDao> retweets;
 
-    @ManyToOne( fetch = FetchType.EAGER )
+    @ManyToOne( fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST} )
+    @Cascade( {org.hibernate.annotations.CascadeType.PERSIST} )
     @JoinColumn( nullable = false, name = "creator", referencedColumnName = "id" )
     private TwitterAccountDao creator;
 

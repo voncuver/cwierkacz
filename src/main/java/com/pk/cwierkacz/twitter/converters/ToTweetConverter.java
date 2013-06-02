@@ -20,6 +20,8 @@ public class ToTweetConverter implements Function<Status, TweetDao>
 
     private final TweetService tweetService = ServiceRepo.getInstance().getService(TweetService.class);
 
+    private final TwitterAcountConverter twitterAcountConverter = new TwitterAcountConverter();
+
     @Override
     public TweetDao apply( Status status ) {
 
@@ -31,7 +33,7 @@ public class ToTweetConverter implements Function<Status, TweetDao>
 
             tweet.setText(plainText(status));
             tweet.setCratedDate(DateUtil.convertDateUTC(status.getCreatedAt()));
-            tweet.setCreator(accountService.getAccountByExternalId(status.getUser().getId()));
+            tweet.setCreator(twitterAcountConverter.toAccount(status.getUser()));
             tweet.setExternalId(status.getId());
             if ( status.getInReplyToStatusId() > 0 )
                 tweet.setInReplyToExtId(status.getInReplyToStatusId());

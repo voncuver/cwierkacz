@@ -38,7 +38,7 @@ public class TweetsResult
     private final ImmutableList<TweetDao> notReadyTweets;
 
     public boolean allReady( ) {
-        return ( readyTweets.size() == 0 );
+        return ( notReadyTweets.size() == 0 );
     }
 
     public int size( ) {
