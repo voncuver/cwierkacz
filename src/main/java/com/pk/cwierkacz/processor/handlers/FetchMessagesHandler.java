@@ -183,13 +183,17 @@ public class FetchMessagesHandler extends FetchBridgeMessagesHandler
         StringBuilder errorBuilder = new StringBuilder();
 
         List<Message> messages = new ArrayList<Message>();
-        //TODO upewnić sie że można nulle przesyłać w tych datach
+
         Date dateFrom = null;
         Date dateTo = null;
         if ( fetchRequest.getDateFrom() != null )
             dateFrom = fetchRequest.getDateFrom().toDate();
+        else
+            dateFrom = new Date(0L);
         if ( fetchRequest.getDateTo() != null )
             dateTo = fetchRequest.getDateTo().toDate();
+        else
+            dateTo = new Date();
 
         for ( Account account : accounts ) {
             try {
