@@ -73,6 +73,11 @@ public class OAuthAuthentication extends TwitterResolver
         if ( isAuthenticate() && !forceAuthorizations )
             return account;
 
+        if ( pin == null )
+            throw new TwitterAuthenticationException("PIN cannot be null");
+        if ( requestToken == null )
+            throw new TwitterAuthenticationException("Request token cannot be null");
+
         try {
             AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, pin);
             twitter = createTwitter(accessToken);
