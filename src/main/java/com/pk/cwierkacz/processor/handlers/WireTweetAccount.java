@@ -5,9 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +39,6 @@ public class WireTweetAccount extends AbstractHandler
     private final SessionService sessionService;
     private final TwitterAccountService twitterAccountService;
     private final BridgeAccountService bridgeAccountService;
-
-    private final Map<Long, OAuthAuthentication> map = new HashMap<>();
 
     private final HttpClient httpClient;
 
@@ -104,6 +100,15 @@ public class WireTweetAccount extends AbstractHandler
             return response;
         }
 
+        TwitterAccountDao accountDao = twitterAccountService.getAccountByName(accRequest.getLoginTweet());
+        if ( accountDao != null ) {
+            accountDao.addUser(user);
+            accountDao.setDeleted(false);
+            twitterAccountService.saveOrUpdate(accountDao);
+            user.getAccounts().add(accountDao);
+            userService.saveOrUpdate(user);
+        }
+
         TwitterAccountDao account = TwitterAccountDao.create(0,
                                                              user,
                                                              accRequest.getLoginTweet(),
@@ -114,13 +119,7 @@ public class WireTweetAccount extends AbstractHandler
         OAuthAuthentication userAuthentication = null;
         String pin = null;
         try {
-            if ( map.containsKey(accRequest.getTokenId()) ) {
-                userAuthentication = map.get(accRequest.getTokenId());
-            }
-            else {
-                userAuthentication = new OAuthAuthentication(account);
-                map.put(accRequest.getTokenId(), userAuthentication);
-            }
+            userAuthentication = new OAuthAuthentication(account);
 
             String url = userAuthentication.getAuthenticationURL();
             System.out.println(url);

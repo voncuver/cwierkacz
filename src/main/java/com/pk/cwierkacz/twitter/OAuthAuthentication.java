@@ -80,7 +80,12 @@ public class OAuthAuthentication extends TwitterResolver
             TwitterAcountConverter converter = new TwitterAcountConverter();
             TwitterAccountDao accountFromTweet = converter.toAccountFromTwitter(tweetUser);
             account.setAccountName(accountFromTweet.getAccountName());
-            account.setName(accountFromTweet.getName());
+            if ( accountFromTweet.getName() != null ) {
+                account.setName(accountFromTweet.getName());
+            }
+            else {
+                account.setName(accountFromTweet.getAccountName());
+            }
             account.setExternalId(accountFromTweet.getExternalId());
             account.setAccessToken(accessToken.getToken());
             account.setAccessTokenSecret(accessToken.getTokenSecret());
