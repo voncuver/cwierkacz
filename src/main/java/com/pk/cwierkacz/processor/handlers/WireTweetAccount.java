@@ -107,6 +107,10 @@ public class WireTweetAccount extends AbstractHandler
             twitterAccountService.saveOrUpdate(accountDao);
             user.getAccounts().add(accountDao);
             userService.saveOrUpdate(user);
+            Response response = ResponseImpl.create(Status.OK,
+                                                    "Konto powiązano pomyślnie.",
+                                                    accRequest.getTokenId());
+            return response;
         }
 
         TwitterAccountDao account = TwitterAccountDao.create(0,
@@ -170,7 +174,7 @@ public class WireTweetAccount extends AbstractHandler
         catch ( TwitterAuthenticationException e ) {
             e.printStackTrace();
         }
-
+        account.getUser().add(user);
         twitterAccountService.save(account);
         user.getAccounts().add(account);
         userService.saveOrUpdate(user);
