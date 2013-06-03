@@ -154,12 +154,12 @@ public class WireTweetAccount extends AbstractHandler
                 reader.close();
             }
             catch ( IOException e ) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
         }
         catch ( TwitterAuthenticationException e ) {
+            e.printStackTrace();
             Response response = ResponseImpl.create(Status.ERROR, e.getMessage(), accRequest.getTokenId());
             return response;
         }
@@ -169,7 +169,6 @@ public class WireTweetAccount extends AbstractHandler
             account = userAuthentication.authenticate(pin, true);
         }
         catch ( TwitterAuthenticationException e ) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
