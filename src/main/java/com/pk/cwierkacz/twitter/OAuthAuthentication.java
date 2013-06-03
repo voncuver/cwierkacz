@@ -49,6 +49,7 @@ public class OAuthAuthentication extends TwitterResolver
             return requestToken.getAuthenticationURL();
         }
         catch ( TwitterException e ) {
+            e.printStackTrace();
             LOGGER.error(e.getMessage());
             throw new TwitterAuthenticationException("Request token generation failure");
         }
