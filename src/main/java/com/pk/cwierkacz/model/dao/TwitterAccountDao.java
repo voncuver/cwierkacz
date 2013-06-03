@@ -1,6 +1,7 @@
 package com.pk.cwierkacz.model.dao;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -11,7 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -38,14 +39,14 @@ public final class TwitterAccountDao implements Serializable
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Long id;
 
-    @Column( unique = true, nullable = false )
+    @Column( unique = false, nullable = false )
     private Long externalId;
 
     @JsonManagedReference
-    @ManyToOne( fetch = FetchType.EAGER )
+    @ManyToMany( fetch = FetchType.EAGER )
     @JoinColumn( nullable = true, name = "user", referencedColumnName = "id" )
     //moze byc account bez usera - takiego nie śledzimy, ale może mieć tweety
-    private UserDao user;
+    private Set<UserDao> user = new HashSet<>();
     @Column( unique = false, nullable = false )
     private String accountName;
     @Column( nullable = false )
@@ -69,12 +70,18 @@ public final class TwitterAccountDao implements Serializable
         this.id = id;
     }
 
-    public UserDao getUser( ) {
+    public Set<UserDao> getUser( ) {
         return user;
     }
 
-    public void setUser( UserDao userId ) {
+    public void setUser( Set<UserDao> userId ) {
         this.user = userId;
+    }
+
+    public void addUser( UserDao userId ) {
+        if ( this.user == null )
+            this.user = new HashSet<>();
+        this.user.add(userId);
     }
 
     @Column( unique = true, nullable = false )
@@ -110,11 +117,10 @@ public final class TwitterAccountDao implements Serializable
         this.tweets = tweets;
     }
 
-    @Transient
-    public long getUserIdByValue( ) {
-        return this.user.getId();
-    }
-
+    //    @Transient
+    //    public long getUserIdByValue( ) {
+    //        return this.user.getId();
+    //    }
     @Transient
     public boolean isOAuthAvailable( ) {
         return !StringUtils.isEmpty(accessToken) && !StringUtils.isEmpty(accessTokenSecret);
@@ -128,7 +134,8 @@ public final class TwitterAccountDao implements Serializable
                                             String accessTokenSecret ) {
         TwitterAccountDao dao = new TwitterAccountDao();
         dao.setExternalId(externalId);
-        dao.setUser(user);
+        if ( user != null )
+            dao.addUser(user);
         dao.setAccountName(accountName);
         dao.setAccessToken(accessToken);
         dao.setAccessTokenSecret(accessTokenSecret);

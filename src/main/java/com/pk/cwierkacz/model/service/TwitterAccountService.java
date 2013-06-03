@@ -56,8 +56,12 @@ public class TwitterAccountService extends AbstractService<TwitterAccountDao>
 
     public List<TwitterAccountDao> getAccountsForUser( UserDao user ) {
 
-        Criterion[] criteria = new Criterion[] {Restrictions.eq("user", user)};
-        List<TwitterAccountDao> result = getListByCriteria(Arrays.asList(criteria), TwitterAccountDao.class);
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("u.id", user.getId())};
+        List<TwitterAccountDao> result = getListByCriteria(Arrays.asList(criteria),
+                                                           TwitterAccountDao.class,
+                                                           null,
+                                                           null,
+                                                           true);
 
         return result;
     }

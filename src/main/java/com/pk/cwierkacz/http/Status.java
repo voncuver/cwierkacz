@@ -5,6 +5,7 @@ public enum Status {
 
     OK( "ok" ),
     ERROR( "Error" ),
+    SIGNINERROR( "SigninError" ),
     DENY( "Deny" );
 
     private String status;

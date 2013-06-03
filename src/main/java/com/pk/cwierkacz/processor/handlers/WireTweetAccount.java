@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.pk.cwierkacz.http.Action;
 import com.pk.cwierkacz.http.Status;
 import com.pk.cwierkacz.http.request.AddTweeterAccountRequest;
@@ -32,6 +35,7 @@ import com.pk.cwierkacz.ws.SsiAdapter.Result;
 
 public class WireTweetAccount extends AbstractHandler
 {
+    private final Logger logger = LoggerFactory.getLogger(WireTweetAccount.class);
 
     private final UserService userService;
     private final SessionService sessionService;
@@ -80,10 +84,12 @@ public class WireTweetAccount extends AbstractHandler
         }
         List<String> accountsName = new ArrayList<>();
         TwitterAccountDao accountDaoLinked = null;
-        for ( TwitterAccountDao accountDao : user.getAccounts() ) {
-            accountsName.add(accountDao.getAccountName());
-            if ( accountDao.getName().equals(accRequest.getLoginTweet()) ) {
-                accountDaoLinked = accountDao;
+        if ( user.getAccounts() != null ) {
+            for ( TwitterAccountDao accountDao : user.getAccounts() ) {
+                accountsName.add(accountDao.getAccountName());
+                if ( accountDao.getName().equals(accRequest.getLoginTweet()) ) {
+                    accountDaoLinked = accountDao;
+                }
             }
         }
 
@@ -117,7 +123,7 @@ public class WireTweetAccount extends AbstractHandler
             }
 
             String url = userAuthentication.getAuthenticationURL();
-
+            System.out.println(url);
             String authUrl = "https://api.twitter.com/oauth/authorize";
 
             BufferedReader reader = null;
@@ -159,6 +165,7 @@ public class WireTweetAccount extends AbstractHandler
         }
 
         try {
+            logger.info("PIN:" + pin);
             account = userAuthentication.authenticate(pin, true);
         }
         catch ( TwitterAuthenticationException e ) {
@@ -167,6 +174,8 @@ public class WireTweetAccount extends AbstractHandler
         }
 
         twitterAccountService.save(account);
+        user.getAccounts().add(account);
+        userService.saveOrUpdate(user);
 
         Response response = ResponseImpl.create(Status.OK,
                                                 "Konto powiązano pomyślnie.",
@@ -180,6 +189,7 @@ public class WireTweetAccount extends AbstractHandler
         StringBuilder stringBuilder = new StringBuilder();
 
         while ( null != ( line = reader.readLine() ) ) {
+            System.out.println(line);
             stringBuilder.append(line);
             if ( line.contains("<code>") ) {
                 pin = line.split("[><]")[ 4 ];

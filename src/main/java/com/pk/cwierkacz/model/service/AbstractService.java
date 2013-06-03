@@ -106,17 +106,30 @@ public class AbstractService< T >
         return getListByCriteria(restrictions, className, order, null);
     }
 
+    public List<T> getListByCriteria( List<Criterion> restrictions, Class className ) {
+        return getListByCriteria(restrictions, className, null);
+    }
+
     public List<T> getListByCriteria( List<Criterion> restrictions,
                                       Class className,
                                       Order order,
                                       Integer maxResults ) {
+        return getListByCriteria(restrictions, className, order, maxResults, false);
+    }
+
+    public List<T> getListByCriteria( List<Criterion> restrictions,
+                                      Class className,
+                                      Order order,
+                                      Integer maxResults,
+                                      boolean alias ) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         Criteria criteria = session.createCriteria(className);
         for ( Criterion criterion : restrictions ) {
             criteria.add(criterion);
         }
-
+        if ( alias )
+            criteria.createAlias("user", "u");
         if ( order != null ) {
             criteria.addOrder(order);
         }
@@ -133,9 +146,5 @@ public class AbstractService< T >
 
         return t;
 
-    }
-
-    public List<T> getListByCriteria( List<Criterion> restrictions, Class className ) {
-        return getListByCriteria(restrictions, className, null);
     }
 }

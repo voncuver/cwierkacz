@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -40,10 +41,10 @@ public class UserDao implements Serializable
     private String password;
 
     @JsonBackReference
-    @OneToMany( fetch = FetchType.EAGER,
-                targetEntity = TwitterAccountDao.class,
-                mappedBy = "user",
-                cascade = {CascadeType.ALL} )
+    @ManyToMany( fetch = FetchType.EAGER,
+                 targetEntity = TwitterAccountDao.class,
+                 mappedBy = "user",
+                 cascade = {CascadeType.ALL} )
     private Set<TwitterAccountDao> accounts = new HashSet<TwitterAccountDao>();
 
     @JsonBackReference

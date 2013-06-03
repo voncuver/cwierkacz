@@ -45,9 +45,9 @@ public class WireTweetAccountTest
                                                                                                .getTokenId());
         Request request4 = request3.buildBaseRequest("test");
         AddTweeterAccountRequest accRequest = RequestImpl.create(request4)
-                                                         .buildAddAccountTweetRequest("integration@test")
-                                                         .withPasswordTweet("integration")
-                                                         .withAccountType(AccountType.FACEBOOKBRIDGE);
+                                                         .buildAddAccountTweetRequest("cwierkacz1")
+                                                         .withPasswordTweet("cwierkacz13fmi")
+                                                         .withAccountType(AccountType.TWITTER);
         appData.setRequest(accRequest);
 
         tweetAccount.handle(appData);

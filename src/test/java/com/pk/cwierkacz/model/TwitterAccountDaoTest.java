@@ -30,7 +30,7 @@ public class TwitterAccountDaoTest
         accountDao.setId(1l);
 
         userDao.setAccounts(new HashSet<>(Arrays.asList(accountDao)));
-        accountDao.setUser(userDao);
+        accountDao.addUser(userDao);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
