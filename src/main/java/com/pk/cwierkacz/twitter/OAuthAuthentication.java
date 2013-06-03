@@ -50,6 +50,7 @@ public class OAuthAuthentication extends TwitterResolver
         }
         catch ( TwitterException e ) {
             LOGGER.error(e.getMessage());
+            e.printStackTrace();
             throw new TwitterAuthenticationException("Request token generation failure");
         }
     }
@@ -87,10 +88,12 @@ public class OAuthAuthentication extends TwitterResolver
         }
         catch ( TwitterException e ) {
             LOGGER.error(e.getMessage());
+            e.printStackTrace();
             throw new TwitterAuthenticationException("Access token generation failure");
         }
         catch ( IllegalStateException e ) {
             LOGGER.error(e.getMessage());
+            e.printStackTrace();
             throw new TwitterAuthenticationException("Access token generation failure - no token available");
         }
 
