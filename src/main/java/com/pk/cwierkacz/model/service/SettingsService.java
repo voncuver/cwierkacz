@@ -89,4 +89,10 @@ public class SettingsService extends AbstractService<SettingsDao>
         return containerPath + sl + imagePath;
     }
 
+    public SettingsDao getDefaultImage( ) {
+        Criterion[] criteria = new Criterion[] {Restrictions.eq("settings", "defaultImg")};
+        SettingsDao result = getUniqueByCriteria(Arrays.asList(criteria), SettingsDao.class);
+        return result;
+    }
+
 }

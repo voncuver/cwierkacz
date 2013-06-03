@@ -32,7 +32,7 @@ public class PublishReplyHandler extends AbstractHandler
 
     private final TwitterAccountService accountService;
 
-    private final ImageUtil imageSaver;
+    protected final ImageUtil imageUtil;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishReplyHandler.class);
 
@@ -40,7 +40,7 @@ public class PublishReplyHandler extends AbstractHandler
         super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
-        this.imageSaver = new ImageUtil();
+        this.imageUtil = new ImageUtil();
     }
 
     @Override
@@ -102,9 +102,9 @@ public class PublishReplyHandler extends AbstractHandler
             String filename = null;
             TweetAttachments attachments = TweetAttachments.empty();
             try {
-                FileData awr = imageSaver.saveImage(publishRequest.getBody(),
-                                                    publishRequest.getImgName(),
-                                                    publishRequest.getImgURL());
+                FileData awr = imageUtil.saveImage(publishRequest.getBody(),
+                                                   publishRequest.getImgName(),
+                                                   publishRequest.getImgURL());
 
                 if ( awr != null ) {
                     filename = awr.getImgPath();

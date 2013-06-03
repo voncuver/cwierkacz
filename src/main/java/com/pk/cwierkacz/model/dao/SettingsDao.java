@@ -28,6 +28,10 @@ public class SettingsDao
 
     private String appAddress;
 
+    private String defaultImgName;
+
+    private String defaultImgUrl;
+
     public Long getId( ) {
         return id;
     }
@@ -83,6 +87,22 @@ public class SettingsDao
 
     public void setAppAddress( String appAddress ) {
         this.appAddress = appAddress;
+    }
+
+    public String getDefaultImgName( ) {
+        return defaultImgName;
+    }
+
+    public void setDefaultImgName( String defaultImgName ) {
+        this.defaultImgName = defaultImgName;
+    }
+
+    public String getDefaultImgUrl( ) {
+        return defaultImgUrl;
+    }
+
+    public void setDefaultImgUrl( String defaultImgUrl ) {
+        this.defaultImgUrl = defaultImgUrl;
     }
 
 }

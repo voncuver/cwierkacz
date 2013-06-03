@@ -13,6 +13,7 @@ import com.pk.cwierkacz.model.dao.BridgeImgMetadataDao;
 import com.pk.cwierkacz.model.service.BridgeImgMetadataService;
 import com.pk.cwierkacz.model.service.ServiceRepo;
 import com.pk.cwierkacz.processor.handlers.helpers.FileData;
+import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
 import com.pk.cwierkacz.ws.BridgeException;
 import com.pk.cwierkacz.ws.SsiAdapter;
 
@@ -23,17 +24,24 @@ abstract public class PublishBridgeMessagesHandler extends AbstractHandler
                                                                                  .getService(BridgeImgMetadataService.class);
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishBridgeMessagesHandler.class);
 
+    protected final ImageUtil imageUtil = new ImageUtil();
+
     public StringBuilder handleToBridges( String text, List<Account> twitterAccounts, FileData fileData ) {
 
         StringBuilder errorBuilder = new StringBuilder();
 
         for ( Account account : twitterAccounts ) {
             try {
+                FileData fileDataWithDef = fileData;
+                if ( fileData.isEmpty() ) {
+                    fileDataWithDef = imageUtil.readDefaultImage();
+                }
+
                 ItemId itemId = ssiAdapter.publishTweet(account.getType(),
                                                         text,
                                                         account.getLogin(),
-                                                        fileData.getImgName(),
-                                                        Base64.encodeBase64(fileData.getBytes()));
+                                                        fileDataWithDef.getImgName(),
+                                                        Base64.encodeBase64(fileDataWithDef.getBytes()));
 
                 if ( fileData.getImgPath() != null ) {
                     BridgeImgMetadataDao bridgeImgMetadataDao = new BridgeImgMetadataDao();

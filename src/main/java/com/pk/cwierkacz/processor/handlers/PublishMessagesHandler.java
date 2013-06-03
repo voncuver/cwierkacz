@@ -21,7 +21,6 @@ import com.pk.cwierkacz.processor.handlers.helpers.AccountManager;
 import com.pk.cwierkacz.processor.handlers.helpers.AccountPermissionValidator;
 import com.pk.cwierkacz.processor.handlers.helpers.FileData;
 import com.pk.cwierkacz.processor.handlers.helpers.ImageSaveException;
-import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
 import com.pk.cwierkacz.twitter.TwitterActionException;
@@ -35,13 +34,10 @@ public class PublishMessagesHandler extends PublishBridgeMessagesHandler
 
     private final TwitterAccountService accountService;
 
-    private final ImageUtil imageSaver;
-
     public PublishMessagesHandler() {
         super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
-        this.imageSaver = new ImageUtil();
     }
 
     @Override
@@ -90,9 +86,9 @@ public class PublishMessagesHandler extends PublishBridgeMessagesHandler
         StringBuilder bridgesErrorsBuilder = new StringBuilder();
 
         try {
-            FileData fileData = imageSaver.saveImage(publishRequest.getBody(),
-                                                     publishRequest.getImgName(),
-                                                     publishRequest.getImgURL());
+            FileData fileData = imageUtil.saveImage(publishRequest.getBody(),
+                                                    publishRequest.getImgName(),
+                                                    publishRequest.getImgURL());
 
             twitterErrorsBuilder = handleToTwitter(publishRequest.getTweetText(),
                                                    accountManager.getTwitterAccountLogins(),

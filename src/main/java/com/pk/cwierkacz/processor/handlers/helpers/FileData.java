@@ -48,4 +48,8 @@ public class FileData
     public void setBytes( byte[] bytes ) {
         this.bytes = bytes;
     }
+
+    public boolean isEmpty( ) {
+        return imgPath == null && imgName == null && bytes == null;
+    }
 }

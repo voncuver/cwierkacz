@@ -21,7 +21,6 @@ import com.pk.cwierkacz.model.service.TwitterAccountService;
 import com.pk.cwierkacz.processor.handlers.helpers.AccountManager;
 import com.pk.cwierkacz.processor.handlers.helpers.AccountPermissionValidator;
 import com.pk.cwierkacz.processor.handlers.helpers.ImageSaveException;
-import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
 import com.pk.cwierkacz.twitter.TwitterAccount;
 import com.pk.cwierkacz.twitter.TwitterAccountMap;
 import com.pk.cwierkacz.twitter.TwitterActionException;
@@ -35,13 +34,10 @@ public class PublishRetweetHandler extends PublishBridgeMessagesHandler
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishRetweetHandler.class);
 
-    private final ImageUtil imageUtil;
-
     public PublishRetweetHandler() {
         super();
         this.tweetService = ServiceRepo.getInstance().getService(TweetService.class);
         this.accountService = ServiceRepo.getInstance().getService(TwitterAccountService.class);
-        this.imageUtil = new ImageUtil();
     }
 
     @Override

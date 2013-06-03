@@ -63,6 +63,13 @@ public class FileUtil
 
     }
 
+    protected FileData createPureFileData( byte[] bytes, String name ) {
+        FileData resp = new FileData();
+        resp.setImgName(name);
+        resp.setBytes(bytes);
+        return resp;
+    }
+
     public FileData saveFile( byte[] fileBytes, String fileName ) throws IOException {
         File file = createFile(fileName);
         FileOutputStream fos = new FileOutputStream(file);
@@ -70,6 +77,20 @@ public class FileUtil
         fos.close();
         return createFileData(file, fileBytes);
 
+    }
+
+    private byte[] readFileFromUrl( String urlPath ) throws IOException {
+        if ( urlPath == null )
+            return null;
+        else {
+            URL url = new URL(urlPath);
+            return IOUtils.toByteArray(url);
+
+        }
+    }
+
+    public FileData readFileFromUrl( String urlPath, String name ) throws IOException {
+        return createPureFileData(readFileFromUrl(urlPath), name);
     }
 
     public FileData saveFileFromUrl( String urlPath ) throws IOException {
