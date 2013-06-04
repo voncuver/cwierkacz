@@ -41,6 +41,10 @@ public class ApplicationData
         additionalParams.get(param).add(value);
     }
 
+    public boolean containsParam( String param ) {
+        return additionalParams.containsKey(param);
+    }
+
     public Request getRequest( ) {
         return request;
     }

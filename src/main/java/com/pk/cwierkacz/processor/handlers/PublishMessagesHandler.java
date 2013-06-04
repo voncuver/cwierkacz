@@ -92,7 +92,8 @@ public class PublishMessagesHandler extends PublishBridgeMessagesHandler
 
             twitterErrorsBuilder = handleToTwitter(publishRequest.getTweetText(),
                                                    accountManager.getTwitterAccountLogins(),
-                                                   fileData);
+                                                   fileData,
+                                                   appData);
 
             bridgesErrorsBuilder = handleToBridges(publishRequest.getTweetText(),
                                                    accountManager.getBridgeAccounts(),
@@ -122,7 +123,10 @@ public class PublishMessagesHandler extends PublishBridgeMessagesHandler
         appData.setResponse(response);
     }
 
-    public StringBuilder handleToTwitter( String text, List<String> twitterAccountLogins, FileData fileData ) {
+    public StringBuilder handleToTwitter( String text,
+                                          List<String> twitterAccountLogins,
+                                          FileData fileData,
+                                          ApplicationData appData ) {
 
         StringBuilder errorBuilder = new StringBuilder();
         for ( String accountName : twitterAccountLogins ) {
@@ -141,6 +145,7 @@ public class PublishMessagesHandler extends PublishBridgeMessagesHandler
                         newTweet.setImagePath(fileData.getImgPath());
 
                     tweetService.save(newTweet);
+                    appData.setParam("TweetId", newTweet.getId().toString());
                 }
             }
             catch ( TwitterAuthenticationException e ) {

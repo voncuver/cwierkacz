@@ -11,10 +11,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import javax.activation.DataHandler;
+import javax.activation.DataSource;
+
+import org.apache.axiom.attachments.ByteArrayDataSource;
+import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pl.edu.pk.ias.types.AccountsResponse;
 import pl.edu.pk.ias.types.AccountsResponseE;
@@ -45,17 +52,24 @@ import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.http.response.dto.Message;
 import com.pk.cwierkacz.model.AccountType;
 import com.pk.cwierkacz.model.ApplicationData;
+import com.pk.cwierkacz.processor.handlers.helpers.FileData;
+import com.pk.cwierkacz.processor.handlers.helpers.ImageSaveException;
+import com.pk.cwierkacz.processor.handlers.helpers.ImageUtil;
 
 /**
  * SocialServiceIntegrationSkeleton java skeleton for the axisService
  */
 public class SocialServiceIntegrationSkeleton implements SocialServiceIntegrationSkeletonInterface
 {
+    private final Logger logger = LoggerFactory.getLogger(SocialServiceIntegrationSkeleton.class);
 
     private final SecurityController securityController;
 
+    private final ImageUtil imgUtil;
+
     public SocialServiceIntegrationSkeleton() {
         securityController = new SecurityController();
+        imgUtil = new ImageUtil();
     }
 
     /**
@@ -172,36 +186,49 @@ public class SocialServiceIntegrationSkeleton implements SocialServiceIntegratio
                                                                              .getToken()
                                                                              .getToken()});
         parametersMap.put(RequestBuilder.ACTIONPARAM, new String[] {Action.PUBLISHMESSAGE.getActionName()});
-        parametersMap.put(RequestBuilder.IMGNAME, new String[] {publishRequest8.getPublishRequest()
-                                                                               .getFilename()
-                                                                               .getFilename()});
+
         parametersMap.put(RequestBuilder.TWEET, new String[] {publishRequest8.getPublishRequest()
                                                                              .getMessage()
                                                                              .getMessage()});
-        parametersMap.put(RequestBuilder.ACCOUNTS, new String[] {publishRequest8.getPublishRequest()
-                                                                                .getLss()
-                                                                                .getLss()});
+        parametersMap.put(RequestBuilder.ACCOUNTLOGINS, new String[] {publishRequest8.getPublishRequest()
+                                                                                     .getLss()
+                                                                                     .getLss()});
+        parametersMap.put(RequestBuilder.ACCOUNTTYPES, new String[] {AccountType.TWITTER.getType()});
         byte[] file = null;
         DataHandler handler = publishRequest8.getPublishRequest().getFile().getFile();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try {
-            handler.writeTo(output);
-            file = output.toByteArray();
-        }
-        catch ( IOException e ) {
-            e.printStackTrace();
+        if ( handler != null ) {
+            try {
+                handler.writeTo(output);
+                file = output.toByteArray();
+                file = Base64.decodeBase64(file);
+                parametersMap.put(RequestBuilder.IMGNAME, new String[] {publishRequest8.getPublishRequest()
+                                                                                       .getFilename()
+                                                                                       .getFilename()});
+            }
+            catch ( IOException e ) {
+                e.printStackTrace();
+            }
         }
 
         ApplicationData response = securityController.handle(parametersMap, file);
-
-        List<String> ids = response.getParam("TweetId");
-
-        ItemId itemId = new ItemId();
-        itemId.setId(ids.get(0));
-        itemId.setLss(publishRequest8.getPublishRequest().getLss().getLss());
-
         PublishResponse publishResponse = new PublishResponse();
-        publishResponse.setId(itemId);
+        if ( response.containsParam("TweetId") ) {
+            List<String> ids = response.getParam("TweetId");
+
+            ItemId itemId = new ItemId();
+            itemId.setId(ids.get(0));
+            itemId.setLss(publishRequest8.getPublishRequest().getLss().getLss());
+
+            publishResponse.setId(itemId);
+        }
+        else {
+            ItemId itemId = new ItemId();
+            itemId.setId("-1");
+            itemId.setLss("n/a");
+
+            publishResponse.setId(itemId);
+        }
 
         PublishResponseE publishResponseE = new PublishResponseE();
         publishResponseE.setPublishResponse(publishResponse);
@@ -221,6 +248,7 @@ public class SocialServiceIntegrationSkeleton implements SocialServiceIntegratio
 
     @Override
     public pl.edu.pk.ias.types.GetItemsPreviewsResponseE getItemsPreviews( pl.edu.pk.ias.types.GetItemsPreviewsRequestE getItemsPreviewsRequest2 ) throws TokenExpiredFault {
+        logger.info("Received: GetItemsPreviewsResponseE");
         Map<String, String[]> parametersMap = new HashMap<String, String[]>();
         parametersMap.put(RequestBuilder.TOKEN,
                           new String[] {getItemsPreviewsRequest2.getGetItemsPreviewsRequest()
@@ -244,15 +272,12 @@ public class SocialServiceIntegrationSkeleton implements SocialServiceIntegratio
                                                                 .getLss()
                                                                 .getLss()});
 
-        parametersMap.put(RequestBuilder.ACCOUNTTYPE,
-                          new String[] {getItemsPreviewsRequest2.getGetItemsPreviewsRequest()
-                                                                .getLss()
-                                                                .getLss()});
-
+        parametersMap.put(RequestBuilder.ACCOUNTTYPES, new String[] {AccountType.TWITTER.getType()});
+        logger.info("Pass to: Security Controller");
         FetchMessagesResponse response = (FetchMessagesResponse) securityController.handle(parametersMap,
                                                                                            new byte[0])
                                                                                    .getResponse();
-
+        logger.info("Fetch from: Security Controller");
         GetItemsPreviewsResponse getItemsPreviewsResponse = new GetItemsPreviewsResponse();
 
         for ( com.pk.cwierkacz.http.response.dto.Message message : response.getMessages() ) {
@@ -264,17 +289,18 @@ public class SocialServiceIntegrationSkeleton implements SocialServiceIntegratio
 
             itemPreview.setId(itemId);
             if ( message.getText().length() > 10 ) {
-                itemPreview.setName(message.getText().substring(0, 10) + "...");
+                itemPreview.setName(message.getText().substring(0, 10) + "(...)");
             }
             else {
                 itemPreview.setName(message.getText());
             }
-
+            itemPreview.setDate(message.getCreatedDate().toCalendar(Locale.GERMAN));
             getItemsPreviewsResponse.addItemPreviewsList(itemPreview);
 
         }
         GetItemsPreviewsResponseE getItemsPreviewsResponseE = new GetItemsPreviewsResponseE();
         getItemsPreviewsResponseE.setGetItemsPreviewsResponse(getItemsPreviewsResponse);
+        logger.info("Send Back");
         return getItemsPreviewsResponseE;
     }
 
@@ -301,7 +327,7 @@ public class SocialServiceIntegrationSkeleton implements SocialServiceIntegratio
         }
 
         parametersMap.put(RequestBuilder.IDS, ids.toArray(new String[0]));
-        parametersMap.put(RequestBuilder.ACCOUNTTYPE, new String[] {AccountType.TWITTER.getType()});
+        parametersMap.put(RequestBuilder.ACCOUNTTYPEArr, new String[] {AccountType.TWITTER.getType()});
 
         FetchMessagesResponse response = (FetchMessagesResponse) securityController.handle(parametersMap,
                                                                                            new byte[0])
@@ -315,14 +341,42 @@ public class SocialServiceIntegrationSkeleton implements SocialServiceIntegratio
             itemId.setLss(message.getAccount().getLogin());
             itemId.setId(message.getId().toString());
             Item item = new Item();
+            item.setId(itemId);
             item.setMessage(message.getText());
             if ( message.getText().length() > 10 ) {
-                item.setName(message.getText().substring(0, 10) + "...");
+                item.setName(message.getText().substring(0, 10) + "(...)");
             }
             else {
                 item.setName(message.getText());
             }
+            item.setDate(message.getCreatedDate().toCalendar(Locale.GERMAN));
+            FileData data = new FileData();
+            if ( message.getImagePath() == null ) {
+                item.setFilename("Tweet");
 
+                try {
+                    data = imgUtil.readDefaultImage();
+                }
+                catch ( ImageSaveException e ) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            else {
+                item.setFilename(message.getImagePath());
+                try {
+                    data = imgUtil.readImage(message.getImagePath());
+                }
+                catch ( ImageSaveException e ) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            byte[] file = Base64.encodeBase64(data.getBytes());
+
+            DataSource dataSource = new ByteArrayDataSource(file);
+            DataHandler dataHandler = new DataHandler(dataSource);
+            item.setFile(dataHandler);
             getItemsResponse.addItemsList(item);
 
         }

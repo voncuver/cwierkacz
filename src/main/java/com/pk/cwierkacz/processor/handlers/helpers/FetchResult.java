@@ -34,7 +34,7 @@ public class FetchResult
         List<Message> limited = new ArrayList<Message>();
 
         int resultantSize = messages.size();
-        if ( size != null && size < messages.size() )
+        if ( size != null && size != 0 && size < messages.size() )
             resultantSize = size;
 
         for ( int i = 0; i < resultantSize; i++ ) {

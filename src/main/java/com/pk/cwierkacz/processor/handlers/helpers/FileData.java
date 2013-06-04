@@ -42,7 +42,7 @@ public class FileData
     }
 
     public byte[] getBytes( ) {
-        return bytes;
+        return bytes != null ? bytes : new byte[0];
     }
 
     public void setBytes( byte[] bytes ) {
