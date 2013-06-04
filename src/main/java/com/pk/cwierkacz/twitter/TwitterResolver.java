@@ -54,4 +54,9 @@ public abstract class TwitterResolver
         return twitter;
     }
 
+    public Twitter newTwitter( ) throws TwitterAuthenticationException {
+
+        return factory.getInstance();
+    }
+
 }

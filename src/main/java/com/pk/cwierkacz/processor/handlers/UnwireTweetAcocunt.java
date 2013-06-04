@@ -62,10 +62,11 @@ public class UnwireTweetAcocunt extends AbstractHandler
             }
         }
 
-        accountDaoToRemove.setDeleted(true);
-        user.setAccounts(accountsNew);
-        userService.saveOrUpdate(user);
+        accountDaoToRemove.getUser().remove(user);
         accountService.saveOrUpdate(accountDaoToRemove);
+
+        user.getAccounts().remove(accountDaoToRemove);
+        userService.saveOrUpdate(user);
 
         Response response = ResponseImpl.create(Status.OK, "Konto odwiązano.", accRequest.getTokenId());
         appData.setResponse(response);
