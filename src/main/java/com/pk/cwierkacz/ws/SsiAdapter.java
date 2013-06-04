@@ -46,7 +46,6 @@ import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub
 
 import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.model.AccountType;
-import com.pk.cwierkacz.model.dao.UserDao;
 
 public class SsiAdapter
 {
@@ -86,7 +85,7 @@ public class SsiAdapter
         }
     }
 
-    public Result login( UserDao user, String login, String password, AccountType accountType ) {
+    public Result login( String login, String password, AccountType accountType ) {
         LoginRequest loginRequest = new LoginRequest();
         Login logintype = new Login();
         logintype.setLogin(login);
@@ -165,11 +164,7 @@ public class SsiAdapter
         return logoutResponse.getLogoutResponse().getIsOperationSuccess().getIsOperationSuccess();
     }
 
-    public List<Account> getAccounts( String login ) {
-
-        //TODO: get token by login
-
-        String token = null;
+    public List<Account> getAccounts( String token, AccountType accountType ) {
 
         AccountsRequestE accountsRequestE = new AccountsRequestE();
         AccountsRequest accountsRequest = new AccountsRequest();
@@ -180,12 +175,15 @@ public class SsiAdapter
         accountsRequestE.setAccountsRequest(accountsRequest);
 
         List<Account> accounts = new ArrayList<>();
-
-        accounts.addAll(getAccountsToPort(accountsRequestE, facebookService, AccountType.FACEBOOKBRIDGE));
-
-        accounts.addAll(getAccountsToPort(accountsRequestE, flickrService, AccountType.FACEBOOKBRIDGE));
-
-        accounts.addAll(getAccountsToPort(accountsRequestE, twitpicService, AccountType.FACEBOOKBRIDGE));
+        if ( AccountType.FACEBOOKBRIDGE.getType().equals(accountType.getType()) ) {
+            accounts.addAll(getAccountsToPort(accountsRequestE, facebookService, AccountType.FACEBOOKBRIDGE));
+        }
+        if ( AccountType.FLICKERBRIDGE.getType().equals(accountType.getType()) ) {
+            accounts.addAll(getAccountsToPort(accountsRequestE, flickrService, AccountType.FLICKERBRIDGE));
+        }
+        if ( AccountType.TWITPICBRIDGE.getType().equals(accountType.getType()) ) {
+            accounts.addAll(getAccountsToPort(accountsRequestE, twitpicService, AccountType.TWITPICBRIDGE));
+        }
 
         return accounts;
     }

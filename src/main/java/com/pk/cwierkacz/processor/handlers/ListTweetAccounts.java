@@ -61,6 +61,8 @@ public class ListTweetAccounts extends AbstractHandler
         Set<BridgeAccountDao> bridgeAccounts = user.getBridgeAccounts();
 
         for ( BridgeAccountDao accountDao : bridgeAccounts ) {
+            ssiAdapter.getAccounts(a)
+            
             accountsNames.add(new Account(accountDao.getName(),
                                           accountDao.getName(),
                                           accountDao.getAccountType()));
@@ -71,5 +73,4 @@ public class ListTweetAccounts extends AbstractHandler
         appData.setResponse(response);
         return;
     }
-
 }

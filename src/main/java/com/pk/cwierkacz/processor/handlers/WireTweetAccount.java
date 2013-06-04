@@ -235,8 +235,7 @@ public class WireTweetAccount extends AbstractHandler
             return response;
         }
 
-        Result result = ssiAdapter.login(user,
-                                         accRequest.getLoginTweet(),
+        Result result = ssiAdapter.login(accRequest.getLoginTweet(),
                                          accRequest.getPasswordTweet(),
                                          accRequest.getAccountType());
         Response response = null;
