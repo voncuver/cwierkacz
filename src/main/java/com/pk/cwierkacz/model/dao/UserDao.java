@@ -17,6 +17,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonBackReference;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 /**
  * Data access object of system user - contain many twitter account
@@ -41,6 +43,7 @@ public class UserDao implements Serializable
     private String password;
 
     @JsonBackReference
+    @Fetch( value = FetchMode.SUBSELECT )
     @ManyToMany( fetch = FetchType.EAGER,
                  targetEntity = TwitterAccountDao.class,
                  mappedBy = "user",

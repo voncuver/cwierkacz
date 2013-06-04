@@ -19,6 +19,8 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonManagedReference;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 /**
  * Data access object of single twitter account
@@ -45,6 +47,7 @@ public final class TwitterAccountDao implements Serializable
     @JsonManagedReference
     @ManyToMany( fetch = FetchType.EAGER )
     @JoinColumn( nullable = true, name = "user", referencedColumnName = "id" )
+    @Fetch( value = FetchMode.SUBSELECT )
     //moze byc account bez usera - takiego nie śledzimy, ale może mieć tweety
     private Set<UserDao> user = new HashSet<>();
     @Column( unique = false, nullable = false )
