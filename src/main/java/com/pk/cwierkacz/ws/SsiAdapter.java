@@ -9,6 +9,7 @@ import java.util.List;
 import javax.activation.DataHandler;
 
 import org.apache.axiom.attachments.ByteArrayDataSource;
+import org.apache.axis2.AxisFault;
 
 import pl.edu.pk.ias.socialserviceintegration.IncorrectPasswordFault;
 import pl.edu.pk.ias.socialserviceintegration.TokenExpiredFault;
@@ -45,12 +46,13 @@ import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub
 
 import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.model.AccountType;
+import com.pk.cwierkacz.model.dao.UserDao;
 
 public class SsiAdapter
 {
-    private final SocialServiceIntegrationStub facebookService;
-    private final SocialServiceIntegrationStub flickrService;
-    private final SocialServiceIntegrationStub twitpicService;
+    private SocialServiceIntegrationStub facebookService;
+    private SocialServiceIntegrationStub flickrService;
+    private SocialServiceIntegrationStub twitpicService;
 
     private static class InstanceHolder
     {
@@ -62,14 +64,29 @@ public class SsiAdapter
     }
 
     private SsiAdapter() {
-        //TODO: after some working service
 
-        facebookService = null;//= new SocialServiceIntegrationStub("");
-        flickrService = null;// = new SocialServiceIntegrationStub("");
-        twitpicService = null;// = new SocialServiceIntegrationStub("");
+        try {
+            facebookService = new SocialServiceIntegrationStub("http://mars.iti.pk.edu.pl/~lmk/SocialServiceIntegration.wsdl");
+        }
+        catch ( AxisFault e1 ) {
+            e1.printStackTrace();
+        }
+
+        try {
+            flickrService = new SocialServiceIntegrationStub("http://37.28.156.233:8080/FilckrIAS/services/integration/socialserviceintegration?wsdl");
+        }
+        catch ( AxisFault e1 ) {
+            e1.printStackTrace();
+        }
+        try {
+            twitpicService = new SocialServiceIntegrationStub("http://twitpic.piotrkubowicz.pl/soap?wsdl");
+        }
+        catch ( AxisFault e ) {
+            e.printStackTrace();
+        }
     }
 
-    public Result login( String login, String password, AccountType accountType ) {
+    public Result login( UserDao user, String login, String password, AccountType accountType ) {
         LoginRequest loginRequest = new LoginRequest();
         Login logintype = new Login();
         logintype.setLogin(login);
@@ -93,7 +110,6 @@ public class SsiAdapter
         else if ( AccountType.TWITPICBRIDGE.equals(accountType) ) {
             result = loginToPort(loginRequestE, twitpicService);
         }
-        //TODO persist token
         return result;
     }
 
