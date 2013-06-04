@@ -27,7 +27,7 @@ public class OAuthAuthentication extends TwitterResolver
      */
     public OAuthAuthentication( TwitterAccountDao account ) throws TwitterAuthenticationException {
         this.account = account;
-        this.twitter = createTwitter(account, true);
+        this.twitter = newTwitter();
     }
 
     /**
