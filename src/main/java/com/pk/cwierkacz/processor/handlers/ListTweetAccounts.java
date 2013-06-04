@@ -1,6 +1,7 @@
 package com.pk.cwierkacz.processor.handlers;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.pk.cwierkacz.http.Action;
@@ -61,11 +62,9 @@ public class ListTweetAccounts extends AbstractHandler
         Set<BridgeAccountDao> bridgeAccounts = user.getBridgeAccounts();
 
         for ( BridgeAccountDao accountDao : bridgeAccounts ) {
-            ssiAdapter.getAccounts(a)
-            
-            accountsNames.add(new Account(accountDao.getName(),
-                                          accountDao.getName(),
-                                          accountDao.getAccountType()));
+            List<Account> list = ssiAdapter.getAccounts(accountDao.getAccessToken(),
+                                                        accountDao.getAccountType());
+            accountsNames.addAll(list);
         }
 
         Response response = ResponseImpl.create(Status.OK, "Lista dostępnych kont.", accRequest.getTokenId())

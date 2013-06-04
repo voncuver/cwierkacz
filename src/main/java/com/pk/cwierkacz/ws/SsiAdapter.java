@@ -120,6 +120,8 @@ public class SsiAdapter
         }
         catch ( RemoteException | UserNotExistFault | IncorrectPasswordFault e ) {
             e.printStackTrace();
+            result = new Result(false, "Bład logowania.");
+            return result;
         }
 
         result = new Result(true, "Zalogowano pomyślnie.");
