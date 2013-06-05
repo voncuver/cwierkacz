@@ -47,6 +47,11 @@ public class ListTweetAccounts extends AbstractHandler
             appData.setResponse(response);
             return;
         }
+        if ( user == null ) {
+            Response response = ResponseImpl.create(Status.DENY, "Brak sesji", accRequest.getTokenId());
+            appData.setResponse(response);
+            return;
+        }
 
         Set<TwitterAccountDao> accounts = user.getAccounts();
 

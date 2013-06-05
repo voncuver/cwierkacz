@@ -173,7 +173,12 @@ public class WireTweetAccount extends AbstractHandler
         }
 
         accountDao.getUser().add(user);
-        twitterAccountService.saveOrUpdate(accountDao);
+        if ( twitterAccountService.getAccountByExternalId(accountDao.getExternalId()) != null ) {
+            twitterAccountService.saveOrUpdate(accountDao);
+        }
+        else {
+            twitterAccountService.save(accountDao);
+        }
 
         user.getAccounts().add(accountDao);
         userService.saveOrUpdate(user);
@@ -242,12 +247,25 @@ public class WireTweetAccount extends AbstractHandler
         if ( result.isCorrect() ) {
 
             response = ResponseImpl.create(Status.OK, result.getMsg(), accRequest.getTokenId());
-            BridgeAccountDao accountDao = new BridgeAccountDao();
-            accountDao.setAccessToken(result.getToken());
-            accountDao.setAccountType(accRequest.getAccountType());
-            accountDao.setName(accRequest.getLoginTweet());
-            accountDao.setUser(user);
-            bridgeAccountService.save(accountDao);
+
+            BridgeAccountDao accountDao = bridgeAccountService.getAccountByNameFalse(accRequest.getLoginTweet(),
+                                                                                     accRequest.getAccountType());
+            if ( accountDao == null ) {
+                accountDao = new BridgeAccountDao();
+                accountDao.setAccessToken(result.getToken());
+                accountDao.setAccountType(accRequest.getAccountType());
+                accountDao.setName(accRequest.getLoginTweet());
+            }
+            accountDao.addUser(user);
+            if ( accountDao.getId() == null ) {
+                bridgeAccountService.save(accountDao);
+            }
+            else {
+                bridgeAccountService.saveOrUpdate(accountDao);
+            }
+
+            user.getBridgeAccounts().add(accountDao);
+            userService.saveOrUpdate(user);
         }
         else {
             response = ResponseImpl.create(Status.ERROR, result.getMsg(), accRequest.getTokenId());

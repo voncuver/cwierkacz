@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.activation.DataHandler;
 
 import org.apache.axiom.attachments.ByteArrayDataSource;
 import org.apache.axis2.AxisFault;
+import org.joda.time.DateTime;
 
 import pl.edu.pk.ias.socialserviceintegration.IncorrectPasswordFault;
 import pl.edu.pk.ias.socialserviceintegration.TokenExpiredFault;
@@ -18,6 +20,8 @@ import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub
 import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub.AccountsRequest;
 import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub.AccountsRequestE;
 import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub.AccountsResponseE;
+import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub.DateFrom;
+import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub.DateTo;
 import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub.File;
 import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub.Filename;
 import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub.GetItemsPreviewsRequest;
@@ -46,12 +50,17 @@ import pl.edu.pk.ias.socialserviceintegrationClient.SocialServiceIntegrationStub
 
 import com.pk.cwierkacz.http.response.dto.Account;
 import com.pk.cwierkacz.model.AccountType;
+import com.pk.cwierkacz.model.dao.BridgeAccountDao;
+import com.pk.cwierkacz.model.service.BridgeAccountService;
+import com.pk.cwierkacz.model.service.ServiceRepo;
 
 public class SsiAdapter
 {
     private SocialServiceIntegrationStub facebookService;
     private SocialServiceIntegrationStub flickrService;
     private SocialServiceIntegrationStub twitpicService;
+
+    private final BridgeAccountService bridgeAccountService;
 
     private static class InstanceHolder
     {
@@ -63,22 +72,22 @@ public class SsiAdapter
     }
 
     private SsiAdapter() {
-
+        bridgeAccountService = ServiceRepo.getInstance().getService(BridgeAccountService.class);
         try {
-            facebookService = new SocialServiceIntegrationStub("http://mars.iti.pk.edu.pl/~lmk/SocialServiceIntegration.wsdl");
+            facebookService = new SocialServiceIntegrationStub("http://fb.xlv.pl/cms/integration");
         }
         catch ( AxisFault e1 ) {
             e1.printStackTrace();
         }
 
         try {
-            flickrService = new SocialServiceIntegrationStub("http://37.28.156.233:8080/FilckrIAS/services/integration/socialserviceintegration?wsdl");
+            flickrService = new SocialServiceIntegrationStub("http://37.28.156.233:8080/FilckrIAS/services/integration/socialserviceintegration");
         }
         catch ( AxisFault e1 ) {
             e1.printStackTrace();
         }
         try {
-            twitpicService = new SocialServiceIntegrationStub("http://twitpic.piotrkubowicz.pl/soap?wsdl");
+            twitpicService = new SocialServiceIntegrationStub("http://twitpic.piotrkubowicz.pl/soap");
         }
         catch ( AxisFault e ) {
             e.printStackTrace();
@@ -103,7 +112,7 @@ public class SsiAdapter
         if ( AccountType.FACEBOOKBRIDGE.equals(accountType) ) {
             result = loginToPort(loginRequestE, facebookService);
         }
-        else if ( AccountType.FLICKERBRIDGE.equals(accountType) ) {
+        else if ( AccountType.FLICKRBRIDGE.equals(accountType) ) {
             result = loginToPort(loginRequestE, flickrService);
         }
         else if ( AccountType.TWITPICBRIDGE.equals(accountType) ) {
@@ -143,14 +152,12 @@ public class SsiAdapter
         if ( AccountType.FACEBOOKBRIDGE.equals(accountType) ) {
             result = logoutToPort(logoutRequestE, facebookService);
         }
-        else if ( AccountType.FLICKERBRIDGE.equals(accountType) ) {
+        else if ( AccountType.FLICKRBRIDGE.equals(accountType) ) {
             result = logoutToPort(logoutRequestE, flickrService);
         }
         else if ( AccountType.TWITPICBRIDGE.equals(accountType) ) {
             result = logoutToPort(logoutRequestE, twitpicService);
         }
-
-        //TODO remove token from user
         return result;
     }
 
@@ -180,8 +187,8 @@ public class SsiAdapter
         if ( AccountType.FACEBOOKBRIDGE.getType().equals(accountType.getType()) ) {
             accounts.addAll(getAccountsToPort(accountsRequestE, facebookService, AccountType.FACEBOOKBRIDGE));
         }
-        if ( AccountType.FLICKERBRIDGE.getType().equals(accountType.getType()) ) {
-            accounts.addAll(getAccountsToPort(accountsRequestE, flickrService, AccountType.FLICKERBRIDGE));
+        if ( AccountType.FLICKRBRIDGE.getType().equals(accountType.getType()) ) {
+            accounts.addAll(getAccountsToPort(accountsRequestE, flickrService, AccountType.FLICKRBRIDGE));
         }
         if ( AccountType.TWITPICBRIDGE.getType().equals(accountType.getType()) ) {
             accounts.addAll(getAccountsToPort(accountsRequestE, twitpicService, AccountType.TWITPICBRIDGE));
@@ -201,6 +208,7 @@ public class SsiAdapter
         }
         catch ( RemoteException | TokenExpiredFault e ) {
             e.printStackTrace();
+            return null;
         }
 
         for ( Lss name : response.getAccountsResponse().getLss() ) {
@@ -219,7 +227,8 @@ public class SsiAdapter
                                 String fileName,
                                 byte[] file ) throws BridgeException {
 
-        //TODO: get token by accounType
+        BridgeAccountDao bridgeAccountDao = bridgeAccountService.getAccountByName(account, accountType);
+
         PublishRequestE publishRequestE = new PublishRequestE();
         PublishRequest publishRequest = new PublishRequest();
         Message message = new Message();
@@ -234,13 +243,15 @@ public class SsiAdapter
         Lss lss = new Lss();
         lss.setLss(account);
         publishRequest.setLss(lss);
-        publishRequest.setToken(null);
+        Token token = new Token();
+        token.setToken(bridgeAccountDao.getAccessToken());
+        publishRequest.setToken(token);
         publishRequestE.setPublishRequest(publishRequest);
         ItemId itemId = null;
         if ( AccountType.FACEBOOKBRIDGE.equals(accountType) ) {
             itemId = publishTweetToPort(publishRequestE, facebookService);
         }
-        else if ( AccountType.FLICKERBRIDGE.equals(accountType) ) {
+        else if ( AccountType.FLICKRBRIDGE.equals(accountType) ) {
             itemId = publishTweetToPort(publishRequestE, flickrService);
         }
         else if ( AccountType.TWITPICBRIDGE.equals(accountType) ) {
@@ -257,6 +268,7 @@ public class SsiAdapter
         }
         catch ( RemoteException | TokenExpiredFault e ) {
             e.printStackTrace();
+            return null;
         }
 
         return publishResponseE.getPublishResponse().getId();
@@ -265,7 +277,7 @@ public class SsiAdapter
     public List<Item> fetchIteams( Date dateFrom, Date dateTo, String account ) throws BridgeException {
         List<Item> iteams = new ArrayList<>();
         iteams.addAll(fetchIteams(AccountType.FACEBOOKBRIDGE, dateFrom, dateTo, account));
-        iteams.addAll(fetchIteams(AccountType.FLICKERBRIDGE, dateFrom, dateTo, account));
+        iteams.addAll(fetchIteams(AccountType.FLICKRBRIDGE, dateFrom, dateTo, account));
         iteams.addAll(fetchIteams(AccountType.TWITPICBRIDGE, dateFrom, dateTo, account));
         return iteams;
     }
@@ -274,18 +286,31 @@ public class SsiAdapter
         GetItemsPreviewsRequestE getItemsPreviewsRequestE = new GetItemsPreviewsRequestE();
         GetItemsPreviewsRequest getItemsPreviewsRequest = new GetItemsPreviewsRequest();
         getItemsPreviewsRequestE.setGetItemsPreviewsRequest(getItemsPreviewsRequest);
-        //        getItemsPreviewsRequest.setDateFrom(dateFrom);
-        //        getItemsPreviewsRequest.setDateTo(dateTo);
-        //getItemsPreviewsRequest.setLss(account);
+
+        DateFrom dateFrom2 = new DateFrom();
+        dateFrom2.setDateFrom(new DateTime(dateFrom.getTime()).toCalendar(Locale.GERMAN));
+
+        DateTo dateTo2 = new DateTo();
+        dateTo2.setDateTo(new DateTime(dateTo.getTime()).toCalendar(Locale.GERMAN));
+
+        getItemsPreviewsRequest.setDateFrom(dateFrom2);
+        getItemsPreviewsRequest.setDateTo(dateTo2);
+
+        Lss lss = new Lss();
+        lss.setLss(account);
+        getItemsPreviewsRequest.setLss(lss);
         getItemsPreviewsRequest.setToken(null);
-        //TODO: token
+
+        BridgeAccountDao bridgeAccountDao = bridgeAccountService.getAccountByName(account, accountType);
+
         List<ItemPreview> itemsPrevs = Arrays.asList(getPrieviews(accountType, getItemsPreviewsRequestE));
 
         GetItemsRequestE getItemsRequestE = new GetItemsRequestE();
         GetItemsRequest getItemsRequest = new GetItemsRequest();
         getItemsPreviewsRequestE.setGetItemsPreviewsRequest(getItemsPreviewsRequest);
-        getItemsRequest.setToken(null);
-        //TODO: token
+        Token token = new Token();
+        token.setToken(bridgeAccountDao.getAccessToken());
+        getItemsRequest.setToken(token);
         List<ItemId> ids = new ArrayList<>();
         for ( ItemPreview itemPreview : itemsPrevs ) {
             ids.add(itemPreview.getId());
@@ -301,7 +326,7 @@ public class SsiAdapter
         if ( AccountType.FACEBOOKBRIDGE.equals(accountType) ) {
             getPrieviewsToPort(getItemsPreviewsRequestE, facebookService);
         }
-        else if ( AccountType.FLICKERBRIDGE.equals(accountType) ) {
+        else if ( AccountType.FLICKRBRIDGE.equals(accountType) ) {
             getPrieviewsToPort(getItemsPreviewsRequestE, flickrService);
         }
         else if ( AccountType.TWITPICBRIDGE.equals(accountType) ) {
@@ -318,8 +343,9 @@ public class SsiAdapter
             getItemsPreviewsResponseE = wsPort.getItemsPreviews(getItemsPreviewsRequestE);
         }
         catch ( RemoteException | TokenExpiredFault e ) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+            e.printStackTrace();
+            return null;
         }
 
         return getItemsPreviewsResponseE.getGetItemsPreviewsResponse().getItemPreviewsList();
@@ -327,6 +353,7 @@ public class SsiAdapter
     }
 
     public List<Item> getItems( AccountType accountType, List<String> lss, List<Long> ids ) throws BridgeException {
+
         GetItemsRequestE requestE = new GetItemsRequestE();
         GetItemsRequest request = new GetItemsRequest();
         requestE.setGetItemsRequest(request);
@@ -348,7 +375,7 @@ public class SsiAdapter
         if ( AccountType.FACEBOOKBRIDGE.equals(accountType) ) {
             items = getIteamsToPort(getItemsRequestE, facebookService);
         }
-        else if ( AccountType.FLICKERBRIDGE.equals(accountType) ) {
+        else if ( AccountType.FLICKRBRIDGE.equals(accountType) ) {
             items = getIteamsToPort(getItemsRequestE, flickrService);
         }
         else if ( AccountType.TWITPICBRIDGE.equals(accountType) ) {
@@ -363,8 +390,8 @@ public class SsiAdapter
             getItemsResponseE = wsPort.getItems(getItemsRequestE);
         }
         catch ( RemoteException | TokenExpiredFault e ) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+            return null;
         }
         return getItemsResponseE.getGetItemsResponse().getItemsList();
 

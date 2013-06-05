@@ -12,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -51,11 +50,11 @@ public class UserDao implements Serializable
     private Set<TwitterAccountDao> accounts = new HashSet<TwitterAccountDao>();
 
     @JsonBackReference
-    @OneToMany( fetch = FetchType.EAGER,
-                targetEntity = BridgeAccountDao.class,
-                mappedBy = "user",
-                cascade = {CascadeType.ALL} )
-    private final Set<BridgeAccountDao> bridgeAccounts = new HashSet<BridgeAccountDao>();
+    @ManyToMany( fetch = FetchType.EAGER,
+                 targetEntity = BridgeAccountDao.class,
+                 mappedBy = "user",
+                 cascade = {CascadeType.ALL} )
+    private Set<BridgeAccountDao> bridgeAccounts = new HashSet<BridgeAccountDao>();
 
     private boolean isDeleted;
 
@@ -89,6 +88,10 @@ public class UserDao implements Serializable
 
     public Set<BridgeAccountDao> getBridgeAccounts( ) {
         return bridgeAccounts;
+    }
+
+    public void setBridgeAccounts( Set<BridgeAccountDao> bridgeAccounts ) {
+        this.bridgeAccounts = bridgeAccounts;
     }
 
     public Set<TwitterAccountDao> getAccounts( ) {

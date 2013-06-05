@@ -5,7 +5,7 @@ public enum AccountType {
     TWITTER( "TWITTER" ),
     FACEBOOKBRIDGE( "FACEBOOKBRIDGE" ),
     TWITPICBRIDGE( "TWITPICBRIDGE" ),
-    FLICKERBRIDGE( "FLICKERBRIDGE" );
+    FLICKRBRIDGE( "FLICKRBRIDGE" );
 
     private String type;
 

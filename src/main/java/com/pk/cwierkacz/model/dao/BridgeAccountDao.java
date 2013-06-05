@@ -1,5 +1,8 @@
 package com.pk.cwierkacz.model.dao;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -7,7 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonManagedReference;
@@ -24,9 +27,9 @@ public class BridgeAccountDao
     private Long id;
 
     @JsonManagedReference
-    @ManyToOne( fetch = FetchType.EAGER )
+    @ManyToMany( fetch = FetchType.EAGER )
     @JoinColumn( nullable = true, name = "user", referencedColumnName = "id" )
-    private UserDao user;
+    private Set<UserDao> user;
 
     @Column( nullable = false )
     private String name;
@@ -34,6 +37,16 @@ public class BridgeAccountDao
     private String accessToken;
 
     private AccountType accountType;
+
+    private boolean deleted;
+
+    public boolean isDeleted( ) {
+        return deleted;
+    }
+
+    public void setDeleted( boolean deleted ) {
+        this.deleted = deleted;
+    }
 
     public Long getId( ) {
         return id;
@@ -43,12 +56,18 @@ public class BridgeAccountDao
         this.id = id;
     }
 
-    public UserDao getUser( ) {
+    public Set<UserDao> getUser( ) {
         return user;
     }
 
-    public void setUser( UserDao user ) {
+    public void setUser( Set<UserDao> user ) {
         this.user = user;
+    }
+
+    public void addUser( UserDao userId ) {
+        if ( this.user == null )
+            this.user = new HashSet<>();
+        this.user.add(userId);
     }
 
     public String getName( ) {
