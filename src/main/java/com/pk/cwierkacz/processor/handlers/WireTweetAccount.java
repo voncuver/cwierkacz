@@ -258,6 +258,7 @@ public class WireTweetAccount extends AbstractHandler
             }
             accountDao.addUser(user);
             if ( accountDao.getId() == null ) {
+                accountDao.setAccessToken(Long.toString(response.getTokenId()));
                 bridgeAccountService.save(accountDao);
             }
             else {
