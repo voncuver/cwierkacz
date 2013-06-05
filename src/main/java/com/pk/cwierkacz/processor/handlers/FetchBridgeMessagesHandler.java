@@ -1,7 +1,6 @@
 package com.pk.cwierkacz.processor.handlers;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,21 +46,21 @@ abstract public class FetchBridgeMessagesHandler extends AbstractHandler
                     try {
                         handler.writeTo(output);
                         file = output.toByteArray();
+
+                        org.apache.commons.codec.binary.Base64.decodeBase64(file);
+
+                        try {
+                            path = imgUtil.saveImage(bytes, item.getName(), null).getImgPath();
+                        }
+                        catch ( ImageSaveException e ) {
+                            LOGGER.error(getError(e));
+                            errorBuilder = appendError(errorBuilder, "Bład zapisu pliku.", e);
+                        }
+
                     }
-                    catch ( IOException e ) {
+                    catch ( Exception e ) {
                         e.printStackTrace();
                     }
-
-                    org.apache.commons.codec.binary.Base64.decodeBase64(file);
-
-                }
-
-                try {
-                    path = imgUtil.saveImage(bytes, item.getName(), null).getImgPath();
-                }
-                catch ( ImageSaveException e ) {
-                    LOGGER.error(getError(e));
-                    errorBuilder = appendError(errorBuilder, "Bład zapisu pliku.", e);
                 }
 
                 BridgeImgMetadataDao bridgeImgMetadataDao = new BridgeImgMetadataDao();

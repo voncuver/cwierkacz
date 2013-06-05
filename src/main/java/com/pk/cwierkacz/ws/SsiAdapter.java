@@ -86,6 +86,7 @@ public class SsiAdapter
         catch ( AxisFault e1 ) {
             e1.printStackTrace();
         }
+
         try {
             twitpicService = new SocialServiceIntegrationStub("http://twitpic.piotrkubowicz.pl/soap");
         }
@@ -208,7 +209,7 @@ public class SsiAdapter
         }
         catch ( RemoteException | TokenExpiredFault e ) {
             e.printStackTrace();
-            return null;
+            return accounts;
         }
 
         for ( Lss name : response.getAccountsResponse().getLss() ) {
@@ -283,54 +284,62 @@ public class SsiAdapter
     }
 
     public List<Item> fetchIteams( AccountType accountType, Date dateFrom, Date dateTo, String account ) throws BridgeException {
-        GetItemsPreviewsRequestE getItemsPreviewsRequestE = new GetItemsPreviewsRequestE();
-        GetItemsPreviewsRequest getItemsPreviewsRequest = new GetItemsPreviewsRequest();
-        getItemsPreviewsRequestE.setGetItemsPreviewsRequest(getItemsPreviewsRequest);
-
-        DateFrom dateFrom2 = new DateFrom();
-        dateFrom2.setDateFrom(new DateTime(dateFrom.getTime()).toCalendar(Locale.GERMAN));
-
-        DateTo dateTo2 = new DateTo();
-        dateTo2.setDateTo(new DateTime(dateTo.getTime()).toCalendar(Locale.GERMAN));
-
-        getItemsPreviewsRequest.setDateFrom(dateFrom2);
-        getItemsPreviewsRequest.setDateTo(dateTo2);
-
-        Lss lss = new Lss();
-        lss.setLss(account);
-        getItemsPreviewsRequest.setLss(lss);
-        getItemsPreviewsRequest.setToken(null);
 
         BridgeAccountDao bridgeAccountDao = bridgeAccountService.getAccountByName(account, accountType);
 
-        List<ItemPreview> itemsPrevs = Arrays.asList(getPrieviews(accountType, getItemsPreviewsRequestE));
+        List<Account> accounts = getAccounts(bridgeAccountDao.getAccessToken(), accountType);
+        List<Item> items = new ArrayList<>();
+        for ( Account account2 : accounts ) {
 
-        GetItemsRequestE getItemsRequestE = new GetItemsRequestE();
-        GetItemsRequest getItemsRequest = new GetItemsRequest();
-        getItemsPreviewsRequestE.setGetItemsPreviewsRequest(getItemsPreviewsRequest);
-        Token token = new Token();
-        token.setToken(bridgeAccountDao.getAccessToken());
-        getItemsRequest.setToken(token);
-        List<ItemId> ids = new ArrayList<>();
-        for ( ItemPreview itemPreview : itemsPrevs ) {
-            ids.add(itemPreview.getId());
+            GetItemsPreviewsRequestE getItemsPreviewsRequestE = new GetItemsPreviewsRequestE();
+            GetItemsPreviewsRequest getItemsPreviewsRequest = new GetItemsPreviewsRequest();
+            getItemsPreviewsRequestE.setGetItemsPreviewsRequest(getItemsPreviewsRequest);
+
+            DateFrom dateFrom2 = new DateFrom();
+            dateFrom2.setDateFrom(new DateTime(dateFrom.getTime()).toCalendar(Locale.GERMAN));
+
+            DateTo dateTo2 = new DateTo();
+            dateTo2.setDateTo(new DateTime(dateTo.getTime()).toCalendar(Locale.GERMAN));
+
+            getItemsPreviewsRequest.setDateFrom(dateFrom2);
+            getItemsPreviewsRequest.setDateTo(dateTo2);
+
+            Lss lss = new Lss();
+            lss.setLss(account2.login);
+            getItemsPreviewsRequest.setLss(lss);
+
+            Token token = new Token();
+            token.setToken(bridgeAccountDao.getAccessToken());
+            getItemsPreviewsRequest.setToken(token);
+
+            List<ItemPreview> itemsPrevs = Arrays.asList(getPrieviews(accountType, getItemsPreviewsRequestE));
+
+            GetItemsRequestE getItemsRequestE = new GetItemsRequestE();
+            GetItemsRequest getItemsRequest = new GetItemsRequest();
+            getItemsPreviewsRequestE.setGetItemsPreviewsRequest(getItemsPreviewsRequest);
+            getItemsRequest.setToken(token);
+            List<ItemId> ids = new ArrayList<>();
+            for ( ItemPreview itemPreview : itemsPrevs ) {
+                ids.add(itemPreview.getId());
+            }
+            getItemsRequest.setIdsList(ids.toArray(new ItemId[0]));
+            getItemsRequestE.setGetItemsRequest(getItemsRequest);
+            items.addAll(Arrays.asList(getIteams(accountType, getItemsRequestE)));
         }
-        getItemsRequest.setIdsList(ids.toArray(new ItemId[0]));
-
-        return Arrays.asList(getIteams(accountType, getItemsRequestE));
+        return items;
     }
 
     private ItemPreview[] getPrieviews( AccountType accountType,
                                         GetItemsPreviewsRequestE getItemsPreviewsRequestE ) throws BridgeException {
-        ItemPreview[] itemPreviews = null;
+        ItemPreview[] itemPreviews = new ItemPreview[0];
         if ( AccountType.FACEBOOKBRIDGE.equals(accountType) ) {
-            getPrieviewsToPort(getItemsPreviewsRequestE, facebookService);
+            itemPreviews = getPrieviewsToPort(getItemsPreviewsRequestE, facebookService);
         }
         else if ( AccountType.FLICKRBRIDGE.equals(accountType) ) {
-            getPrieviewsToPort(getItemsPreviewsRequestE, flickrService);
+            itemPreviews = getPrieviewsToPort(getItemsPreviewsRequestE, flickrService);
         }
         else if ( AccountType.TWITPICBRIDGE.equals(accountType) ) {
-            getPrieviewsToPort(getItemsPreviewsRequestE, twitpicService);
+            itemPreviews = getPrieviewsToPort(getItemsPreviewsRequestE, twitpicService);
         }
         return itemPreviews;
     }
@@ -344,8 +353,7 @@ public class SsiAdapter
         }
         catch ( RemoteException | TokenExpiredFault e ) {
             e.printStackTrace();
-            e.printStackTrace();
-            return null;
+            return new ItemPreview[0];
         }
 
         return getItemsPreviewsResponseE.getGetItemsPreviewsResponse().getItemPreviewsList();
@@ -371,7 +379,7 @@ public class SsiAdapter
     }
 
     private Item[] getIteams( AccountType accountType, GetItemsRequestE getItemsRequestE ) throws BridgeException {
-        Item[] items = null;
+        Item[] items = new Item[0];
         if ( AccountType.FACEBOOKBRIDGE.equals(accountType) ) {
             items = getIteamsToPort(getItemsRequestE, facebookService);
         }
@@ -391,7 +399,7 @@ public class SsiAdapter
         }
         catch ( RemoteException | TokenExpiredFault e ) {
             e.printStackTrace();
-            return null;
+            return new Item[0];
         }
         return getItemsResponseE.getGetItemsResponse().getItemsList();
 

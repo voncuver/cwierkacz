@@ -17,7 +17,7 @@ import com.pk.cwierkacz.utils.DateUtil;
 
 public class Message implements Comparable<Message>
 {
-    private Long Id;
+    private String Id;
 
     private Long inReplyToId;
 
@@ -37,11 +37,11 @@ public class Message implements Comparable<Message>
 
     private DateTime createdDate;
 
-    public Long getId( ) {
+    public String getId( ) {
         return Id;
     }
 
-    public void setId( Long id ) {
+    public void setId( String id ) {
         Id = id;
     }
 
@@ -144,7 +144,7 @@ public class Message implements Comparable<Message>
         tweet.setAccount(account);
         tweet.setCreatedDate(tweetDao.getCratedDate());
         tweet.setDeleted(tweetDao.isDeleted());
-        tweet.setId(tweetDao.getId());
+        tweet.setId(tweetDao.getId().toString());
 
         tweet.setImagePath(pathToUrl(tweetDao.getImagePath()));
 
@@ -175,7 +175,7 @@ public class Message implements Comparable<Message>
         tweet.setAccount(account);
         tweet.setCreatedDate(DateUtil.convertDateUTC(item.getDate().getTime())); //TODO jak już będzie data w itemie to tutaj dodac!!
         tweet.setDeleted(false);
-        tweet.setId(Long.parseLong(item.getId().getId()));
+        tweet.setId(item.getId().getId());
         tweet.setImagePath(pathToUrl(path));
         tweet.setInReplyToId(null);
         tweet.setRetweetedId(null);
